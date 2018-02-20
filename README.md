@@ -1,5 +1,5 @@
 # Development Setup - minishift + pipeline
-![CI-Pipeline](../continuous-infra-logo.png)
+![CI-Pipeline](continuous-infra-logo.png)
 
 ## What Does CI/CD Mean in the Context of the Continuous-infra Pipeline Project?
 
