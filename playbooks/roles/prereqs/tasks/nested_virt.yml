@@ -40,6 +40,3 @@
 - name: Exit if nested virtualization is off
   fail: msg="NESTED VIRT HAS BEEN ENABLED PLEASE REBOOT"
   when: "nested.stdout != 'Y'"
-
-
-

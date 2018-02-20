@@ -6,5 +6,5 @@
   gather_facts: '{{ gather_facts | default("yes") }}'
   roles:
     - { role: prereqs, when: skip_prereqs|bool == false }
-    - { role: minishift, when: setup_minishift|bool == true }
-    - role: pipeline
+    - { role: minishift, when: skip_minishift|bool == false }
+    - { role: pipeline, when: skip_pipeline|bool == false }

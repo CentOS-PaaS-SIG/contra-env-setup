@@ -9,4 +9,9 @@
 # start minishift profile
 - name: "Start minishift profile {{ profile }}"
   shell: "{{ minishift_dest_dir }}/minishift start --profile {{ profile }} --disk-size {{ disk_size }} --memory {{ memory }} --iso-url file:///{{ minishift_dest_dir }}/minishift.iso"
-  when: minishift_status.stdout == "Stopped"
+  when: (minishift_status.stdout == "Stopped" or start_minishift|bool == true)
+
+# stop minishift profile
+- name: Stop the cluster
+  shell: "{{ minishift_dest_dir }}/minishift stop --profile {{ profile }}"
+  when: (minishift_status.stdout == "Running" and stop_minishift|bool == true)
