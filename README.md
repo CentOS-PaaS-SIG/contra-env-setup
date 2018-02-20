@@ -21,7 +21,7 @@ This can be a static file, dynamic inventory, or a comma separated list of machi
 
 ```
 ansible-playbook -i <inventory> --private-key=</full/path/to/private/ssh/key> \
-playbooks/setup.yml
+contra-env-setup/playbooks/setup.yml
 ```
 
 ## Ansible Playbook Role Structure
@@ -71,7 +71,7 @@ playbooks/setup.yml
 
 ```
 ansible-playbook -i "10.8.170.204," --private-key=/home/test-user/.ssh/ci-factory \
-playbooks/setup.yml
+contra-env-setup/playbooks/setup.yml
 
 ```
 
@@ -84,7 +84,7 @@ or only certain components.  ex. minishift, jenkins infra, pipeline containers, 
 
 ##### default variables
 ```
-playbooks/group_vars/all/global.yml
+contra-env-setup/playbooks/group_vars/all/global.yml
 
 ```
 
@@ -269,7 +269,7 @@ PARAMS:
     
 ```
     ansible-playbook -vv -i "localhost," \
-    ~/CentOS-PaaS-SIG/playbooks/setup.yml \
+    ~/CentOS-PaaS-SIG/contra-env-setup/playbooks/setup.yml \
     -e remote_user=cloud-user -e skip_prereqs=true -e setup_minishift=true \
     -e setup_jenkins=true -e setup_containers=true \
     -e setup_fedmsg=false -e modify_tags=true \
@@ -288,7 +288,7 @@ PARAMS:
 
 ```
     ansible-playbook -vv -i "localhost," --private-key=/home/cloud-user/my-key \
-    ~/CentOS-PaaS-SIG/playbooks/setup.yml \
+    ~/CentOS-PaaS-SIG/contra-env-setup/playbooks/setup.yml \
     -e remote_user=ari -e skip_prereqs=false -e setup_minishift=false \
     -e setup_jenkins=true -e setup_containers=true \
     -e setup_fedmsg=true -e modify_tags=false -e force_clone=false -K
@@ -309,7 +309,7 @@ PARAMS:
 
 ```
     ansible-playbook -vv -i "ci-srv-01.bos.redhat.com," --private-key=/home/cloud-user/my-key \                        
-    ~/CentOS-PaaS-SIG/playbooks/setup.yml \
+    ~/CentOS-PaaS-SIG/contra-env-setup/playbooks/setup.yml \
     -e remote_user=cloud-user -e skip_prereqs=true -e setup_minishift=true \
     -e setup_jenkins=true -e setup_containers=true \
     -e setup_fedmsg=false -e modify_tags=true -K
