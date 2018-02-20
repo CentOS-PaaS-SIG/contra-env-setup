@@ -1,4 +1,4 @@
-# Development Setup - minishift + pipeline
+# Contra Pipeline Environment Setup :: minishift + pipeline or openshift + pipeline
 ![CI-Pipeline](continuous-infra-logo.png)
 
 ## What Does CI/CD Mean in the Context of the Continuous-infra Pipeline Project?
