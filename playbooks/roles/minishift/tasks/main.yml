@@ -8,8 +8,8 @@
   register: minishift_bin
 
 # install minishift
-- include: install_minishift_bin.yml
-  when: (minishift_bin.stat.exists == false or force_minishift_install|bool == true)
+- import_tasks: install_minishift_bin.yml
+  when: (minishift_bin.stat.exists == false or install_minishift|bool == true)
 
 # set disk size and memory
 - name: "Set minishift disk-size {{ disk_size }}"
@@ -30,12 +30,14 @@
 
 # check if the minishift profile exists
 - name: "Check if the minishift profile exists"
-  shell: "{{ minishift_dest_dir }}/minishift status --profile {{ profile }} | head -1 | grep -i 'does not exist'"
+  shell: "{{ minishift_dest_dir }}/minishift status --profile {{ profile }} | head -2 | tail -1 | awk '{print $2}'"
   register: minishift_exist
   ignore_errors: yes
 
 # initialize minishift
-- include: init_minishift.yml
-  when: minishift_exist.stdout != ""
+- import_tasks: init_minishift.yml
+  when: (minishift_exist.stdout == "{{ profile }}" and stop_minishift|bool == false and start_minishift|bool == false)
 
-
+# stop minishift
+- import_tasks: start_mcluster.yml
+  when: (start_minishift|bool == true or stop_minishift|bool == true)
