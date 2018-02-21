@@ -21,6 +21,7 @@
 # create project
 - name: "Create project {{ project }}"
   include: get_set_project.yml
+  when: force_repo_clone|bool == true
 
 # clone the pipeline repo
 - name: "Clone the pipeline repo {{ pipeline_repo }}"
