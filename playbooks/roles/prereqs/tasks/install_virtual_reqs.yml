@@ -1,5 +1,5 @@
-
-- name: Install pre-requesites for dnf support for Fedora
+---
+- name: "Install pre-requesites for dnf support for Fedora"
   raw: dnf install -y --allowerasing python-dnf
   when: ansible_distribution == 'Fedora'
   become: true
@@ -15,21 +15,21 @@
   when: ansible_distribution == 'Fedora'
   become: true
 
-- name: Check if EPEL is installed for non Fedora distros
+- name: "Check if EPEL is installed for non Fedora distros"
   shell: rpm -qa | grep epel-release
   register: epel_rpm
   ignore_errors: yes
-  when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
+  when: (ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS')
   become: true
 
-- name: Pull down the EPEL for for non Fedora distros
+- name: "Pull down the EPEL for for non Fedora distros"
   get_url:
     url: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
     dest: "{{ ansible_env.HOME }}/epel-release-latest-7.noarch.rpm"
   when: ((ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS') and epel_rpm.stdout == "")
 
-- name: Install EPEL for non Fedora distros
-  shell: rpm -i {{ ansible_env.HOME }}/epel-release-latest-7.noarch.rpm
+- name: "Install EPEL for non Fedora distros"
+  command: rpm -i {{ ansible_env.HOME }}/epel-release-latest-7.noarch.rpm
   when: ((ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS') and epel_rpm.stdout == "")
   become: true
 
@@ -41,5 +41,5 @@
     - libvirt
     - qemu-kvm
     - jq
-  when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
+  when: (ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS')
   become: true
