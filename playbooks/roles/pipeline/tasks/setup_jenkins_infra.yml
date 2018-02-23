@@ -5,6 +5,6 @@
   set_fact:
     container_config_name: "Jenkins infra"
 
-- include: query_setup_cluster.yml template_name={{ item }}
+- include_tasks: query_setup_cluster.yml template_name={{ item }}
   with_items: "{{ jenkins_bc_templates }}"
   when: jenkins_bc_templates != ""

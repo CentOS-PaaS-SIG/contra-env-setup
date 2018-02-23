@@ -8,7 +8,7 @@
   register: minishift_bin
 
 # install minishift
-- include: install_minishift_bin.yml
+- import_tasks: install_minishift_bin.yml
   when: (minishift_bin.stat.exists == false or force_minishift_install|bool == true)
 
 # set disk size and memory
@@ -35,7 +35,5 @@
   ignore_errors: yes
 
 # initialize minishift
-- include: init_minishift.yml
+- import_tasks: init_minishift.yml
   when: minishift_exist.stdout != ""
-
-

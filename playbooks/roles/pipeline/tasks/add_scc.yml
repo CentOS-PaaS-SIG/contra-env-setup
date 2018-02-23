@@ -28,4 +28,4 @@
   when: scc_name_file.stdout != ""
 
 # login to the cluster for the profile in use as a regular user
-- include: login_to_cluster.yml
+- import_tasks: login_to_cluster.yml
