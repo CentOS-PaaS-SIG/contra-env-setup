@@ -1,4 +1,5 @@
 ---
+<<<<<<< HEAD
 # setup minishift
 
 # Determine if minishift binary exists
@@ -29,11 +30,29 @@
     timeout: 120
 
 # check if the minishift profile exists
+=======
+>>>>>>> 0271ef45da51f5ac087763927a625e7aea05817e
 - name: "Check if the minishift profile exists"
   shell: "{{ minishift_dest_dir }}/minishift status --profile {{ profile }} | head -1 | grep -i 'does not exist'"
   register: minishift_exist
   ignore_errors: yes
+  when: skip_minishift == false
 
+- import_tasks: init_minishift.yml
+
+<<<<<<< HEAD
 # initialize minishift
 - import_tasks: init_minishift.yml
   when: minishift_exist.stdout != ""
+=======
+- import_tasks: setup_minishift.yml
+
+- name: "Check if the minishift profile is already up and running"
+  shell: "{{ minishift_dest_dir }}/minishift status --profile {{ profile }} | head -1 | awk '{print $2}'"
+  register: minishift_status
+  when: skip_minishift == false
+
+- name: "Start minishift profile {{ profile }}"
+  command: "{{ minishift_dest_dir }}/minishift start --profile {{ profile }} --disk-size {{ disk_size }} --memory {{ memory }} --iso-url file:///{{ minishift_dest_dir }}/minishift.iso"
+  when: minishift_status.stdout == "Stopped"
+>>>>>>> 0271ef45da51f5ac087763927a625e7aea05817e

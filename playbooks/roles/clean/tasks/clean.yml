@@ -1,0 +1,54 @@
+---
+- name: "Check if the minishift profile exists and are running"
+  shell: "{{ minishift_dest_dir }}/minishift status --profile {{ profile }} | head -1 | awk '{print $2}'"
+  register: minishift_exist
+  ignore_errors: yes
+  when: skip_clean == false
+
+- name: "Stop the minishift if is already up and running"
+  command: "{{ minishift_dest_dir }}/minishift stop --profile {{ profile }}"
+  when: minishift_exist.stdout == "Running"
+
+- name: "Remove minishift profile"
+  command: "{{ minishift_dest_dir }}/minishift delete --profile {{ profile }} --force"
+  ignore_errors: yes
+  when: skip_clean == false
+
+- name: "Clean path of minishift in {{ ansible_env.HOME }}/.bashrc"
+  lineinfile:
+    dest: "{{ ansible_env.HOME }}/.bashrc"
+    regexp: "minishift"
+    state: absent
+
+- name: "Clean path of oc in {{ ansible_env.HOME }}/.bashrc"
+  lineinfile:
+    dest: "{{ ansible_env.HOME }}/.bashrc"
+    regexp: "oc"
+    state: absent
+
+- name: "Remove the binary of minishift {{ ansible_env.HOME }}/minishift/minishift"
+  file:
+    path: "{{ ansible_env.HOME }}/minishift/minishift"
+    state: absent
+  ignore_errors: yes
+
+- name: "Remove the binary of helm {{ ansible_env.HOME }}/minishift/helm"
+  file:
+    path: "{{ ansible_env.HOME }}/minishift/helm"
+    state: absent
+  ignore_errors: yes
+
+- name: "Remove the directory of minishift configs {{ ansible_env.HOME }}/.minishift"
+  file:
+    path: "{{ ansible_env.HOME }}/.minishift"
+    state: absent
+
+- name: "Remove the directory of helm configs {{ ansible_env.HOME }}/.helm"
+  file:
+    path: "{{ ansible_env.HOME }}/.helm"
+    state: absent
+
+- name: "Remove the directory of kube configs {{ ansible_env.HOME }}/.kube"
+  file:
+    path: "{{ ansible_env.HOME }}/.kube"
+    state: absent

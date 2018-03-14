@@ -1,8 +1,19 @@
 ---
-# tasks file for prereqs
+# tasks file for prereqs role
 
+<<<<<<< HEAD
 # Check if nested virtualization is enabled
 - import_tasks: nested_virt.yml
 
 # install the kvm plugin
 - import_tasks: install_kvm_plugin.yml
+=======
+# Check and enable nested virtualization is necessary
+- import_tasks: setup_nested_virt.yml
+
+# install the kvm plugin
+- import_tasks: install_kvm_plugin.yml
+
+# Install kvm plugin and management libvirt
+- import_tasks: install_virtual_reqs.yml
+>>>>>>> 0271ef45da51f5ac087763927a625e7aea05817e

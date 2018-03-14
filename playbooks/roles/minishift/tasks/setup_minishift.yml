@@ -1,0 +1,23 @@
+---
+- name: "Set path for minishift in {{ ansible_env.HOME }}/.bashrc"
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    line: 'export PATH=$PATH:{{ minishift_dest_dir }}'
+    create: yes
+  when: stop_minishift is defined
+
+- name: "Determine the oc client is for profile {{ profile}}"
+  shell: "{{ minishift_dest_dir }}/minishift oc-env --profile {{ profile }} | head -1"
+  register: oc_client_path
+  when: stop_minishift is defined
+
+- name: "Set path for oc client in {{ ansible_env.HOME }}/.bashrc"
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    line: '{{ oc_client_path.stdout }}'
+    create: yes
+  when: oc_client_path is defined
+
+- name: "Source {{ ansible_env.HOME }}/.bashrc"
+  shell: source {{ ansible_env.HOME }}/.bashrc 2>&1
+  when: (stop_minishift is defined and oc_client_path is defined)

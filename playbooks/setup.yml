@@ -5,6 +5,8 @@
   remote_user: '{{ remote_user | default("root") }}'
   gather_facts: '{{ gather_facts | default("yes") }}'
   roles:
+    - { role: clean, when: skip_clean|bool == false }
     - { role: prereqs, when: skip_prereqs|bool == false }
-    - { role: minishift, when: setup_minishift|bool == true }
-    - role: pipeline
+    - { role: artifacts, when: skip_artifacts|bool == false }
+    - { role: minishift, when: skip_minishift|bool == false }
+    - { role: helm, when: skip_helm|bool == false }
