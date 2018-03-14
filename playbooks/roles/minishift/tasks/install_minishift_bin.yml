@@ -5,9 +5,15 @@
   shell: curl -s https://github.com/minishift/minishift/releases/ | grep 'minishift-1.12.0-linux-amd64.*' | head -1 | sed 's/.*<a href="\(.*\)" .*/https:\/\/github.com\1/'
   register: release
 
-- name: "Pull down and extract minishift binary to {{ ansible_env.HOME }}"
+- name: "Pull down minishift binary to {{ ansible_env.HOME }}"
+  get_url:
+    url: "{{ release.stdout }}"
+    dest: "{{ ansible_env.HOME }}"
+  when: (minishift_bin.stat.exists == false or force_minishift_install|bool == true)
+
+- name: "Extract minishift binary to {{ ansible_env.HOME }}"
   unarchive:
-    src: "{{ release.stdout }}"
+    src: "{{ ansible_env.HOME }}/{{ release.stdout | basename }}"
     dest: "{{ ansible_env.HOME }}"
     remote_src: yes
   when: (minishift_bin.stat.exists == false or force_minishift_install|bool == true)
