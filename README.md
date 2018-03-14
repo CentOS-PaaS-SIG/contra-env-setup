@@ -122,6 +122,7 @@ _______
 | modify_tags                    |     Modify tags of containers                                           | modify_tags=true                                   |   true                                    | No       |
 | tag                            |     Add a tag besides latest                                            | tag=dev                                            |   "stable"                                | No       |
 | modify_scc                     |     Create/update the security context constraints                      | modify_scc=false                                   |   true                                    | No       |
+| github_token                   |     GitHub token for authenticated requests for a higher rate limit     | github_token=62e4ec8af436dc15c3ce                  |   not set                                 | No       |
 | minishift_dest_dir             |     Directory to store minishift binary                                 | minishift_dest_dir=/home/cloud-user/test           |   "{{ ansible_env.HOME }}/minishift"      | No       |
 | profile                        |     Minishift cluster profile name                                      | profile=contra-cp                                  |   "minishift"                             | No       |
 | disk_size                      |     Disk size for minishift                                             | disk_size=25gb                                     |   "40gb"                                  | No       |
