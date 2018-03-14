@@ -1,6 +1,15 @@
 ---
+- name: "Clone minishift addons "
+  git:
+    repo: "https://github.com/minishift/minishift-addons.git"
+    dest: "{{ minishift_dest_dir }}/"
+    refspec: '+refs/pull/*:refs/heads/*'
+    version: 'master'
+    force: yes
+  ignore_errors: true
+
 - name: "Add minishift addons helm"
-  command: "{{ minishift_dest_dir }}/minishift addons install helm"
+  command: "{{ minishift_dest_dir }}/minishift addons install {{ minishift_dest_dir }}/minishift-addons/add-ons/helm"
   when: skip_helm == false
 
 - name: "Apply minishift addons helm"
