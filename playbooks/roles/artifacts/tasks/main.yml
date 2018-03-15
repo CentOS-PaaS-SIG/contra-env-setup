@@ -3,6 +3,3 @@
 
 # Download artifacts of minishift and atomic iso
 - import_tasks: minishift.yml
-
-# Download artifacts of helm
-- import_tasks: helm.yml

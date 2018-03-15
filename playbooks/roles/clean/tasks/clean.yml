@@ -1,4 +1,13 @@
 ---
+- name: "Install libselinux-python"
+  dnf:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - libselinux-python
+  when: skip_clean == false
+  become: true
+
 - name: "Check if the minishift profile exists and are running"
   shell: "{{ minishift_dest_dir }}/minishift status --profile {{ profile }} | head -1 | awk '{print $2}'"
   register: minishift_exist
@@ -32,20 +41,9 @@
     state: absent
   ignore_errors: yes
 
-- name: "Remove the binary of helm {{ ansible_env.HOME }}/minishift/helm"
-  file:
-    path: "{{ ansible_env.HOME }}/minishift/helm"
-    state: absent
-  ignore_errors: yes
-
 - name: "Remove the directory of minishift configs {{ ansible_env.HOME }}/.minishift"
   file:
     path: "{{ ansible_env.HOME }}/.minishift"
-    state: absent
-
-- name: "Remove the directory of helm configs {{ ansible_env.HOME }}/.helm"
-  file:
-    path: "{{ ansible_env.HOME }}/.helm"
     state: absent
 
 - name: "Remove the directory of kube configs {{ ansible_env.HOME }}/.kube"

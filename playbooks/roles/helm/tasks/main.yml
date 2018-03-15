@@ -1,5 +1,0 @@
----
-# tasks file for helm role
-
-# create a project and deploy tiller service
-- import_tasks: setup_helm.yml

@@ -16,6 +16,7 @@ kvm_plugin_url: https://github.com/dhiltgen/docker-machine-kvm/releases/download
 minishift_dest_dir: "{{ ansible_env.HOME }}/minishift"
 
 # minishift url and release
+github_token: '62e4ec8af436dc15c3ce' 
 minishift_release: 1.14.0
 minishift_url: https://github.com/minishift/minishift/releases/download/v{{ minishift_release }}/minishift-{{ minishift_release }}-linux-amd64.tgz
 

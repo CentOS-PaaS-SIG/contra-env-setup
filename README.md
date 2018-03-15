@@ -16,8 +16,6 @@ The tool automated all projects above in an unique deployment.
 ## Requirements
 
 * ansible
-* libselinux-python
-
 
 ## Ansible Playbook Role Structure
 ````
