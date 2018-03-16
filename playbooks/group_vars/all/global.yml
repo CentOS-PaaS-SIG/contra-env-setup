@@ -4,7 +4,6 @@ skip_clean: false
 skip_prereqs: false
 skip_artifacts: false
 skip_minishift: false
-skip_helm: false
 
 # libvirt group used in roles/prereqs/tasks/install_kvm_plugin.yml
 remote_user: "{{ ansible_user | default(lookup('env', 'USER')) }}"
@@ -29,7 +28,3 @@ profile: minishift
 # disk and memory size
 disk_size: 40gb
 memory: 6400mb
-
-# helm url and releases
-helm_release: 2.8.1
-helm_url: https://kubernetes-helm.storage.googleapis.com/helm-v{{ helm_release }}-linux-amd64.tar.gz
