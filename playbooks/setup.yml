@@ -3,7 +3,7 @@
   become: '{{ become | default("no") }}'
   become_user: '{{ become_user | default("root") }}'
   remote_user: '{{ remote_user | default("root") }}'
-  gather_facts: '{{ gather_facts | default("no") }}'
+  gather_facts: '{{ gather_facts | default("yes") }}'
   environment:
     MINISHIFT_GITHUB_API_TOKEN: '{{ github_token | default("") }}'
   roles:
