@@ -4,6 +4,7 @@
     name: "{{ item }}"
     state: present
   with_items:
+    - python
     - libselinux-python
   when: skip_clean == false
   become: true
