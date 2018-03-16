@@ -4,8 +4,8 @@
 # Check and enable nested virtualization is necessary
 - import_tasks: setup_nested_virt.yml
 
-# install the kvm plugin
-- import_tasks: install_kvm_plugin.yml
-
 # Install kvm plugin and management libvirt
 - import_tasks: install_virtual_reqs.yml
+
+# install the kvm plugin
+- import_tasks: install_kvm_plugin.yml
