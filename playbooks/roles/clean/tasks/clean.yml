@@ -1,10 +1,13 @@
 ---
+- name: "Install python and python-dnf"
+  raw: test -e /usr/bin/python || (dnf install python python-dnf -y)
+  become: yes
+
 - name: "Install libselinux-python"
   dnf:
     name: "{{ item }}"
     state: present
   with_items:
-    - python
     - libselinux-python
   when: skip_clean == false
   become: true
