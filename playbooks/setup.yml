@@ -1,5 +1,9 @@
 ---
 - hosts: '{{ hosts | default("all") }}'
+  pre_tasks:
+    - name: "Install python and python-dnf"
+      raw: test -e /usr/bin/python || (dnf install python python-dnf -y)
+      become: yes
   become: '{{ become | default("no") }}'
   become_user: '{{ become_user | default("root") }}'
   remote_user: '{{ remote_user | default("root") }}'
