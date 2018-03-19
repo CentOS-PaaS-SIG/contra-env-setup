@@ -1,20 +1,31 @@
 ---
-# start minishift
+- name: "Add minishift addons defaults"
+  command: "{{ minishift_dest_dir }}/minishift addons install --defaults"
+  when: minishift_exist.stdout == "Does Not Exist"
+
+- name: "Add minishift addons enable admin user"
+  command: "{{ minishift_dest_dir }}/minishift addons enable admin-user"
+  when: minishift_exist.stdout == "Does Not Exist"
+
 - name: "Initialization of minishift cluster with profile {{ profile }}"
-  shell: "{{ minishift_dest_dir }}/minishift start --profile {{ profile }} --disk-size {{ disk_size }} --memory {{ memory }} --iso-url file:///{{ minishift_dest_dir }}/minishift.iso"
+  command: "{{ minishift_dest_dir }}/minishift start --profile {{ profile }} --disk-size {{ disk_size }} --memory {{ memory }} --iso-url file:///{{ minishift_dest_dir }}/minishift.iso --show-libmachine-logs -v5"
+  register: start_minishift
+  when: minishift_exist.stdout == "Does Not Exist"
 
-- name: Wait for the cluster to come up completely
-  pause:
-    minutes: 3
+- name: "Output Initialization of minishift"
+  debug:
+    msg: "Initialization: {{ start_minishift.stdout_lines }}"
+  when: start_minishift|succeeded
 
-- name: Stop the cluster
-  shell: "{{ minishift_dest_dir }}/minishift stop --profile {{ profile }}"
+- name: "Stop the cluster"
+  command: "{{ minishift_dest_dir }}/minishift stop --profile {{ profile }}"
+  register: stop_minishift
+  when: start_minishift|succeeded
 
-- name: Update the VM config
+- name: "Update the VM config"
   lineinfile:
     path: "/etc/libvirt/qemu/{{ profile }}.xml"
     insertafter: '\s+</features>'
     line: "  <cpu mode='host-passthrough'/>"
   become: yes
-
-
+  when: stop_minishift is defined

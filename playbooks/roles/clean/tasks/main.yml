@@ -1,0 +1,5 @@
+---
+# tasks file for cleans role
+
+# Clean the everything about minishift and oc
+- import_tasks: clean.yml

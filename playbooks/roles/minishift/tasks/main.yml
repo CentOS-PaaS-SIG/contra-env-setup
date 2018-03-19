@@ -1,39 +1,19 @@
 ---
-# setup minishift
-
-# Determine if minishift binary exists
-- name: "Is minishift binary present in {{ minishift_dest_dir }}"
-  stat:
-    path: "{{ minishift_dest_dir }}/minishift"
-  register: minishift_bin
-
-# install minishift
-- import_tasks: install_minishift_bin.yml
-  when: (minishift_bin.stat.exists == false or force_minishift_install|bool == true)
-
-# set disk size and memory
-- name: "Set minishift disk-size {{ disk_size }}"
-  shell: "{{ minishift_dest_dir }}/minishift config set disk-size {{ disk_size }}"
-
-- name: "Set minishift disk-size {{ memory }}"
-  shell: "{{ minishift_dest_dir }}/minishift config set memory {{ memory }}"
-
-# set base device size
-- name: "Set minishift base device size to {{basedevice_size}}"
-  shell: "{{ minishift_dest_dir }}/minishift config set docker-opt 'storage-opt=dm.basesize={{ basedevice_size }}'"
-
-- name: Pull down the minishift iso
-  get_url:
-    url: "{{ minishift_iso }}"
-    dest: "{{ minishift_dest_dir }}/minishift.iso"
-    timeout: 120
-
-# check if the minishift profile exists
 - name: "Check if the minishift profile exists"
   shell: "{{ minishift_dest_dir }}/minishift status --profile {{ profile }} | head -1 | grep -i 'does not exist'"
   register: minishift_exist
   ignore_errors: yes
+  when: skip_minishift == false
 
-# initialize minishift
 - import_tasks: init_minishift.yml
-  when: minishift_exist.stdout != ""
+
+- import_tasks: setup_minishift.yml
+
+- name: "Check if the minishift profile is already up and running"
+  shell: "{{ minishift_dest_dir }}/minishift status --profile {{ profile }} | head -1 | awk '{print $2}'"
+  register: minishift_status
+  when: skip_minishift == false
+
+- name: "Start minishift profile {{ profile }}"
+  command: "{{ minishift_dest_dir }}/minishift start --profile {{ profile }} --disk-size {{ disk_size }} --memory {{ memory }} --iso-url file:///{{ minishift_dest_dir }}/minishift.iso"
+  when: minishift_status.stdout == "Stopped"
