@@ -1,0 +1,5 @@
+---
+# tasks file for cleanup
+
+- name: "Stop minishift if running"
+  import_tasks: cleanup.yml
