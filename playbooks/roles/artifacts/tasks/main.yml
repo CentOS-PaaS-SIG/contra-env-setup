@@ -1,0 +1,5 @@
+---
+# tasks file for artifacts role
+
+# Download artifacts of minishift and atomic iso
+- import_tasks: minishift.yml
