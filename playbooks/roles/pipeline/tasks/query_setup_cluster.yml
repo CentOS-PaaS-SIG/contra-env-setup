@@ -87,7 +87,7 @@
 - set_fact:
     build_success: false
 
-- import_tasks: build_new_app.yml
+- include_tasks: build_new_app.yml
   with_items:
     - 1
     - 2
