@@ -1,0 +1,33 @@
+---
+- name: "Checking if oc binary is present in {{ oc_dest_dir }}"
+  stat:
+    path: "{{ oc_dest_dir }}/oc"
+  register: oc_bin
+
+- name: "Pull down and extract oc binary to {{ ansible_env.HOME }}"
+  unarchive:
+    src: "{{ oc_url }}"
+    dest: "{{ ansible_env.HOME }}"
+    remote_src: yes
+  when: oc_bin.stat.exists == false
+
+- name: "Checking if {{ oc_dest_dir }} exist"
+  stat:
+    path: "{{ oc_dest_dir }}"
+  register: oc_dir
+
+- name: "Creating a new {{ oc_dest_dir }}"
+  file:
+    path: "{{ oc_dest_dir }}"
+    state: directory
+  when: oc_dir.stat.isdir is not defined
+
+- name: "Copy oc files to {{ oc_dest_dir }}"
+  shell: cp {{ ansible_env.HOME }}/openshift-origin-client-tools-{{ oc_release }}-ab0f056-linux-64bit/* {{ oc_dest_dir }}/
+  when: oc_bin.stat.exists == false
+
+- name: "Delete {{ ansible_env.HOME }}/openshift-origin-client-tools-{{ oc_release }}-ab0f056-linux-64bit"
+  file:
+    path: "{{ ansible_env.HOME }}/openshift-origin-client-tools-{{ oc_release }}-ab0f056-linux-64bit"
+    state: absent
+  when: oc_bin.stat.exists == false
