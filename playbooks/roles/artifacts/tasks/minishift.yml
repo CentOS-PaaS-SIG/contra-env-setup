@@ -1,0 +1,45 @@
+---
+- name: "Checking if {{ minishift_dest_dir }} exist"
+  stat:
+    path: "{{ minishift_dest_dir }}"
+  register: minishift_dir
+
+- name: "Creating a new {{ minishift_dest_dir }}"
+  file:
+    path: "{{ minishift_dest_dir }}"
+    state: directory
+  when: minishift_dir.stat.isdir is not defined
+
+- name: "Checking if minishift binary is present in {{ minishift_dest_dir }}"
+  stat:
+    path: "{{ minishift_dest_dir }}/minishift"
+  register: minishift_bin
+
+- name: "Pull down and extract minishift binary to {{ ansible_env.HOME }}"
+  unarchive:
+    src: "{{ minishift_url }}"
+    dest: "{{ ansible_env.HOME }}"
+    remote_src: yes
+  when: minishift_bin.stat.exists == false
+
+- name: "Copy minishift files to {{ ansible_env.HOME }}/minishift/"
+  shell: cp {{ ansible_env.HOME }}/minishift-{{ minishift_release }}-linux-amd64/* {{ minishift_dest_dir }}/
+  when: minishift_bin.stat.exists == false
+
+- name: "Delete {{ ansible_env.HOME }}/minishift-{{ minishift_release }}-linux-amd64"
+  file:
+    path: "{{ ansible_env.HOME }}/minishift-{{ minishift_release }}-linux-amd64"
+    state: absent
+  when: minishift_bin.stat.exists == false
+
+- name: "Checking if minishift ISO is present in {{ minishift_dest_dir }}"
+  stat:
+    path: "{{ minishift_dest_dir }}/minishift.iso"
+  register: minishift_file_iso
+
+- name: "Pull down the minishift ISO"
+  get_url:
+    url: "{{ minishift_iso }}"
+    dest: "{{ minishift_dest_dir }}/minishift.iso"
+    timeout: 120
+  when: minishift_file_iso.stat.exists == false
