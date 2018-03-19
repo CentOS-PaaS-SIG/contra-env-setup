@@ -1,0 +1,7 @@
+python-avocado
+python2-avocado-plugins-runner-vm
+python2
+libselinux-python
+python2-aexpect
+genisoimage
+qemu-img
