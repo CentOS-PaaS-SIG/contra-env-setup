@@ -8,5 +8,5 @@
     - { role: cleanup, when: skip_cleanup|bool == false }
     - { role: prereqs, when: skip_prereqs|bool == false }
     - { role: minishift, when: setup_minishift|bool == true }
-    #- { role: os_cont_temps, when: setup_os_temps|bool == true }
-    - role: pipeline
+    #- { role: os_temps, when: setup_os_temps|bool == true }
+    - { role: pipeline, when: setup_pipeline|bool == true }

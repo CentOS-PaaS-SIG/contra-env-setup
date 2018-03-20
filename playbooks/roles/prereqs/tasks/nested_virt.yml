@@ -1,45 +1,76 @@
 ---
 # Check and enable virtualization if necessary
 #  REBOOT WILL BE REQUIRED IF ENABLED
-- name: Check virtualization settings
-  shell: cat /proc/cpuinfo | grep vmx
+---
+- name: "Check virtualization settings"
+  shell: cat /proc/cpuinfo | grep 'vmx\|svm'
   register: cpuinfo
   ignore_errors: true
+  when: skip_prereqs == false
 
-- name: Output of cpuinfo from proc
+- name: "Output of cpuinfo from proc"
   debug:
     msg: "cpuinfo: {{ cpuinfo.stdout }}"
 
-- name: Exit if virtualization is not turned on in the BIOS
-  fail: msg="Please enable Intel virtualization (VT) within the host machine's BIOS"
+- name: "Exit if virtualization is not turned on in the BIOS"
+  fail: msg="Please enable Intel virtualization (VT) or AMD (V) within the host machine's BIOS"
   when: "cpuinfo.stdout == ''"
 
-- name: Check virtualization settings
-  shell: cat /sys/module/kvm_intel/parameters/nested
-  register: nested
+- name: "Check virtualization settings for Intel"
+  command: cat /sys/module/kvm_intel/parameters/nested
+  register: nestedintel
+  ignore_errors: true
+  when: skip_prereqs == false
 
-- name: Output of kvm_intel nested
+- name: "Output of kvm_intel nested"
   debug:
-    msg: "cpuinfo: {{ nested.stdout }}"
+    msg: "cpuinfo: {{ nestedintel.stdout }}"
+  when: "nestedintel.stdout != 'Y'"
 
-- name: Setup nested virtualization - rmmod
-  shell: rmmod kvm-intel
+- name: "Setup nested virtualization Intel - rmmod"
+  command: rmmod kvm-intel
   become: true
-  when: "nested.stdout != 'Y'"
+  when: "nestedintel.stdout == 'N'"
 
-- name: Setup nested virtualization - update dist.conf
+- name: "Setup nested virtualization Intel - update dist.conf"
   shell: echo 'options kvm-intel nested=y' >> /etc/modprobe.d/dist.conf
   become: true
-  when: "nested.stdout != 'Y'"
+  when: "nestedintel.stdout == 'N'"
 
-- name: Setup nested virtualization - modprobe
-  shell: modprobe kvm-intel
+- name: "Setup nested virtualization Intel - modprobe"
+  command: modprobe kvm-intel
   become: true
-  when: "nested.stdout != 'Y'"
+  when: "nestedintel.stdout == 'N'"
 
-- name: Exit if nested virtualization is off
+- name: "Check virtualization settings for AMD"
+  command: cat /sys/module/kvm_amd/parameters/nested
+  register: nestedamd
+  ignore_errors: true
+  when: skip_prereqs == false
+
+- name: "Output of kvm_amd nested"
+  debug:
+    msg: "cpuinfo: {{ nestedamd.stdout }}"
+  when: "nestedamd.stdout == 'Y'"
+
+- name: "Setup nested virtualization AMD - rmmod"
+  command: rmmod kvm_amd
+  become: true
+  when: "nestedamd.stdout == 'N'"
+
+- name: "Setup nested virtualization AMD - update dist.conf"
+  shell: echo 'options kvm_amd nested=y' >> /etc/modprobe.d/dist.conf
+  become: true
+  when: "nestedamd.stdout == 'N'"
+
+- name: "Setup nested virtualization AMD - modprobe"
+  command: modprobe kvm_amd
+  become: true
+  when: "nestedamd.stdout == 'N'"
+
+- name: "Exit if nested virtualization is off"
   fail: msg="NESTED VIRT HAS BEEN ENABLED PLEASE REBOOT"
-  when: "nested.stdout != 'Y'"
+  when: (nestedintel.stdout == "N" and nestedamd.stdout == "N")
 
 
 
