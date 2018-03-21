@@ -1,0 +1,6 @@
+repo: https://github.com/firemanxbr/contra-env-setup.git
+branch: new_release_v3
+
+distros: !mux
+    fedora:
+        distro: Fedora
