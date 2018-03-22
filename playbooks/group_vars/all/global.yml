@@ -77,10 +77,10 @@ project_refspec: '+refs/pull/*:refs/heads/*'
 project_branch: 'master'
 
 # OpenSift template directory
-os_template_dir: "{{ project_repo }}/config/s2i"
+os_template_dir: "{{ project_dir }}/config/s2i"
 
 # Jenkins pipelines directory
-pipeline_dir: "{{ project_repo }}"
+pipeline_dir: "{{ project_dir }}"
 
 ## TODO: Get this setup to take a sample project
 ## Sample pipeline vars used
