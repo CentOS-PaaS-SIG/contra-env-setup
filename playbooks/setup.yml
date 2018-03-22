@@ -6,7 +6,8 @@
   gather_facts: '{{ gather_facts | default("yes") }}'
   roles:
     - { role: cleanup, when: skip_cleanup|bool == false }
-    - { role: prereqs, when: skip_prereqs|bool == false }
+    - role: create
+    - { role: prereqs, when: "skip_prereqs|bool == false and setup_minishift|bool == true" }
     - { role: minishift, when: setup_minishift|bool == true }
-    #- { role: os_temps, when: setup_os_temps|bool == true }
-    - { role: pipeline, when: setup_pipeline|bool == true }
+    - { role: os_temps, when: setup_containers|bool == true }
+    - { role: pipeline, when: setup_pipelines|bool == true }

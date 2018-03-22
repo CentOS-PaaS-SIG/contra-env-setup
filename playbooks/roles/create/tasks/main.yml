@@ -1,0 +1,7 @@
+---
+# tasks file for create
+
+- name: "Create {{ contra_env_setup_dir }} directory"
+  file:
+    path: "{{ contra_env_setup_dir }}"
+    state: directory

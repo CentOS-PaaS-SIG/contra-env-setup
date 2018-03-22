@@ -1,0 +1,40 @@
+---
+# tasks file for os_temps
+
+# Check if the minishift cluster is started if not then start the cluster
+- name: "Startup the minishift cluster"
+  import_tasks: start_mcluster.yml
+  when: start_minishift|bool == true and setup_minishift|bool == true
+
+# Set the oc client for the profile in use
+- name: "Set the oc client for the profile in use"
+  import_tasks: set_oc_client.yml
+
+# Get ip of the cluster
+- name: "Get the cluster Server URL for project {{ project }}"
+  shell: oc status  | egrep '{{ project }}.*server' | awk '{print $NF}'
+  register: cluster_ip
+
+# Login to the cluster for the profile in use
+- import_tasks: login_to_cluster.yml
+
+# Create project
+- name: "Create project {{ project }}"
+  import_tasks: get_set_project.yml
+
+# Clone the project repo
+- name: "Clone the project repo {{ project_repo }}"
+  import_tasks: clone_project_repo.yml
+
+# Import_tasks jq for querying container config files
+- name: "Install jq for querying container config files"
+  import_tasks: roles/prereqs/tasks/install_virtual_reqs.yml
+  when: setup_minishift|bool == true
+
+# setup_containers.yml
+- import_tasks: setup_containers.yml
+  when: setup_containers|bool == true
+
+# Add security context constraints
+- import_tasks: add_scc.yml
+  when: modify_scc|bool == true

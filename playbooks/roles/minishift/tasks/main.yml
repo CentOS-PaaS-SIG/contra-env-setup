@@ -7,29 +7,29 @@
     path: "{{ minishift_dest_dir }}/minishift"
   register: minishift_bin
 
-# install minishift
+# Install minishift
 - import_tasks: install_minishift_bin.yml
   when: (minishift_bin.stat.exists == false or force_minishift_install|bool == true)
 
-# set disk size and memory
+# Set disk size and memory
 - name: "Set minishift disk-size {{ disk_size }}"
   shell: "{{ minishift_dest_dir }}/minishift config set disk-size {{ disk_size }}"
 
 - name: "Set minishift disk-size {{ memory }}"
   shell: "{{ minishift_dest_dir }}/minishift config set memory {{ memory }}"
 
-- name: Pull down the minishift iso
+- name: "Pull down the minishift iso"
   get_url:
     url: "{{ minishift_iso }}"
     dest: "{{ minishift_dest_dir }}/minishift.iso"
     timeout: 120
 
-# check if the minishift profile exists
+# Check if the minishift profile exists
 - name: "Check if the minishift profile exists"
   shell: "{{ minishift_dest_dir }}/minishift status --profile {{ profile }} | head -1 | grep -i 'does not exist'"
   register: minishift_exist
   ignore_errors: yes
 
-# initialize minishift
+# Initialize minishift
 - import_tasks: init_minishift.yml
   when: minishift_exist.stdout != ""

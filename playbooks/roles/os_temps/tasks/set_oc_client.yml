@@ -15,4 +15,3 @@
 
 - name: "Source {{ ansible_env.HOME }}/.bashrc"
   shell: source {{ ansible_env.HOME }}/.bashrc
-

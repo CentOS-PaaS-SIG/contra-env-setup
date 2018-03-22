@@ -2,16 +2,23 @@
 # run roles based on certain params
 skip_cleanup: true
 skip_prereqs: false
-force_minishift_install: false
 setup_minishift: true
 start_minishift: true
-force_repo_clone: true
-setup_jenkins: true
-setup_fedmsg: true
 setup_containers: true
+setup_pipelines: true
+setup_sample_pipelines: false
+force_minishift_install: false
+force_repo_clone: true
+
+# Default location to store contra-env-setup
+contra_env_setup_dir: "{{ ansible_env.HOME }}/.contra-env-setup"
+
+## minishift values
+# minishift version
+minishift_version: v1.12.0
 
 # default location for minishift
-minishift_dest_dir: "{{ ansible_env.HOME }}/minishift"
+minishift_dest_dir: "{{ contra_env_setup_dir }}/minishift"
 
 # default minishift profile name
 profile: minishift
@@ -27,18 +34,6 @@ basedevice_size: 20G
 # minishift iso location
 minishift_iso: http://artifacts.ci.centos.org/fedora-atomic/minishift/iso/minishift.iso
 
-# repo to clone
-pipeline_repo: https://github.com/CentOS-PaaS-SIG/ci-pipeline
-
-# repo directory
-pipeline_dir: "{{ ansible_env.HOME }}/minishift/ci-pipeline"
-
-# repo refspec
-pipeline_refspec: '+refs/pull/*:refs/heads/*'
-
-# repo branch or sha
-pipeline_branch: 'master'
-
 # cluster username
 username: developer
 
@@ -52,26 +47,7 @@ admin_username: system
 admin_password: admin
 
 # project for openshift
-project: continuous-infra
-
-# Jenkins infra buildconfig templates:
-jenkins_bc_templates:
-  - jenkins/jenkins-persistent
-  - jenkins/jenkins-continuous-infra-slave
-
-# Pipeline container buildconfig templates:
-pipeline_bc_templates:
-  - rpmbuild/rpmbuild
-  - rsync/rsync
-  - ostree_compose/ostree_compose
-  - ostree-image-compose/ostree-image-compose
-  - ostree-boot-image/ostree-boot-image
-  - singlehost-test/singlehost-test
-  - linchpin_libvirt/linchpin_libvirt
-
-# fedmsg relay buildconfig templates:
-fedmsg_bc_templates:
-  - fedmsg-relay/fedmsg-relay
+project: contra-sample-project
 
 # modify tags on images
 modify_tags: true
@@ -82,26 +58,46 @@ tag: stable
 # modify security context contraints (SCC) to run privileged containers
 modify_scc: true
 
+## oc cli vars
+# oc version
+oc_version: v3.6.1
+
+## Project repo setup
+
+# Project repo
+project_repo: https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
+
+# Project directory
+project_dir: "{{ contra_env_setup_dir }}/contra-env-sample-project"
+
+# Project repo refspec
+project_refspec: '+refs/pull/*:refs/heads/*'
+
+# Project repo branch or sha
+project_branch: 'master'
+
+# OpenSift template directory
+os_template_dir: "{{ project_repo }}/config/s2i"
+
+# Jenkins pipelines directory
+pipeline_dir: "{{ project_repo }}"
+
+## TODO: Get this setup to take a sample project
 ## Sample pipeline vars used
 # enable the sample pipeline
 # Note: This will eventually moved to an example project repo)
-enable_sample_pipeline: true
-
-# Pipeline sample buildconfig templates:
-sample_pipeline_bc_templates:
-  - pipeline-sample-container/pipeline-sample-container
 
 sample_pipelines:
-  - src_loc: "{{ pipeline_dir }}/dev_setup/playbooks/roles/pipeline/templates/contra-sample-pipeline1.xml.j2"
-    dest_loc: "/tmp/contra-sample-pipeline1/config.xml"
-    jenkins_file: "dev_setup/playbooks/roles/pipeline/files/JenkinsfileContraSample1"
+  - src_loc: "./playbooks/roles/pipeline/templates/contra-sample-pipeline1.xml.j2"
+    dest_loc: "{{ contra_env_setup_dir }}/contra-sample-pipeline1/config.xml"
+    jenkins_file: "playbooks/roles/pipeline/files/JenkinsfileContraSample1"
 
 # These are parameters that are passed to setup the containers for the pipeline
 PARAMS:
   - key: REPO_URL
-    val: "{{ pipeline_repo }}"
+    val: "{{ os_template_repo }}"
   - key: REPO_REF
-    val: "{{ pipeline_branch }}"
+    val: "{{ os_template_branch }}"
   - key: ENABLE_VM
     val: false
   - key: VM_IMG_URL
