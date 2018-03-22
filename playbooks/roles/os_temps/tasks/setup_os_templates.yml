@@ -121,4 +121,4 @@
 # Setup tag if container image build successful
 - name: Modify tags on images
   shell: "oc get is | awk '{print $2}' | grep -v DOCKER | sed 's/.*5000\\///g' | grep '{{ build_config_name_file.stdout }}' | xargs -i oc tag {}:latest {}:{{ tag }}"
-  when: (modify_tags|bool == true and build_success|bool == true)
+  when: modify_tags|bool == true and build_success|bool == true
