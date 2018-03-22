@@ -15,4 +15,4 @@
     refspec: "{{ project_refspec }}"
     version: "{{ project_branch }}"
     force: yes
-  when: pd_is_found.stdout == "" or force_repo_clone|bool == true
+  when: ((pd_is_found.stdout is defined and pd_is_found.stdout == "")  or force_repo_clone|bool == true)
