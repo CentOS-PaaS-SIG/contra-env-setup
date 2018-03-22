@@ -23,7 +23,7 @@
     state: directory
 
 - name: "Copy minishift version files to {{ minishift_dest_dir }}/minishift/"
-  shell: cp {{ ansible_env.HOME }}/{{ minishift_src_dir }}/* {{ minishift_dest_dir }}/
+  shell: cp {{ minishift_dest_dir }}/{{ minishift_src_dir }}/* {{ minishift_dest_dir }}/
 
 - name: "Delete {{ ansible_env.HOME }}/{{ minishift_src_dir }}"
   file:
