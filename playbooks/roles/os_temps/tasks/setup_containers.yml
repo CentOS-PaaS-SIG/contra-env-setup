@@ -9,7 +9,7 @@
 - name: "Get OpenShift s2i template names"
   find:
     paths: "{{ os_template_dir }}"
-    patterns: '*.yml'
+    patterns: '*.yml,*.yaml'
     recurse: yes
   register: os_templates
 
