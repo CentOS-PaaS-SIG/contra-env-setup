@@ -1,7 +1,10 @@
 ---
 # tasks file for create
 
-- name: "Create {{ contra_env_setup_dir }} directory"
+- name: "Create contra-env-setup directories"
   file:
-    path: "{{ contra_env_setup_dir }}"
+    path: "{{ item }}"
     state: directory
+  with_items:
+    - "{{ contra_env_setup_dir }}"
+    - "{{ minishift_dest_dir }}"
