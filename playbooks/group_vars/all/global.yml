@@ -88,9 +88,9 @@ pipeline_dir: "{{ project_dir }}"
 # Note: This will eventually moved to an example project repo)
 
 sample_pipelines:
-  - src_loc: "{{ playbook_dir }}/playbooks/roles/pipeline/templates/contra-sample-pipeline1.xml.j2"
+  - src_loc: "{{ playbook_dir }}/roles/pipeline/templates/contra-sample-pipeline1.xml.j2"
     dest_loc: "{{ contra_env_setup_dir }}/contra-sample-pipeline1/config.xml"
-    jenkins_file: "playbooks/roles/pipeline/files/JenkinsfileContraSample1"
+    jenkins_file: "{{ playbook_dir }}/roles/pipeline/files/JenkinsfileContraSample1"
 
 # These are parameters that are passed to setup the containers for the pipeline
 PARAMS:
