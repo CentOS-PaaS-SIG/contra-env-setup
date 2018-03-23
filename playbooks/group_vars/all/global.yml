@@ -88,7 +88,7 @@ pipeline_dir: "{{ project_dir }}"
 # Note: This will eventually moved to an example project repo)
 
 sample_pipelines:
-  - src_loc: "./playbooks/roles/pipeline/templates/contra-sample-pipeline1.xml.j2"
+  - src_loc: "{{ playbook_dir }}/playbooks/roles/pipeline/templates/contra-sample-pipeline1.xml.j2"
     dest_loc: "{{ contra_env_setup_dir }}/contra-sample-pipeline1/config.xml"
     jenkins_file: "playbooks/roles/pipeline/files/JenkinsfileContraSample1"
 

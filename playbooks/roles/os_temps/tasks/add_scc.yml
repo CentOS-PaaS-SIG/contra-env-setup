@@ -15,16 +15,16 @@
 
 - name: "Generate and override the security context file from a template"
   template:
-    src: "./playbooks/roles/pipeline/templates/pipeline-scc.yaml.j2"
-    dest: "./playbooks/roles/pipeline/files/pipeline-scc.yaml"
+    src: "{{ playbook_dir }}/playbooks/roles/pipeline/templates/pipeline-scc.yaml.j2"
+    dest: "{{ playbook_dir }}/playbooks/roles/pipeline/files/pipeline-scc.yaml"
     mode: 0755
 
 - name: "Create the {{ scc_name_file.stdout }} security context constraints"
-  shell: "oc create -f './playbooks/roles/pipeline/files/pipeline-scc.yaml'"
+  shell: "oc create -f '{{ playbook_dir }}/playbooks/roles/pipeline/files/pipeline-scc.yaml'"
   when: scc_name_file.stdout == ""
 
 - name: "Update the {{ scc_name_file.stdout }} security context constraints"
-  shell: "oc replace -f './playbooks/roles/pipeline/files/pipeline-scc.yaml'"
+  shell: "oc replace -f '{{ playbook_dir }}/playbooks/roles/pipeline/files/pipeline-scc.yaml'"
   when: scc_name_file.stdout != ""
 
 # login to the cluster for the profile in use as a regular user
