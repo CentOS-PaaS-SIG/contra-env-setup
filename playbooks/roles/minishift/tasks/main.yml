@@ -11,12 +11,21 @@
 - import_tasks: install_minishift_bin.yml
   when: (minishift_bin.stat.exists == false or force_minishift_install|bool == true)
 
-# Set disk size and memory
+# Set disk size, memory, set Openshift version, skip OpenShift version and release check
 - name: "Set minishift disk-size {{ disk_size }}"
   shell: "{{ minishift_dest_dir }}/minishift config set disk-size {{ disk_size }}"
 
 - name: "Set minishift disk-size {{ memory }}"
   shell: "{{ minishift_dest_dir }}/minishift config set memory {{ memory }}"
+
+- name: "Set minishift openshift-version to {{ oc_version }}"
+  shell: "{{ minishift_dest_dir }}/minishift config set openshift-version {{ oc_version }}"
+
+- name: "Set minishift skip-check-openshift-version"
+  shell: "{{ minishift_dest_dir }}/minishift config set skip-check-openshift-version true"
+
+- name: "Set minishift skip-check-openshift-release"
+  shell: "{{ minishift_dest_dir }}/minishift config set skip-check-openshift-release true"
 
 - name: "Pull down the minishift iso"
   get_url:
