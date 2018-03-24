@@ -29,7 +29,7 @@
 
 # Import_tasks jq for querying container config files
 - name: "Install jq for querying container config files"
-  import_tasks: "{{ playbook_dir }}roles/prereqs/tasks/install_virtual_reqs.yml"
+  import_tasks: "{{ playbook_dir }}/roles/prereqs/tasks/install_virtual_reqs.yml"
   when: setup_minishift|bool == true
 
 # setup_containers.yml
