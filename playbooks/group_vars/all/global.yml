@@ -5,7 +5,7 @@ skip_prereqs: false
 setup_minishift: true
 start_minishift: true
 setup_containers: true
-setup_pipelines: true
+setup_pipelines: false
 setup_sample_pipelines: false
 force_minishift_install: false
 force_repo_clone: true
