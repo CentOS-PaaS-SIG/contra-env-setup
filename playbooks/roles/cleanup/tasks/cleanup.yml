@@ -1,6 +1,6 @@
 ---
 # Stop minishift profile, delete minishift profile, delete minishift binary files, and
-# delete ~/.minishift and ~/.kube cache directories
+# delete ~/.{{ profile }} and ~/.kube cache directories
 
 - name: "Stop minishift if running"
   shell: "{{ minishift_dest_dir }}/minishift stop --profile {{ profile }}"
@@ -18,6 +18,6 @@
     - "minishift/minishift"
     - "minishift/LICENSE"
     - "minishift/README.adoc"
-    - ".minishift"
+    - ".{{ profile }}"
     - ".kube"
   ignore_errors: yes
