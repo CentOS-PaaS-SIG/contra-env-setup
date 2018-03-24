@@ -6,9 +6,10 @@
   import_tasks: start_mcluster.yml
   when: start_minishift|bool == true and setup_minishift|bool == true
 
-# Set the oc client for the profile in use
-- name: "Set the oc client for the profile in use"
+# Import_tasks to set_oc_client
+- name: "Get OpenShift client binary(oc) version {{ oc_version }}to {{ contra_env_setup_dir }}"
   import_tasks: set_oc_client.yml
+  when: setup_minishift|bool == false
 
 # Get ip of the cluster
 - name: "Get the cluster Server URL for project {{ project }}"

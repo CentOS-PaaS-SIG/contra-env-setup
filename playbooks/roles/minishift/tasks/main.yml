@@ -39,6 +39,10 @@
   register: minishift_exist
   ignore_errors: yes
 
+# Import_tasks to set_oc_client
+- name: "Get OpenShift client binary(oc) version {{ oc_version }}to {{ contra_env_setup_dir }}"
+  import_tasks: roles/oc_temps/tasks/set_oc_client.yml
+
 # Initialize minishift
 - import_tasks: init_minishift.yml
   when: minishift_exist.stdout != ""

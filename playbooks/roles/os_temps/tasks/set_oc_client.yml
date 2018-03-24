@@ -29,12 +29,8 @@
     path: "{{ oc_src_dir }}"
     state: absent
 
-- name: "Determine the oc client is for profile {{ profile}}"
-  shell: "{{ minishift_dest_dir }}/minishift oc-env --profile {{ profile }} | head -1"
-  register: oc_client_path
-
 - name: Update the path with the oc client
-  shell: "{{ oc_client_path.stdout }}"
+  shell: export PATH="{{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/linux:$PATH"
 
 - name: "Set path for oc client in {{ ansible_env.HOME }}/.bashrc"
   lineinfile:
