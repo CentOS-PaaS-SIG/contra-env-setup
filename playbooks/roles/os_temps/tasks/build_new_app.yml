@@ -38,9 +38,8 @@
 
 - name: Cleanup any failed apps on the cluster
   shell: "oc get all | grep '{{ oc_check_app_status.stdout }}' | awk '{print $1}' | egrep -v 'builds|po' | xargs -i oc delete {}"
-  register: oc_check_app_status
   ignore_errors: yes
-  when: (build_success|bool == false and oc_build_result is defined and oc_build_result.stdout.find(" Failed ") != -1)
+  when: (build_success|bool == false and oc_check_app_status.stdout != "")
 
 # If oc_build result is defined publish the outcome
 - debug:
