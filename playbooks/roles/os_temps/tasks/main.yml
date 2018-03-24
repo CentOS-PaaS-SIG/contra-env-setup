@@ -7,7 +7,7 @@
   when: start_minishift|bool == true and setup_minishift|bool == true
 
 # Import_tasks to set_oc_client
-- name: "Get OpenShift client binary(oc) version {{ oc_version }}to {{ contra_env_setup_dir }}"
+- name: "Get OpenShift client binary(oc) version {{ oc_version }} to {{ contra_env_setup_dir }}"
   import_tasks: set_oc_client.yml
   when: setup_minishift|bool == false
 
@@ -29,7 +29,7 @@
 
 # Import_tasks jq for querying container config files
 - name: "Install jq for querying container config files"
-  import_tasks: roles/prereqs/tasks/install_virtual_reqs.yml
+  import_tasks: "{{ playbook_dir }}roles/prereqs/tasks/install_virtual_reqs.yml"
   when: setup_minishift|bool == true
 
 # setup_containers.yml
