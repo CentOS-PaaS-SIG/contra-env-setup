@@ -35,7 +35,7 @@
 - name: "Set path for oc client in {{ ansible_env.HOME }}/.bashrc"
   lineinfile:
     path: "{{ ansible_env.HOME }}/.bashrc"
-    line: 'export PATH="{{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/linux:$PATH'
+    line: 'export PATH="{{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/linux:$PATH"'
     create: yes
 
 - name: "Source {{ ansible_env.HOME }}/.bashrc"
