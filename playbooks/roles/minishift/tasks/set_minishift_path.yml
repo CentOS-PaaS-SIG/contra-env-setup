@@ -4,7 +4,7 @@
 - name: "Set path for minishift in {{ ansible_env.HOME }}/.bashrc"
   lineinfile:
     path: "{{ ansible_env.HOME }}/.bashrc"
-    line: 'export PATH=$PATH:{{ minishift_dest_dir }}'
+    line: 'export PATH="$PATH:{{ minishift_dest_dir }}"'
     create: yes
 
 - name: "Source {{ ansible_env.HOME }}/.bashrc"
