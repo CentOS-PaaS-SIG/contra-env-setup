@@ -5,7 +5,7 @@
   set_fact:
     container_config_name: "Sample Pipelines"
 
-- include_tasks: query_setup_cluster.yml template_name={{ item }}
+- include_tasks: setos_templates.yml template_name={{ item }}
   with_items: "{{ sample_pipeline_bc_templates }}"
   when: sample_pipeline_bc_templates != ""
 
