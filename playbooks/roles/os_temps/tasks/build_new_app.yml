@@ -29,7 +29,7 @@
     build_success: true
   when: (build_success|bool == false and oc_build_result is defined and oc_build_result.stdout.find(" Complete ") != -1)
 
-# Check for failed containers and cleanup
+# Check for failed apps and cleanup
 - name: Check for any failed container builds on the cluster
   shell: "oc get all | egrep 'Failed|Error' | egrep 'builds' | awk '{print $1}' | awk -F'/' '{print $2}' | sed 's/-[0-9+]//g' | head -1"
   register: oc_check_app_status
