@@ -41,6 +41,16 @@
   ignore_errors: yes
   when: (build_success|bool == false and oc_check_app_status.stdout != "")
 
+- name: Cleanup any service account for an app if it exists on the cluster
+  shell: "oc delete serviceaccounts {{ oc_check_app_status.stdout }}"
+  ignore_errors: yes
+  when: (build_success|bool == false and oc_check_app_status.stdout != "")
+
+- name: Cleanup any persistentvolumes for an app if it exists on the cluster
+  shell: "oc delete pvc/{{ oc_check_app_status.stdout }}"
+  ignore_errors: yes
+  when: (build_success|bool == false and oc_check_app_status.stdout != "")
+
 # If oc_build result is defined publish the outcome
 - debug:
     msg: "End result of building the container image :: {{ oc_build_result.stdout }}"
