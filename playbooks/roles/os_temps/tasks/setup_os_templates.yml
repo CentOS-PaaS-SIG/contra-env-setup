@@ -3,24 +3,23 @@
     params: []
 
 # Check for failed apps and cleanup
-- name: Check for any failed container builds on the cluster
+- name: Check for any failed apps on the cluster
   shell: "oc get all | egrep 'Failed|Error' | egrep 'builds' | awk '{print $1}' | awk -F'/' '{print $2}' | sed 's/-[0-9+]//g' | head -1"
   register: oc_check_app_status
   ignore_errors: yes
 
-- name: Cleanup any failed apps on the cluster
+- name: Cleanup any failed dc, bc, routes, svc, and is for {{ oc_check_app_status.stdout }} on the cluster
   shell: "oc get all | grep '{{ oc_check_app_status.stdout }}' | awk '{print $1}' | egrep -v 'builds|po' | xargs -i oc delete {}"
   ignore_errors: yes
   when: oc_check_app_status.stdout != ""
 
-- name: Cleanup any service account for an app if it exists on the cluster
-  shell: "oc delete serviceaccounts/{{ oc_check_app_status.stdout }}"
+- name: Cleanup any serviceaccounts, pvc, and rolebindings for an app if it exists on the cluster
+  shell: "oc get {{ item }} | grep '{{ oc_check_app_status.stdout }}' | awk '{print $1}' | xargs -i oc delete {{ item }}/{} delete"
   ignore_errors: yes
-  when: oc_check_app_status.stdout != ""
-
-- name: Cleanup any persistentvolumes for an app if it exists on the cluster
-  shell: "oc delete pvc/{{ oc_check_app_status.stdout }}"
-  ignore_errors: yes
+  with_items:
+    - serviceaccounts
+    - pvc
+    - rolebindings
   when: oc_check_app_status.stdout != ""
 
 - name: "{{ container_config_name }} :: Get template name from the yaml file"
@@ -125,25 +124,24 @@
   when: build_success|bool == false
 
 # Check for failed apps and cleanup
-- name: Check for any failed container builds on the cluster
+- name: Check for any failed app on the cluster
   shell: "oc get all | egrep 'Failed|Error' | egrep 'builds' | awk '{print $1}' | awk -F'/' '{print $2}' | sed 's/-[0-9+]//g' | head -1"
   register: oc_check_app_status
   ignore_errors: yes
   when: build_success|bool == false
 
-- name: Cleanup any failed apps on the cluster
+- name: Cleanup any failed dc, bc, routes, svc, and is for {{ oc_check_app_status.stdout }} on the cluster
   shell: "oc get all | grep '{{ oc_check_app_status.stdout }}' | awk '{print $1}' | egrep -v 'builds|po' | xargs -i oc delete {}"
   ignore_errors: yes
   when: (build_success|bool == false and oc_check_app_status.stdout != "")
 
-- name: Cleanup any service account for an app if it exists on the cluster
-  shell: "oc delete serviceaccounts/{{ oc_check_app_status.stdout }}"
+- name: Cleanup any serviceaccounts, pvc, and rolebindings for an app if it exists on the cluster
+  shell: "oc get {{ item }} | grep '{{ oc_check_app_status.stdout }}' | awk '{print $1}' | xargs -i oc delete {{ item }}/{} delete"
   ignore_errors: yes
-  when: (build_success|bool == false and oc_check_app_status.stdout != "")
-
-- name: Cleanup any persistentvolumes for an app if it exists on the cluster
-  shell: "oc delete pvc/{{ oc_check_app_status.stdout }}"
-  ignore_errors: yes
+  with_items:
+    - serviceaccounts
+    - pvc
+    - rolebindings
   when: (build_success|bool == false and oc_check_app_status.stdout != "")
 
 # If oc_build result is defined publish the outcome
