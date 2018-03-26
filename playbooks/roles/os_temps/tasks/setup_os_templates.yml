@@ -113,11 +113,17 @@
   delay: 10
   when: build_success|bool == false
 
-# Cleanup any failed containers
-- name: Cleanup any failed containers
-  shell: "oc get all | egrep 'Failed|Error' | egrep 'builds' | awk '{print $1}' | awk -F'/' '{print $2}' | sed 's/-[0-9+]//g' | xargs -i oc delete bc/{} is/{}"
+# Check for failed containers and cleanup
+- name: Check for any failed container builds on the cluster
+  shell: "oc get all | egrep 'Failed|Error' | egrep 'builds' | awk '{print $1}' | awk -F'/' '{print $2}' | sed 's/-[0-9+]//g' | head -1"
+  register: oc_check_app_status
   ignore_errors: yes
-  when: (build_success|bool == false and oc_build_result is defined and oc_build_result.stdout.find(" Failed ") != -1)
+  when: build_success|bool == false
+
+- name: Cleanup any failed apps on the cluster
+  shell: "oc get all | grep '{{ oc_check_app_status.stdout }}' | awk '{print $1}' | egrep -v 'builds|po' | xargs -i oc delete {}"
+  ignore_errors: yes
+  when: (build_success|bool == false and oc_check_app_status.stdout != "")
 
 # If oc_build result is defined publish the outcome
 - debug:
