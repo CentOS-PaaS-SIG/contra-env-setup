@@ -14,7 +14,7 @@
   when: oc_check_app_status.stdout != ""
 
 - name: Cleanup any service account for an app if it exists on the cluster
-  shell: "oc delete serviceaccounts {{ oc_check_app_status.stdout }}"
+  shell: "oc delete serviceaccounts/{{ oc_check_app_status.stdout }}"
   ignore_errors: yes
   when: oc_check_app_status.stdout != ""
 
@@ -137,7 +137,7 @@
   when: (build_success|bool == false and oc_check_app_status.stdout != "")
 
 - name: Cleanup any service account for an app if it exists on the cluster
-  shell: "oc delete serviceaccounts {{ oc_check_app_status.stdout }}"
+  shell: "oc delete serviceaccounts/{{ oc_check_app_status.stdout }}"
   ignore_errors: yes
   when: (build_success|bool == false and oc_check_app_status.stdout != "")
 
