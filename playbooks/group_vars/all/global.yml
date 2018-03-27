@@ -1,7 +1,7 @@
 ---
 # run roles based on certain params
-skip_cleanup: true
-skip_prereqs: false
+run_cleanup: false
+run_prereqs: true
 setup_minishift: true
 start_minishift: true
 setup_containers: true

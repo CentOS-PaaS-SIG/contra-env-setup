@@ -23,7 +23,7 @@ This can be a static file, dynamic inventory, or a comma separated list of machi
 ```
 ansible-playbook -i "10.8.170.204," contra-env-setup/playbooks/setup.yml \
  -e project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project \
- -e project_branch=master -e -K -k
+ -e project_branch=master -K -k
 
 ```
 
@@ -94,171 +94,40 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 
 ```
 
-##### Key options
-_______
+##### Pre-Setup options
 
+* run_cleanup: Run clean up of previous setup : default=false
+* run_prereqs: Run setting up virtualization and kvm-driver : default=true
+* contra_env_setup_dir: Directory to store the contra-env-setup :  default "{{ ansible_env.HOME }}/.contra-env-setup
+* 
 
-* skip_prereqs: Skip setting up virtualization and kvm-driver : default=false
+##### Override options
+
 * force_minishift_install: Override an existing install of minishift : default=false
+* force_repo_clone: Force cloning of project repo
+
+##### Minishift and OpenShift setup options
 * setup_minishift: Setup a minishift cluster : default=true
 * start_minishift: Start existing minishift cluster : default=true
-* setup_jenkins: Setup Jenkins infrastructure master/slaves : default=true
-* setup_fedmsg: Setup Fedmsg relay : default=true
-* setup_containers: Setup pipeline containers : default=true
+* minishift_version: Minishift version to use : default=v1.12.0
+* minishift_dest_dir: Minishift binary and ISO directory : default={{ contra_env_setup_dir }}/minishift
+* profile : Minishift profile : default=minishift
+* disk_size : Disk size to use 
+* oc_version: oc version to use to communicate to the OpenShift cluster : default=V3.6.1
+
+
+#### OpenShift s2i template setup options
+* setup_containers: Setup OpenShift s2i templates : default=true
+
+#### Jenkins 2.0 pipeline setup options
+* setup_pipelines: Setup Jenkins 2.0 pipelines : default=false
+* setup_sample_pipelines: Setup sample pipelines: default=false
 * modify_tags: Modify tags of containers : default=true
 * tag: Add a tag besides latest : default=stable
 * modify_scc: Create/update the security context constraints : default=true
 
-_______
 
-
-
-##### All Variables
-
-
-| Variable Name                  | Description                                                             | Example                                            | Default                                   | Required |
-|:------------------------------:|:-----------------------------------------------------------------------:|:--------------------------------------------------:|:-----------------------------------------:|:--------:|
-| skip_prereqs                   |     Skip setting up virtualization and kvm-driver                       | skip_prereqs=true                                  |   false                                   | No       |
-| force_minishift_install        |     Setup a minishift cluster                                           | force_minishift_install=true                       |   false                                   | No       |
-| setup_minishift                |     Setup a minishift cluster                                           | setup_minishift=false                              |   true                                    | No       |
-| start_minishift                |     Start existing minishift cluster                                    | start_minishift=false                              |   true                                    | No       |
-| setup_jenkins                  |     Setup Jenkins infrastructure master/slaves                          | setup_jenkins=true                                 |   true                                    | No       |
-| setup_fedmsg                   |     Setup Fedmsg relay                                                  | setup_fedmsg=true                                  |   true                                    | No       |
-| setup_containers               |     Setup pipeline containers                                           | setup_containers=true                              |   true                                    | No       |
-| modify_tags                    |     Modify tags of containers                                           | modify_tags=true                                   |   true                                    | No       |
-| tag                            |     Add a tag besides latest                                            | tag=dev                                            |   "stable"                                | No       |
-| modify_scc                     |     Create/update the security context constraints                      | modify_scc=false                                   |   true                                    | No       |
-| minishift_dest_dir             |     Directory to store minishift binary                                 | minishift_dest_dir=/home/cloud-user/test           |   "{{ ansible_env.HOME }}/minishift"      | No       |
-| profile                        |     Minishift cluster profile name                                      | profile=contra-cp                                  |   "minishift"                             | No       |
-| disk_size                      |     Disk size for minishift                                             | disk_size=25gb                                     |   "40gb"                                  | No       |
-| memory                         |     Memory for minishift                                                | memory=4000mb                                      |   "6400mb"                                | No       |
-| basedevice_size                |     Base device size for pods in minishift                              | basedevice_size=30G                                |   "20G"                                   | No       |
-| minishift_iso                  |     Minishift ISO url location                                          | minishift_iso=[url]                                |   "[ci-pipeline-minishift-iso-url]"       | No       |
-| force_repo_clone               |     Force the clone of the pipeline git repo                            | force_repo_clone=true                              |   true                                    | No       |
-| pipeline_repo                  |     Repo to clone for the pipeline                                      | pipeline_repo=https://github.com/cip               |   This repo ci-pipeline                   | No       |
-| pipeline_dir                   |     Directory to clone repo to                                          | pipeline_dir=/path_to_pipeline                     |   "{{ ansible_env.HOME }}/minishift/cip"  | No       |
-| pipeline_refspec               |     Repo refpec to checkout                                             | pipeline_refspec=refs/heads/*                      |  "+refs/pull/*:refs/heads/*"              | No       |
-| pipeline_branch                |     Branch or SHA to checkout                                           | pipeline_branch=[SHA]                              |  "+master"                                | No       |
-| username                       |     Cluster username                                                    | username=me                                        |   "developer"                             | No       |
-| password                       |     Cluster password                                                    | password=password                                  |   "developer"                             | No       |  
-| admin_username                 |     Admin cluster username                                              | username=me                                        |   "system"                                | No       |
-| admin_password                 |     Admin cluster password                                              | password=password                                  |   "admin"                                 | No       |
-| project                        |     Openshift project/namespace                                         | project=cvEngine                                   |   "continuous-infra"                      | No       |
-| jenkins_bc_templates           |     Jenkins infrastrcuture container templates master/slaves            | List of Jenkins templates from the repo            |   check global.yaml                       | No       |
-| fedmsg_bc_templates            |     Fedmsg relay container templates                                    | List of fedmsg templates from the repo             |   check global.yaml                       | No       |
-| pipeline_bc_templates          |     Pipeline container templates                                        | List of container templates from the repo          |   check global.yaml                       | No       |
-| enable_sample_pipeline         |     Enable a sample pipeline with all stage containers                  | enable_sample_pipeline=true                        |   true                                    | No       |
-| sample_pipeline_bc_templates   |     Sample pipeline job templates                                       | List of sample pipeline job templates in the repo  |   check global.yaml                       | No       |
-| sample_pipelines               |     Sample templates src temp, dest, and jenkins_file location          | List of key/value pairs                            |   check global.yml                        | No       | 
-| PARAMS                         |     Parameters that are passed when setting up a new app in Openshift   | List of key/value pairs                            |   check global.yml                        | No       |
-
-
-##### Sample pipeline project with running a VM inside a container
-
-###### Overview
-
-The sample pipeline project uses the following files to demonstrate a basic pipeline.<br>
-There is an option to enable running a VM inside a container as part of pipeline stage.
-
-##### Sample Pipeline Variables and Options
-
-###### enable_sample_pipeline
-
-This is set to true by default and will allow the setup of the sample pipeline jobs
-
-###### Example 
-
-```
-enable_sample_pipeline: true
-```
-
-###### sample_pipeline_bc_templates
-
-These are the build config templates that are setup inside Openshift for sample pipeline containers
-
-###### Example 
-
-```
-sample_pipeline_bc_templates:
-  - pipeline-sample-container/pipeline-sample-container
-```
-
-###### sample_pipelines
-
-This containers the following:<br>
-1. The 'src_loc' of where the templates live to create the sample pipeline jobs
-2. The 'dest_loc' of where the sample pipeline job will get generated
-3. The 'jenkins_file' which gets replaced in the job of where to find the Jenkinsfile that will be used
-
-###### Example
-
-```
-sample_pipelines:
- - src_loc: "{{ pipeline_dir }}/dev_setup/playbooks/roles/pipeline/templates/contra-sample-pipeline1.xml.j2"
-    dest_loc: "/tmp/contra-sample-pipeline1/config.xml"
-    jenkins_file: "dev_setup/playbooks/roles/pipeline/files/JenkinsfileContraSample1"
-```
-
-###### PARAMS
-
-These are the parameters when building the new-apps/containers.  Most recognized REPO_URL and REPO_REF of where to pull<br>
-the Dockerfiles from and then the added ENABLE_VM and VM_IMG_URL which is for setting up running a VM inside a container<br>
-and the location of where to get the cloud image.
-
-###### Example
-
-```
-PARAMS:
-  - key: REPO_URL
-    val: "{{ pipeline_repo }}"
-  - key: REPO_REF
-    val: "{{ pipeline_branch }}"
-  - key: ENABLE_VM
-    val: false
-  - key: VM_IMG_URL
-    val: http://artifacts.ci.centos.org/artifacts/fedora-atomic/f26/images/latest-atomic.qcow2
-```
-
-##### Sample Pipeline Project Files
-```
-├── config
-|   ├── Dockerfiles
-│   │   ├── pipeline-sample-container
-│   │   │   ├── default.xml
-│   │   │   ├── Dockerfile
-│   │   │   └── execute.sh
-│   └── s2i
-│       ├── pipeline-sample-container
-│       │   └── pipeline-sample-container-buildconfig-template.yaml
-├── dev_setup
-│   ├── playbooks
-│   │   ├── group_vars
-│   │   │   └── all
-│   │   │       └── global.yml
-│   │   ├── roles
-│   │   │   ├── pipeline
-│   │   │   │   ├── defaults
-│   │   │   │   │   └── main.yml
-│   │   │   │   ├── files
-│   │   │   │   │   ├── JenkinsfileContraSample1
-│   │   │   │   │   └── pipeline-scc.yaml
-│   │   │   │   ├── tasks
-│   │   │   │   │   ├── add_scc.yml
-│   │   │   │   │   ├── check_builds.yml
-│   │   │   │   │   ├── main.yml
-│   │   │   │   │   ├── query_setup_cluster.yml
-│   │   │   │   │   ├── setup_jenkins_infra.yml
-│   │   │   │   │   ├── setup_sample_pipelines.yml
-│   │   │   │   └── templates
-│   │   │   │       ├── contra-sample-pipeline1.xml.j2
-│   │   │   │       └── pipeline-scc.yaml.j2
-├── playbooks
-│   ├── pipeline-sample-boot-verify.yml
-│   ├── pipeline-sample.yml
-
-```
-
-#### Examples
+#### Usage examples
 
 ###### Example 1: Setup on a local server :: Minishift + 
 
