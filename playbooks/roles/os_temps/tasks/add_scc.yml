@@ -13,6 +13,9 @@
   shell: "oc get scc | grep '{{ scc_file.stdout }}' | awk '{print $1}'"
   register: scc_name_file
 
+- debug:
+    msg: "Output: {{ scc_name_file.stdout }}"
+
 - name: "Generate and override the security context file from a template"
   template:
     src: "{{ playbook_dir }}/roles/os_temps/templates/contra-env-setup-scc.yaml.j2"
