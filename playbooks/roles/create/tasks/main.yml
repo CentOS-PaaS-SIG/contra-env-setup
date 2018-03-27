@@ -15,7 +15,7 @@
 
 - name: "Update pipeline_dir based on repo"
   set_fact:
-     os_template_dir: "{{ project_dir}}/{{ pipeline_dir }}"
+     pipeline_dir: "{{ project_dir }}/{{ pipeline_dir }}"
 
 # Clone the project repo
 - name: "Clone the project repo {{ project_repo }}"
