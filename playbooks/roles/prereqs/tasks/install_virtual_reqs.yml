@@ -12,6 +12,8 @@
     - libvirt
     - qemu-kvm
     - jq
+    - libselinux-python
+    - git
   when: ansible_distribution == 'Fedora'
   become: true
 
@@ -41,5 +43,7 @@
     - libvirt
     - qemu-kvm
     - jq
+    - libselinux-python
+    - git
   when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
   become: true

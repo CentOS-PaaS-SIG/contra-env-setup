@@ -1,0 +1,18 @@
+---
+# clone the project repo
+
+# Determine if project repo exists
+- name: "Is project repository present in {{ project_dir }}"
+  stat:
+    path: "{{ project_dir }}"
+  register: pd_is_found
+
+# git clone
+- name: "checkout the project repo @ {{ project_repo }} to {{ project_dir }}"
+  git:
+    repo: "{{ project_repo }}"
+    dest: "{{ project_dir }}"
+    refspec: "{{ project_refspec }}"
+    version: "{{ project_branch }}"
+    force: yes
+  when: ((pd_is_found.stdout is defined and pd_is_found.stdout == "")  or force_repo_clone|bool == true)

@@ -1,0 +1,22 @@
+---
+# tasks file for create
+
+- name: "Create contra-env-setup directories"
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ contra_env_setup_dir }}"
+    - "{{ minishift_dest_dir }}"
+
+- name: "Update os_template_dir based on repo"
+  set_fact:
+     os_template_dir: "{{ project_dir}}/{{ os_template_dir }}"
+
+- name: "Update pipeline_dir based on repo"
+  set_fact:
+     os_template_dir: "{{ project_dir}}/{{ pipeline_dir }}"
+
+# Clone the project repo
+- name: "Clone the project repo {{ project_repo }}"
+  import_tasks: clone_project_repo.yml

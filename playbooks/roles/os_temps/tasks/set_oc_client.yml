@@ -1,0 +1,42 @@
+---
+# Grab the oc client independent of minishift to talk to any Openshift cluster
+- name: "Create directory for the OpenShift client binary(oc)"
+  file:
+    path: "{{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/linux"
+    state: directory
+
+- name: "Query for OpenShift client compressed binary version {{ oc_version }}"
+  shell: curl -s https://github.com/openshift/origin/releases/{{ oc_version }} | grep 'openshift-origin-client-tools-.*-linux.*.tar.gz' | head -1 | sed 's/.*<a href="\(.*\)" .*/https:\/\/github.com\1/'
+  register: get_oc_bin
+
+- name: "Pull down and extract OpenShift client binary(oc) to {{ contra_env_setup_dir }}"
+  unarchive:
+    src: "{{ get_oc_bin.stdout }}"
+    dest: "{{ contra_env_setup_dir }}"
+    remote_src: yes
+
+- name: Set oc_src_dir fact
+  set_fact:
+    oc_src_dir: "{{ contra_env_setup_dir }}/{{ get_oc_bin.stdout | basename | regex_search(regexp,'\\1') | join(' ') }}"
+  vars:
+    regexp: '(openshift-origin-client-tools-.*linux.*).tar.gz'
+
+- name: "Copy OpenShift client binary(oc) version files from {{ oc_src_dir }}//oc to {{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/linux/ "
+  shell: cp {{ oc_src_dir }}/oc {{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/linux/
+
+- name: "Delete {{ oc_src_dir }}"
+  file:
+    path: "{{ oc_src_dir }}"
+    state: absent
+
+- name: Update the path with the oc client
+  shell: export PATH="{{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/linux:$PATH"
+
+- name: "Set path for oc client in {{ ansible_env.HOME }}/.bashrc"
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.bashrc"
+    line: 'export PATH="{{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/linux:$PATH"'
+    create: yes
+
+- name: "Source {{ ansible_env.HOME }}/.bashrc"
+  shell: source {{ ansible_env.HOME }}/.bashrc

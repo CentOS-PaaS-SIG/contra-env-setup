@@ -2,7 +2,10 @@
 # tasks file for prereqs
 
 # Check if nested virtualization is enabled
-- import_tasks: nested_virt.yml
+- import_tasks: setup_nested_virt.yml
+
+# Install package requirements for contra-env-setup
+- import_tasks: install_virtual_reqs.yml
 
 # install the kvm plugin
 - import_tasks: install_kvm_plugin.yml

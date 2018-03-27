@@ -1,0 +1,24 @@
+---
+# create/update and add security for containers
+
+- name: "Set the container_config_name to OpenShift s2i templates"
+  set_fact:
+    container_config_name: "OpenShift s2i templates"
+
+# Use the repo's OpenShift s2i templates as the list to process
+- name: "Get OpenShift s2i template names"
+  find:
+    paths: "{{ os_template_dir }}"
+    patterns: '*.yml,*.yaml'
+    recurse: yes
+  register: os_templates
+
+# Check that templates are valid
+- name: "Check that templates are valid"
+  shell: oc process -f {{ item.path }}
+  with_items: "{{ os_templates.files }}"
+
+# Load templates into OpenShift
+- include_tasks: "setup_os_templates.yml template_name={{ item.path }}"
+  with_items: "{{ os_templates.files }}"
+  when: os_templates.files != ""
