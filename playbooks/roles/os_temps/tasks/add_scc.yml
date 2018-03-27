@@ -24,11 +24,11 @@
 
 - name: "Create the {{ scc_name_file.stdout }} security context constraints"
   shell: "oc create -f '{{ contra_env_setup_dir }}/contra-env-setup-scc.yaml'"
-  when: scc_name_file.stdout == ""
+  when: scc_name_file.stdout != scc_file.stdout
 
 - name: "Update the {{ scc_name_file.stdout }} security context constraints"
   shell: "oc replace -f '{{ contra_env_setup_dir }}/contra-env-setup-scc.yaml'"
-  when: scc_name_file.stdout != ""
+  when: scc_name_file.stdout == scc_file.stdout
 
 # login to the cluster for the profile in use as a regular user
 - import_tasks: login_to_cluster.yml
