@@ -51,9 +51,6 @@ class TestMinishift(QemuTest):
     def test(self):
         distro = self.params.get('distro', default='Fedora')
 
-        import time
-        time.sleep(99999)
-
         # Set the SSH options and port
         env = {'ANSIBLE_CONFIG': 'test/ansible.cfg'}
         ssh_args = ['-o UserKnownHostsFile=/dev/null',
@@ -103,7 +100,7 @@ class TestMinishift(QemuTest):
                (cmd_run, ' '.join(ssh_args)))
         process.run(cmd, env=env)
 
-        # Used to DEBUG mode to VM continue UP
+        # Used to DEBUG mode to VM continue UP waiting user interaction 
         if DEBUG is True:
             import time
             time.sleep(99999)
