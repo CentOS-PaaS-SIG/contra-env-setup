@@ -11,7 +11,7 @@
 
 - name: "Update os_template_dir based on repo"
   set_fact:
-     os_template_dir: "{{ project_dir}}/{{ os_template_dir }}"
+     os_template_dir: "{{ project_dir }}/{{ os_template_dir }}"
 
 - name: "Update pipeline_dir based on repo"
   set_fact:
