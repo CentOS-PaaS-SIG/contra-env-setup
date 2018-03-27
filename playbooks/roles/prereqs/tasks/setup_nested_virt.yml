@@ -6,7 +6,7 @@
   shell: cat /proc/cpuinfo | grep 'vmx\|svm'
   register: cpuinfo
   ignore_errors: true
-  when: skip_prereqs == false
+  when: run_prereqs == true
 
 - name: "Output of cpuinfo from proc"
   debug:
@@ -20,7 +20,7 @@
   command: cat /sys/module/kvm_intel/parameters/nested
   register: nestedintel
   ignore_errors: true
-  when: skip_prereqs == false
+  when: run_prereqs == true
 
 - name: "Output of kvm_intel nested"
   debug:
@@ -46,7 +46,7 @@
   command: cat /sys/module/kvm_amd/parameters/nested
   register: nestedamd
   ignore_errors: true
-  when: skip_prereqs == false
+  when: run_prereqs == true
 
 - name: "Output of kvm_amd nested"
   debug:
