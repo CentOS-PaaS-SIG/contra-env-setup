@@ -1,0 +1,14 @@
+repo: https://github.com/CentOS-PaaS-SIG/contra-env-setup.git
+branch: master
+# Path that have the ISO in your host (don't insert last '/')
+minishift_iso_src_path: ~/.contra-env-setup/minishift
+# Path that will push the ISO in the VM (don't insert last '/')
+minishift_iso_dest_path: ~/.contra-env-setup/minishift
+# Used to run in debug mode no in CI of contra-env-setup repository
+DEBUG: True 
+
+distros: !mux
+    fedora:
+        distro: Fedora
+    centos:
+        distro: CentOS
