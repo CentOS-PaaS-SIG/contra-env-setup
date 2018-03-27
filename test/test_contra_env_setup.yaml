@@ -1,4 +1,4 @@
-repo: https://github.com/arilivigni/contra-env-setup.git
+repo: https://github.com/CentOS-PaaS-SIG/contra-env-setup.git
 branch: master
 
 # Path that have the ISO in your host (don't insert last '/')
