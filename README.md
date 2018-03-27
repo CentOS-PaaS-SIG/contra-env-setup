@@ -107,12 +107,18 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 * force_repo_clone: Force cloning of project repo
 
 ##### Minishift and OpenShift setup options
+
+##### Minishift setup options
 * setup_minishift: Setup a minishift cluster : default=true
 * start_minishift: Start existing minishift cluster : default=true
 * minishift_version: Minishift version to use : default=v1.12.0
 * minishift_dest_dir: Minishift binary and ISO directory : default={{ contra_env_setup_dir }}/minishift
-* profile : Minishift profile : default=minishift
-* disk_size : Disk size to use 
+* profile: Minishift profile : default=minishift
+* disk_size: Disk size to use for minishift : default=40gb
+* memory_size: Memory size to use for the VM : default=6400mb
+* minishift_iso: ISO image to use : default=http://artifacts.ci.centos.org/fedora-atomic/minishift/iso/minishift.iso 
+
+##### oc setup options
 * oc_version: oc version to use to communicate to the OpenShift cluster : default=V3.6.1
 
 

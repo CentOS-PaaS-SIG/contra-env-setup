@@ -47,7 +47,7 @@ admin_username: system
 admin_password: admin
 
 # project for openshift
-project: contra-sample-project
+openshift_project: contra-sample-project
 
 # modify tags on images
 modify_tags: true

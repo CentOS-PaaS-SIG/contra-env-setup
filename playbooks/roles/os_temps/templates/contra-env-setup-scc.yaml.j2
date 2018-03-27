@@ -13,5 +13,5 @@ fsGroup:
 supplementalGroups:
   type: RunAsAny
 users:
-- system:serviceaccount:{{ project }}:jenkins
+- system:serviceaccount:{{ openshift_project }}:jenkins
 groups:

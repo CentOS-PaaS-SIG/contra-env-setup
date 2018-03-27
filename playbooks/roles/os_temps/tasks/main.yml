@@ -12,15 +12,15 @@
   when: setup_minishift|bool == false
 
 # Get ip of the cluster
-- name: "Get the cluster Server URL for project {{ project }}"
-  shell: oc status | egrep '{{ project }}.*server' | awk '{print $NF}'
+- name: "Get the cluster Server URL for project {{ openshift_project }}"
+  shell: oc status | egrep '{{ openshift_project }}.*server' | awk '{print $NF}'
   register: cluster_ip
 
 # Login to the cluster for the profile in use
 - import_tasks: login_to_cluster.yml
 
 # Create project
-- name: "Create project {{ project }}"
+- name: "Create project {{ openshift_project }}"
   import_tasks: get_set_project.yml
 
 # Import_tasks jq for querying container config files
