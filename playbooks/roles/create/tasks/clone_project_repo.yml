@@ -7,6 +7,9 @@
     path: "{{ project_dir }}"
   register: pd_is_found
 
+- name: "Set http.sslVerify false"
+  shell: git config --global http.sslVerify false
+
 # git clone
 - name: "checkout the project repo @ {{ project_repo }} to {{ project_dir }}"
   git:
