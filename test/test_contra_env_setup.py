@@ -17,15 +17,15 @@ class TestMinishift(QemuTest):
         git.get_repo(repo,
                      branch=branch,
                      destination_dir=self.workdir)
-        
+
         # VM Image
         distro = self.params.get('distro', default='Fedora')
         image = vmimage.get(distro, cache_dir='~/avocado/data/cache/')
-        
+
         # Resize storage of VM
         qemu_img_bin = utils_path.find_command('qemu-img')
         process.run('%s resize %s +20G' % (qemu_img_bin, image.path))
-        
+
         self.vm.add_image(image.path, cloudinit=True, snapshot=False)
 
         # Network
@@ -56,44 +56,42 @@ class TestMinishift(QemuTest):
 
         # Install python and update nettle to libvirt network
         cmd = (' ansible localhost -i "localhost," --become '
-               ' -m raw -a "dnf install -y python libselinux-python; '
+               ' -m raw -a "dnf install -y python libselinux-python git; '
                ' dnf update -y nettle" --user %s --ssh-common-args="%s" ' %
-              (self.vm.username, ' '.join(ssh_args)))
+               (self.vm.username, ' '.join(ssh_args)))
         process.run(cmd, env=env)
 
         # Parameters used to DEBUG mode
         DEBUG = self.params.get('DEBUG', default=None)
+        cmd_run = self.params.get('command', default=None)
         iso_src = self.params.get('minishift_iso_src_path', default=None)
         iso_dest = self.params.get('minishift_iso_dest_path', default=None)
 
         if DEBUG is not None:
             # Create the directory to storage the ISO in VM
             cmd = (' ansible localhost -i "localhost," '
-                ' -m raw -a "mkdir -p %s" '
-                ' --user %s --ssh-common-args="%s" ' %
-                (iso_src, self.vm.username, ' '.join(ssh_args)))
+                   ' -m raw -a "mkdir -p %s" '
+                   ' --user %s --ssh-common-args="%s" ' %
+                   (iso_src, self.vm.username, ' '.join(ssh_args)))
             process.run(cmd, env=env)
 
             # Copy the minishift.iso of host to VM
             cmd = (' ansible localhost -i "localhost," '
-                ' -m copy -a "src=%s/minishift.iso dest=%s/" '
-                ' --user %s --ssh-common-args="%s" ' %
-                (iso_src, iso_dest, self.vm.username, ' '.join(ssh_args)))
+                   ' -m copy -a "src=%s/minishift.iso dest=%s/" '
+                   ' --user %s --ssh-common-args="%s" ' %
+                   (iso_src, iso_dest, self.vm.username, ' '.join(ssh_args)))
             process.run(cmd, env=env)
 
-
         # Run the contra-env-setup playbook
-        cmd = (' ansible-playbook -vv -i "localhost," playbooks/setup.yml '
-               ' -e remote_user=%s -e skip_cleanup=false '
-               ' -e setup_pipelines=false --ssh-common-args="%s"' %
-              (self.vm.username, ' '.join(ssh_args)))
+        cmd = (' %s'
+               ' --ssh-common-args="%s"' %
+               (cmd_run, ' '.join(ssh_args)))
         process.run(cmd, env=env)
 
         # Used to DEBUG mode to VM continue UP
         if DEBUG is not None:
             import time
             time.sleep(99999)
-
 
     def tearDown(self):
         self.vm.shutdown()

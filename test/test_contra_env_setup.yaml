@@ -1,11 +1,17 @@
-repo: https://github.com/CentOS-PaaS-SIG/contra-env-setup.git
+repo: https://github.com/arilivigni/contra-env-setup.git
 branch: master
+
 # Path that have the ISO in your host (don't insert last '/')
 minishift_iso_src_path: ~/.contra-env-setup/minishift
+
 # Path that will push the ISO in the VM (don't insert last '/')
 minishift_iso_dest_path: ~/.contra-env-setup/minishift
+
+# command to run in the test (don't insert "-k" or "-K")
+command: ansible-playbook -vv -i "localhost," playbooks/setup.yml -e remote_user=avocado -e run_cleanup=true
+
 # Used to run in debug mode no in CI of contra-env-setup repository
-DEBUG: True 
+DEBUG: None
 
 distros: !mux
     fedora:
