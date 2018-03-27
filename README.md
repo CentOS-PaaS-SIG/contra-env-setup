@@ -18,15 +18,6 @@ This can be a static file, dynamic inventory, or a comma separated list of machi
 - [ansible inventory](http://docs.ansible.com/ansible/intro_inventory.html)
 - [ansible dynamic inventory](http://docs.ansible.com/ansible/intro_dynamic_inventory.html)
 
-### Generic Examples
-
-```
-ansible-playbook -i "10.8.170.204," contra-env-setup/playbooks/setup.yml \
- -e project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project \
- -e project_branch=master -K -k
-
-```
-
 ## Ansible Playbook Role Structure
 ````
 ├── continuous-infra-logo.png
@@ -154,10 +145,8 @@ contra-env-setup/playbooks/group_vars/all/global.yml
     _Note: Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
     
 ```
-    ansible-playbook -vv -i "localhost," \
-    ~/CentOS-PaaS-SIG/contra-env-setup/playbooks/setup.yml \
-    -e remote_user=cloud-user 
-    -e project_repo=https://github.com/arilivigni/ci-pipeline -K -k
+    ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
+    -e remote_user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline -K -k
 
 ```
 
@@ -174,7 +163,7 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 
 ```
     ansible-playbook -vv -i "localhost," --private-key=/home/cloud-user/my-key \
-    ~/CentOS-PaaS-SIG/contra-env-setup/playbooks/setup.yml \
+    contra-env-setup/playbooks/setup.yml \
     -e remote_user=ari -e run_cleanup=true
     -e run_prereqs=false -e setup_minishift=false \
     -e setup_containers=false -e force_clone=true -K
