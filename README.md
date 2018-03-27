@@ -1,10 +1,11 @@
-# Contra Pipeline Environment Setup :: minishift + pipeline or openshift + pipeline
+# Contra Pipeline Environment Setup :: minishift or OpenShift + OpenShift s2i templates + Jenkins pipelines
 ![CI-Pipeline](continuous-infra-logo.png)
 
-## What Does CI/CD Mean in the Context of the Continuous-infra Pipeline Project?
+## Overview
 
-This is the method for setting up minishift + pipeline to do local development.
-This will help in validating containers, shared pipeline libraries, and general code
+The intent of this setup is to provide a generic way to setup a minishift environment if required or provide
+an OpenShift endpoint to setup OpenShift s2i templates and Jenkins 2.0 pipelines from some other projects
+repo.  Then the process is automated and a developer or project team can setup their environment with ease.
 
 ## Getting Started
 
@@ -17,63 +18,68 @@ This can be a static file, dynamic inventory, or a comma separated list of machi
 - [ansible inventory](http://docs.ansible.com/ansible/intro_inventory.html)
 - [ansible dynamic inventory](http://docs.ansible.com/ansible/intro_dynamic_inventory.html)
 
-### Generic Example
+### Generic Examples
 
 ```
-ansible-playbook -i <inventory> --private-key=</full/path/to/private/ssh/key> \
-contra-env-setup/playbooks/setup.yml
+ansible-playbook -i "10.8.170.204," contra-env-setup/playbooks/setup.yml \
+ -e project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project \
+ -e project_branch=master -e -K -k
+
 ```
 
 ## Ansible Playbook Role Structure
 ````
-├── dev_setup
-│   ├── playbooks
-│   │   ├── group_vars
-│   │   │   └── all
-│   │   │       └── global.yml
-│   │   ├── roles
-│   │   │   ├── minishift
-│   │   │   │   ├── defaults
-│   │   │   │   │   └── main.yml
-│   │   │   │   └── tasks
-│   │   │   │       ├── init_minishift.yml
-│   │   │   │       ├── install_minishift.yml
-│   │   │   │       ├── main.yml
-│   │   │   │       └── set_minishift_path.yml
-│   │   │   ├── pipeline
-│   │   │   │   ├── defaults
-│   │   │   │   │   └── main.yml
-│   │   │   │   ├── files
-│   │   │   │   │   └── pipeline-scc.yaml
-│   │   │   │   └── tasks
-│   │   │   │       ├── add_scc.yml
-│   │   │   │       ├── clone_pipeline.yml
-│   │   │   │       ├── get_set_project.yml
-│   │   │   │       ├── login_to_cluster.yml
-│   │   │   │       ├── main.yml
-│   │   │   │       ├── query_setup_cluster.yml
-│   │   │   │       ├── set_oc_client.yml
-│   │   │   │       ├── setup_containers.yml
-│   │   │   │       ├── setup_fedmsg_relay.yml
-│   │   │   │       ├── setup_jenkins_infra.yml
-│   │   │   │       └── start_mcluster.yml
-│   │   │   └── prereqs
-│   │   │       └── tasks
-│   │   │           ├── install_kvm_plugin.yml
-│   │   │           ├── install_virtual_reqs.yml
-│   │   │           ├── main.yml
-│   │   │           └── nested_virt.yml
-│   │   └── setup.yml
-│   └── README.md
+├── continuous-infra-logo.png
+├── LICENSE
+├── playbooks
+│   ├── group_vars
+│   │   └── all
+│   │       └── global.yml
+│   ├── roles
+│   │   ├── cleanup
+│   │   │   └── tasks
+│   │   │       ├── cleanup.yml
+│   │   │       └── main.yml
+│   │   ├── create
+│   │   │   └── tasks
+│   │   │       └── main.yml
+│   │   ├── minishift
+│   │   │   └── tasks
+│   │   │       ├── init_minishift.yml
+│   │   │       ├── install_minishift_bin.yml
+│   │   │       ├── main.yml
+│   │   │       └── set_minishift_path.yml
+│   │   ├── os_temps
+│   │   │   ├── tasks
+│   │   │   │   ├── add_scc.yml
+│   │   │   │   ├── build_new_app.yml
+│   │   │   │   ├── clone_project_repo.yml
+│   │   │   │   ├── get_set_project.yml
+│   │   │   │   ├── login_to_cluster.yml
+│   │   │   │   ├── main.yml
+│   │   │   │   ├── set_oc_client.yml
+│   │   │   │   ├── setup_containers.yml
+│   │   │   │   ├── setup_os_templates.yml
+│   │   │   │   └── start_mcluster.yml
+│   │   │   └── templates
+│   │   │       └── contra-env-setup-scc.yaml.j2
+│   │   ├── pipeline
+│   │   │   ├── files
+│   │   │   │   └── JenkinsfileContraSample1
+│   │   │   ├── tasks
+│   │   │   │   ├── main.yml
+│   │   │   │   └── setup_sample_pipelines.yml
+│   │   │   └── templates
+│   │   │       └── contra-sample-pipeline1.xml.j2
+│   │   └── prereqs
+│   │       └── tasks
+│   │           ├── install_kvm_plugin.yml
+│   │           ├── install_virtual_reqs.yml
+│   │           ├── main.yml
+│   │           └── setup_nested_virt.yml
+│   └── setup.yml
+└── README.md
 ````
-
-### Example
-
-```
-ansible-playbook -i "10.8.170.204," --private-key=/home/test-user/.ssh/ci-factory \
-contra-env-setup/playbooks/setup.yml
-
-```
 
 ### Playbooks
 
@@ -254,7 +260,7 @@ PARAMS:
 
 #### Examples
 
-###### Example 1: Setup on a local server :: Jenkins Infra and pipeline containers
+###### Example 1: Setup on a local server :: Minishift + 
 
  1. Install on a local server as user cloud-user.
  2. Don't setup pre-reqs (kvm driver and nested virtualization)

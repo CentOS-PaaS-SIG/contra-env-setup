@@ -67,17 +67,17 @@ oc_version: v3.6.1
 # Project repo
 project_repo: https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
 
-# Project directory
-project_dir: "{{ contra_env_setup_dir }}/contra-env-sample-project"
-
 # Project repo refspec
 project_refspec: '+refs/pull/*:refs/heads/*'
 
 # Project repo branch or sha
 project_branch: 'master'
 
+# Project directory
+project_dir: "{{ contra_env_setup_dir }}/{{ project_repo.split('/')[-1] }}"
+
 # OpenSift template directory
-os_template_dir: "{{ project_dir }}/config/s2i"
+os_template_dir: "config/s2i"
 
 # Jenkins pipelines directory
 pipeline_dir: "{{ project_dir }}"
