@@ -162,15 +162,15 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 ```
 
 ###### Example 2: Setup on a local server :: Cleanup previous contra-env-setup + Force clone of project repo
-
  
  1. Install on a local server as user ari.
  2. Run cleanup of previous setup
  3. Don't setup pre-reqs (kvm driver and nested virtualization)
  4. Don't setup a minishift cluster.
  5. Don't setup OpenShift s2i templates.
- 6. Don't modify my container tags and 
+ 6. Modify my container tags with the default tag. tag=stable
  7. Don't clone the pipeline repo even if it exists.
+ 8. Use the default example project repo https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
 
 ```
     ansible-playbook -vv -i "localhost," --private-key=/home/cloud-user/my-key \
