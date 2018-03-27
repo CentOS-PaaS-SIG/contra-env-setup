@@ -93,7 +93,6 @@ or only certain components.  ex. minishift, jenkins infra, pipeline containers, 
 contra-env-setup/playbooks/group_vars/all/global.yml
 
 ```
-
 ##### Pre-Setup options
 
 * run_cleanup: Run clean up of previous setup : default=false
@@ -119,81 +118,64 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 * minishift_iso: ISO image to use : default=http://artifacts.ci.centos.org/fedora-atomic/minishift/iso/minishift.iso 
 
 ##### oc setup options
-* oc_version: oc version to use to communicate to the OpenShift cluster : default=V3.6.1
-
-
-#### OpenShift s2i template setup options
-* setup_containers: Setup OpenShift s2i templates : default=true
-
-#### Jenkins 2.0 pipeline setup options
-* setup_pipelines: Setup Jenkins 2.0 pipelines : default=false
-* setup_sample_pipelines: Setup sample pipelines: default=false
+* openshift_project: OpenShift project name : default:contra-sample-project
 * modify_tags: Modify tags of containers : default=true
 * tag: Add a tag besides latest : default=stable
 * modify_scc: Create/update the security context constraints : default=true
+* oc_version: oc version to use to communicate to the OpenShift cluster : default=V3.6.1
 
+#### Project repo options that has s2i templates and Jenkins Pipelines
+* project_repo: Project repo to import templates and pipelines from : default=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
+* project_refspec: Project refspec : default=+refs/pull/*:refs/heads/* 
+* project_branch: Project branch : default=master
+* project_dir: Project directory where repo is stored locally : default={{ contra_env_setup_dir }}/{{ project_repo.split('/')[-1] }}
+
+#### OpenShift s2i template setup options
+* setup_containers: Setup OpenShift s2i templates : default=true
+* os_template_dir: Relative directory in the repo where OpenShift s2i templates are stored: default=config/s2i
+
+#### Jenkins 2.0 pipeline setup options
+* setup_pipelines: Setup Jenkins 2.0 pipelines : default=false
+* setup_sample_pipelines: Setup sample pipelines from this repo : default=false
+* pipeline_dir: Relative directory in the project repo where Jenkins pipelines are stored: default=config/pipelines
 
 #### Usage examples
 
-###### Example 1: Setup on a local server :: Minishift + 
+###### Example 1: Setup on a local server :: setup Minishift + OS templates 
 
  1. Install on a local server as user cloud-user.
- 2. Don't setup pre-reqs (kvm driver and nested virtualization)
+ 2. Setup pre-reqs (kvm driver and nested virtualization)
  3. Setup a minishift cluster.
- 4. Setup jenkins infra and pipeline containers.
- 5. Don't setup fedmsg relay.
- 6. Modify my container tags with the default tag. tag=stable
- 7. Override the pipeline_repo with another one then the default in global.yml
- 8. The -K is used to prompt you for your password for sudo (if you require one)
- 9. The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
+ 4. Setup OpenShift s2i templates
+ 5. Modify my container tags with the default tag. tag=stable
+ 6. Override the project_repo with another one then the default in global.yml
+ 7. The -K is used to prompt you for your password for sudo (if you require one)
+ 8. The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
     _Note: Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
     
 ```
     ansible-playbook -vv -i "localhost," \
     ~/CentOS-PaaS-SIG/contra-env-setup/playbooks/setup.yml \
-    -e remote_user=cloud-user -e skip_prereqs=true -e setup_minishift=true \
-    -e setup_jenkins=true -e setup_containers=true \
-    -e setup_fedmsg=false -e modify_tags=true \
-    -e pipeline_repo=https://github.com/arilivigni/ci-pipeline -K -k
+    -e remote_user=cloud-user 
+    -e project_repo=https://github.com/arilivigni/ci-pipeline -K -k
 
 ```
 
-###### Example 2: Setup on a local server :: Jenkins Infra, fedmsg relay, and pipeline containers
+###### Example 2: Setup on a local server :: Cleanup previous contra-env-setup + Force clone of project repo
 
+ 
  1. Install on a local server as user ari.
- 2. Don't setup pre-reqs (kvm driver and nested virtualization)
- 3. Don't setup a minishift cluster.
- 4. Setup jenkins infra, fedmsg relay, and pipeline containers.
- 5. Don't modify my container tags and 
- 6. Don't clone the pipeline repo if it exists.
+ 2. Run cleanup of previous setup
+ 3. Don't setup pre-reqs (kvm driver and nested virtualization)
+ 4. Don't setup a minishift cluster.
+ 5. Don't setup OpenShift s2i templates.
+ 6. Don't modify my container tags and 
+ 7. Don't clone the pipeline repo even if it exists.
 
 ```
     ansible-playbook -vv -i "localhost," --private-key=/home/cloud-user/my-key \
     ~/CentOS-PaaS-SIG/contra-env-setup/playbooks/setup.yml \
-    -e remote_user=ari -e skip_prereqs=false -e setup_minishift=false \
-    -e setup_jenkins=true -e setup_containers=true \
-    -e setup_fedmsg=true -e modify_tags=false -e force_clone=false -K
+    -e remote_user=ari -e run_cleanup=true
+    -e run_prereqs=false -e setup_minishift=false \
+    -e setup_containers=false -e force_clone=true -K
 ```
-
-
-###### Example 3: Setup on a remote server :: Jenkins Infra and pipeline containers
-
- 1. Install on a remote server as user cloud-user.
- 2. Don't setup pre-reqs (kvm driver and nested virtualization)
- 3. Setup a minishift cluster.
- 4. Setup jenkins infra and pipeline containers.
- 5. Don't setup fedmsg relay.
- 6. Modify my container tags with the default tag. tag=stable
- 7. The -K is used to prompt you for your password for sudo (if you require one) 
- 8. The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
-    _Note: Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
-
-```
-    ansible-playbook -vv -i "ci-srv-01.bos.redhat.com," --private-key=/home/cloud-user/my-key \                        
-    ~/CentOS-PaaS-SIG/contra-env-setup/playbooks/setup.yml \
-    -e remote_user=cloud-user -e skip_prereqs=true -e setup_minishift=true \
-    -e setup_jenkins=true -e setup_containers=true \
-    -e setup_fedmsg=false -e modify_tags=true -K
-
-```
-
