@@ -49,25 +49,40 @@ class TestMinishift(QemuTest):
 
 
     def test(self):
+        distro = self.params.get('distro', default='Fedora')
+
+        import time
+        time.sleep(99999)
+
         # Set the SSH options and port
         env = {'ANSIBLE_CONFIG': 'test/ansible.cfg'}
         ssh_args = ['-o UserKnownHostsFile=/dev/null',
                     '-o StrictHostKeyChecking=no']
 
-        # Install python and update nettle to libvirt network
-        cmd = (' ansible localhost -i "localhost," --become '
-               ' -m raw -a "dnf install -y python libselinux-python git; '
-               ' dnf update -y nettle" --user %s --ssh-common-args="%s" ' %
-               (self.vm.username, ' '.join(ssh_args)))
-        process.run(cmd, env=env)
-
+        # Install python, git and update nettle to libvirt network
+        if distro == 'Fedora':
+            cmd = (' ansible localhost -i "localhost," --become '
+                ' -m raw -a "dnf install -y python libselinux-python git; '
+                ' dnf update -y nettle" --user %s --ssh-common-args="%s" ' %
+                (self.vm.username, ' '.join(ssh_args)))
+            process.run(cmd, env=env)
+        
+        if distro == 'CentOS':
+            cmd = (' ansible localhost -i "localhost," --become '
+                ' -m raw -a "yum install -y python libselinux-python git; '
+                ' yum update -y nettle" --user %s --ssh-common-args="%s" ' %
+                (self.vm.username, ' '.join(ssh_args)))
+            process.run(cmd, env=env)
+        
         # Parameters used to DEBUG mode
         DEBUG = self.params.get('DEBUG', default=None)
-        cmd_run = self.params.get('command', default=None)
         iso_src = self.params.get('minishift_iso_src_path', default=None)
         iso_dest = self.params.get('minishift_iso_dest_path', default=None)
 
-        if DEBUG is not None:
+        # command use in the test from parameters
+        cmd_run = self.params.get('command', default=None)
+
+        if DEBUG is True:
             # Create the directory to storage the ISO in VM
             cmd = (' ansible localhost -i "localhost," '
                    ' -m raw -a "mkdir -p %s" '
@@ -89,7 +104,7 @@ class TestMinishift(QemuTest):
         process.run(cmd, env=env)
 
         # Used to DEBUG mode to VM continue UP
-        if DEBUG is not None:
+        if DEBUG is True:
             import time
             time.sleep(99999)
 

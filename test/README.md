@@ -25,8 +25,8 @@ To orchestrate the test we need use the parameter file to define the global vari
 
 [test_contra_env_setup.yaml:](test_contra_env_setup.yaml)
 ```
-repo: https://github.com/firemanxbr/contra-env-setup.git
-branch: new_release_v3
+repo: https://github.com/CentOS-PaaS-SIG/contra-env-setup.git
+branch: master
 
 distros: !mux
     fedora:

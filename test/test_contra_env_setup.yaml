@@ -1,17 +1,20 @@
+# repository and branch that will be cloned to run the test with the `command` below
 repo: https://github.com/CentOS-PaaS-SIG/contra-env-setup.git
 branch: master
+
+# command to run into the VM to test (don't insert here: "-k" or "-K")
+command: ansible-playbook -vvv -i "localhost," playbooks/setup.yml -e remote_user=avocado -e run_cleanup=true
+
+# If enabled the debug mode the 'minishift_iso_src_path' & 'minishift_iso_dest_path' have to
+# source and destine of minishift.iso to load into the VM. This option will enable interactive
+# mode before finish the test waiting to user finish the test using CTRL + C
+DEBUG: None
 
 # Path that have the ISO in your host (don't insert last '/')
 minishift_iso_src_path: ~/.contra-env-setup/minishift
 
 # Path that will push the ISO in the VM (don't insert last '/')
 minishift_iso_dest_path: ~/.contra-env-setup/minishift
-
-# command to run in the test (don't insert "-k" or "-K")
-command: ansible-playbook -vv -i "localhost," playbooks/setup.yml -e remote_user=avocado -e run_cleanup=true
-
-# Used to run in debug mode no in CI of contra-env-setup repository
-DEBUG: None
 
 distros: !mux
     fedora:
