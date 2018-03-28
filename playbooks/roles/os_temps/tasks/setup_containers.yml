@@ -22,3 +22,24 @@
 - include_tasks: "setup_os_templates.yml template_name={{ item.path }}"
   with_items: "{{ os_templates.files }}"
   when: os_templates.files != ""
+
+# Use the sample repo's OpenShift s2i templates as the list to process
+- name: "Get sample OpenShift s2i template names from sample repo"
+  find:
+    paths: "{{ sample_os_template_dir }}"
+    patterns: '*.yml,*.yaml'
+    recurse: yes
+    excludes: 'jenkins'
+  register: sample_os_templates
+  when: (project_repo != sample_project_repo and setup_sample_pipelines == "true")
+
+# Check that sample templates are valid
+- name: "Check that the sample templates are valid"
+  shell: oc process -f {{ item.path }}
+  with_items: "{{ sample_os_templates.files }}"
+  when: (project_repo != sample_project_repo and setup_sample_pipelines == "true")
+
+# Load sample templates into OpenShift
+- include_tasks: "setup_os_templates.yml template_name={{ item.path }}"
+  with_items: "{{ sample_os_templates.files }}"
+  when: (os_templates.files != "" and project_repo != sample_project_repo and setup_sample_pipelines == "true")
