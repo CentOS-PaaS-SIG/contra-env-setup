@@ -18,9 +18,11 @@ class TestMinishift(QemuTest):
         # getting parameters from test_contra_env_setup.yaml
         self.distro = self.params.get('distro', default='Fedora')
         self.pkg_mgm = self.params.get('pkg_mgm', default='dnf')
-        self.debug = self.params.get('DEBUG', default=None)
-        self.iso_src = self.params.get('minishift_iso_src_path', default=None)
-        self.iso_dest = self.params.get('minishift_iso_dest_path', default=None)
+        self.debug = self.params.get('debug', default=False)
+        self.iso_src = self.params.get('minishift_iso_src_path',
+                                       default='~/.contra-env-setup/minishift')
+        self.iso_dest = self.params.get('minishift_iso_dest_path',
+                                        default='~/.contra-env-setup/minishift')
         self.cmd_run = self.params.get('command', default=None)
         self.extra_cmd_run = self.params.get('extra_command', default=None)
 
@@ -59,8 +61,8 @@ class TestMinishift(QemuTest):
         self.vm.launch()
 
         # wait VM to be UP
-        with GetConsole(self.vm) as console:
-            console.sendline('sudo resize2fs /dev/sda1')
+        with GetConsole(self.vm):
+            pass
 
 
     def test(self):
@@ -72,21 +74,27 @@ class TestMinishift(QemuTest):
         ssh_args = ['-o UserKnownHostsFile=/dev/null',
                     '-o StrictHostKeyChecking=no']
 
+        cmd = (' resize2fs /dev/sda1; '
+               ' {pkg_mgm} install -y python libselinux-python git; '
+               ' {pkg_mgm} update -y nettle; ').format(pkg_mgm=self.pkg_mgm)
+
+        if self.debug:
+            cmd += (' mkdir -p {dir}; '
+                    ' chown avocado:avocado {dir} ').format(dir=self.iso_dest)
+
+        ansible_cmd = (' ansible localhost -i "localhost," --become '
+                       ' -m raw -a "{cmd}" --user {user} '
+                       ' --ssh-common-args="{ssh_args}" ')
+
+        # resize the partition
         # install python, git and update nettle to libvirt network
-        cmd = (' ansible localhost -i "localhost," --become '
-               ' -m raw -a "%s install -y python libselinux-python git; '
-               ' dnf update -y nettle" --user %s --ssh-common-args="%s" ' %
-               (self.pkg_mgm, self.vm.username, ' '.join(ssh_args)))
-        process.run(cmd, env=env)
+        # create the directory to storage the ISO in VM if debug enabled
+        ansible_cmd = ansible_cmd.format(cmd=cmd, user=self.vm.username,
+                                         ssh_args=' '.join(ssh_args))
+
+        process.run(ansible_cmd, env=env)
 
         if self.debug is True:
-            # Create the directory to storage the ISO in VM
-            cmd = (' ansible localhost -i "localhost," '
-                   ' -m raw -a "mkdir -p %s" '
-                   ' --user %s --ssh-common-args="%s" ' %
-                   (self.iso_src, self.vm.username, ' '.join(ssh_args)))
-            process.run(cmd, env=env)
-
             # Copy the minishift.iso of host to VM
             cmd = (' ansible localhost -i "localhost," '
                    ' -m copy -a "src=%s/minishift.iso dest=%s/" '
@@ -95,24 +103,25 @@ class TestMinishift(QemuTest):
             process.run(cmd, env=env)
 
         # Run the contra-env-setup playbook
-        cmd = (' %s'
-               ' --ssh-common-args="%s"' %
-               (self.cmd_run, ' '.join(ssh_args)))
-        process.run(cmd, env=env)
+        if self.cmd_run is not None:
+            cmd = (' %s'
+                   ' --ssh-common-args="%s"' %
+                   (self.cmd_run, ' '.join(ssh_args)))
+            process.run(cmd, env=env)
 
         # Used to DEBUG mode to VM continue UP waiting user interaction
         if self.debug is True:
-            self.log.debug(' Sleeping 10s. Press Ctrl+Z is you want to '
+            self.log.debug(' Sleeping 10s. Press Ctrl+Z if you want to '
                            ' stop the test to interact with the VM. '
-                           ' A new Ctrl+Z will resume the test calling to '
-                           ' the extra command defined. ')
+                           ' A new Ctrl+Z will resume the test. ')
             import time
             time.sleep(10)
 
-            cmd = (' %s'
-                   ' --ssh-common-args="%s"' %
-                   (self.extra_cmd_run, ' '.join(ssh_args)))
-            process.run(cmd, env=env)
+            if self.extra_cmd_run is not None:
+                cmd = (' %s'
+                       ' --ssh-common-args="%s"' %
+                       (self.extra_cmd_run, ' '.join(ssh_args)))
+                process.run(cmd, env=env)
 
 
     def tearDown(self):
