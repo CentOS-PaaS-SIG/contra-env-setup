@@ -1,23 +1,32 @@
-# repository and branch that will be cloned to run the test with the `command` below
+# repository and branch that will be clone to run the test with the ansible `command` below
 repo: https://github.com/CentOS-PaaS-SIG/contra-env-setup.git
 branch: master
 
-# command to run into the VM to test (don't insert here: "-k" or "-K")
+# the ansible command to run on the VM to test (don't insert here: "-k" or "-K")
+# the username used in the VM is always 'avocado'
+# ** Don't insert others commands in this option [only ansible, ansible-playbook] **
 command: ansible-playbook -vvv -i "localhost," playbooks/setup.yml -e remote_user=avocado -e run_cleanup=true
 
-# If enabled the debug mode the 'minishift_iso_src_path' & 'minishift_iso_dest_path' have to
+# if enabled the debug mode the 'minishift_iso_src_path' & 'minishift_iso_dest_path' have to
 # source and destine of minishift.iso to load into the VM. This option will enable interactive
-# mode before finish the test waiting to user finish the test using CTRL + C
-DEBUG: None
+# mode before finish the test waiting 10 seconds to user press Ctrl+Z to stop the test
+# a new Ctrl+Z will resume the test calling to the 'extra_command' below
+debug: True
 
-# Path that have the ISO in your host (don't insert last '/')
+# path that have the ISO in your host (don't insert last '/')
 minishift_iso_src_path: ~/.contra-env-setup/minishift
 
-# Path that will push the ISO in the VM (don't insert last '/')
+# path that will push the ISO in the VM (don't insert last '/')
 minishift_iso_dest_path: ~/.contra-env-setup/minishift
 
+# extra ansible command to run in the debug mode, normally used to validate your changes
+extra_command: ansible localhost -i "localhost," -m raw -a "ls -la" --user avocado
+
+# tree of distros used in the test
 distros: !mux
     fedora:
         distro: Fedora
+        pkg_mgm: dnf
     centos:
         distro: CentOS
+        pkg_mgm: yum
