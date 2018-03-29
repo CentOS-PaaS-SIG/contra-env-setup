@@ -6,7 +6,7 @@ setup_minishift: true
 start_minishift: true
 setup_containers: true
 setup_pipelines: false
-setup_sample_pipelines: false
+setup_sample_project: false
 force_minishift_install: false
 force_repo_clone: true
 
@@ -75,11 +75,15 @@ project_branch: 'master'
 # Project directory
 project_dir: "{{ contra_env_setup_dir }}/{{ project_repo.split('/')[-1] }}"
 
+# Loaded pipelines directory
+loaded_pipelines_dir: "{{ contra_env_setup_dir }}/loaded_pipelines"
+
 # OpenSift template directory
 os_template_dir: "config/s2i"
 
 # Jenkins pipelines directory
 pipeline_dir: "config/pipelines"
+pipeline_dir_orig: "{{ pipeline_dir }}"
 
 # These are parameters that are passed to setup the containers for the pipeline
 PARAMS:
@@ -112,9 +116,5 @@ sample_os_template_dir: "config/s2i"
 
 # Sample Jenkins pipelines directory
 sample_pipeline_dir: "config/pipelines"
-
-sample_pipelines:
-  - src_loc: "{{ playbook_dir }}/roles/pipeline/templates/contra-sample-pipeline-setup.xml.j2"
-    dest_loc: "{{ sample_project_dir }}/contra-sample-pipeline-VM/config.xml"
-    jenkins_file: "{{ sample_project_dir }}/config/pipelines/ContraSamplePipelineVM/JenkinsfileContraSampleVM"
+sample_pipeline_dir_orig: "{{ sample_pipeline_dir }}"
 

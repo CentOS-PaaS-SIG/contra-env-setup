@@ -1,5 +1,6 @@
-# Contra Pipeline Environment Setup :: minishift or OpenShift + OpenShift s2i templates + Jenkins pipelines
-![CI-Pipeline](continuous-infra-logo.png)
+# Contra Environment Setup 
+# minishift or OpenShift + OpenShift s2i templates + Jenkins pipelines
+![CI-Pipeline](continuous-infra-logo.png "continuous-infra")
 
 ## Overview
 
@@ -59,7 +60,7 @@ This can be a static file, dynamic inventory, or a comma separated list of machi
 │   │   │   │   └── JenkinsfileContraSample1
 │   │   │   ├── tasks
 │   │   │   │   ├── main.yml
-│   │   │   │   └── setup_sample_pipelines.yml
+│   │   │   │   └── setup_pipelines.yml
 │   │   │   └── templates
 │   │   │       └── contra-sample-pipeline1.xml.j2
 │   │   └── prereqs
@@ -120,15 +121,17 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 * project_refspec: Project refspec : default=+refs/pull/*:refs/heads/* 
 * project_branch: Project branch : default=master
 * project_dir: Project directory where repo is stored locally : default={{ contra_env_setup_dir }}/{{ project_repo.split('/')[-1] }}
+* setup_sample_project: Sample profect to setup 
 
 #### OpenShift s2i template setup options
 * setup_containers: Setup OpenShift s2i templates : default=true
-* os_template_dir: Relative directory in the repo where OpenShift s2i templates are stored: default=config/s2i
+* os_template_dir: Relative directory in the project repo where OpenShift s2i templates are stored: default=config/s2i
+* sample_os_template_dir: Relative directory in the sample project repo where OpenShift s2i templates are stored: default=config/s2i
 
 #### Jenkins 2.0 pipeline setup options
 * setup_pipelines: Setup Jenkins 2.0 pipelines : default=false
-* setup_sample_pipelines: Setup sample pipelines from this repo : default=false
 * pipeline_dir: Relative directory in the project repo where Jenkins pipelines are stored: default=config/pipelines
+* sample_pipeline_dir: Relative directory in the sample project repo where Jenkins pipelines are stored: default=config/pipelines
 
 #### Usage examples
 

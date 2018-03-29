@@ -7,10 +7,10 @@
   register: jenkins_running
   ignore_errors: yes
 
-# Create sample pipeline setup_sample_pipelines.yml
+# Create sample pipeline setup_pipelines.yml
 - name: "Setup Sample Pipelines"
   import_tasks: setup_pipelines.yml
-  when: (setup_sample_pipelines|bool == true and jenkins_running.stdout != "")
+  when: (setup_sample_project|bool == true and jenkins_running.stdout != "")
 
 # TODO: beyond the sample as we analyze teams we will start to accumlate patterns for pipeline examples
 # ex. platform-pipeline
