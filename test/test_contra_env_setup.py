@@ -27,7 +27,7 @@ class TestMinishift(QemuTest):
         self.extra_cmd_run = self.params.get('extra_command', default=None)
 
         project = 'https://github.com/CentOS-PaaS-SIG/contra-env-setup.git'
-        repo = self.params.get('repo', default='{0}'.format(project))
+        repo = self.params.get('repo', default=project)
         branch = self.params.get('branch', default='master')
 
         # cloning the repo defined in the parameter file
