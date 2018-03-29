@@ -5,8 +5,7 @@ branch: master
 # the ansible command to run on the VM to test (don't insert here: "-k" or "-K")
 # the username used in the VM is always 'avocado'
 # ** Don't insert others commands in this option [only ansible, ansible-playbook] **
-#command: ansible-playbook -vvv -i "localhost," playbooks/setup.yml -e remote_user=avocado -e run_cleanup=true
-command: Null
+command: ansible-playbook -vvv -i "localhost," playbooks/setup.yml -e remote_user=avocado -e run_cleanup=true
 
 # if enabled the debug mode [True, False] the 'minishift_iso_src_path' & 'minishift_iso_dest_path' have to
 # source and destine of minishift.iso to load into the VM. This option will enable interactive
@@ -30,6 +29,6 @@ distros: !mux
     fedora:
         distro: Fedora
         pkg_mgm: dnf
-#    centos:
-#        distro: CentOS
-#        pkg_mgm: yum
+    centos:
+        distro: CentOS
+        pkg_mgm: yum
