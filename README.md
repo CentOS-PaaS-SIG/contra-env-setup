@@ -1,12 +1,12 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+
 - [Contra Environment Setup](#contra-environment-setup)
 - [minishift or OpenShift + OpenShift s2i templates + Jenkins pipelines](#minishift-or-openshift--openshift-s2i-templates--jenkins-pipelines)
   - [Overview](#overview)
   - [Getting Started](#getting-started)
     - [Ansible Inventory](#ansible-inventory)
-  - [Ansible Playbook Role Structure](#ansible-playbook-role-structure)
   - [Playbooks](#playbooks)
     - [setup.yml](#setupyml)
     - [default variables](#default-variables)
@@ -48,66 +48,6 @@ This can be a static file, dynamic inventory, or a comma separated list of machi
 - "10.10.10.1,10.10.10.2,"
 - [ansible inventory](http://docs.ansible.com/ansible/intro_inventory.html)
 - [ansible dynamic inventory](http://docs.ansible.com/ansible/intro_dynamic_inventory.html)
-
-## Ansible Playbook Role Structure
-````
-.
-├── continuous-infra-logo.png
-├── LICENSE
-├── playbooks
-│   ├── group_vars
-│   │   └── all
-│   │       └── global.yml
-│   ├── roles
-│   │   ├── cleanup
-│   │   │   └── tasks
-│   │   │       ├── cleanup.yml
-│   │   │       └── main.yml
-│   │   ├── create
-│   │   │   └── tasks
-│   │   │       ├── clone_repos.yml
-│   │   │       └── main.yml
-│   │   ├── minishift
-│   │   │   └── tasks
-│   │   │       ├── init_minishift.yml
-│   │   │       ├── install_minishift_bin.yml
-│   │   │       ├── main.yml
-│   │   │       └── set_minishift_path.yml
-│   │   ├── os_temps
-│   │   │   ├── tasks
-│   │   │   │   ├── add_scc.yml
-│   │   │   │   ├── build_new_app.yml
-│   │   │   │   ├── get_set_project.yml
-│   │   │   │   ├── login_to_cluster.yml
-│   │   │   │   ├── main.yml
-│   │   │   │   ├── set_oc_client.yml
-│   │   │   │   ├── setup_containers.yml
-│   │   │   │   ├── setup_os_templates.yml
-│   │   │   │   └── start_mcluster.yml
-│   │   │   └── templates
-│   │   │       └── contra-env-setup-scc.yaml.j2
-│   │   ├── pipeline
-│   │   │   ├── tasks
-│   │   │   │   ├── main.yml
-│   │   │   │   └── setup_pipelines.yml
-│   │   │   └── templates
-│   │   │       ├── contra-sample-pipeline-setup.xml.j2
-│   │   │       └── jenkins-pipeline-setup.xml.j2
-│   │   └── prereqs
-│   │       └── tasks
-│   │           ├── install_kvm_plugin.yml
-│   │           ├── install_virtual_reqs.yml
-│   │           ├── main.yml
-│   │           └── setup_nested_virt.yml
-│   └── setup.yml
-├── README.md
-└── test
-    ├── ansible.cfg
-    ├── README.md
-    ├── requirements.txt
-    ├── test_contra_env_setup.py
-    └── test_contra_env_setup.yaml
-````
 
 ## Playbooks
 
