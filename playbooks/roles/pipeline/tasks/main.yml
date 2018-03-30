@@ -7,17 +7,7 @@
   register: jenkins_running
   ignore_errors: yes
 
-# Create sample pipeline setup_pipelines.yml
-- name: "Setup Sample Pipelines"
+# Setup project and sample pipeline setup_pipelines.yml
+- name: "Setup project_repo and sample Pipelines"
   import_tasks: setup_pipelines.yml
-  when: (setup_sample_project|bool == true and jenkins_running.stdout != "")
-
-# TODO: beyond the sample as we analyze teams we will start to accumlate patterns for pipeline examples
-# ex. platform-pipeline
-# ex. container-pipeline
-# ex. rhv-pipeline
-# ex. storage-pipeline
-#    |
-#    --> gluster-pipeline
-#    |
-#    --> ceph-pipeline
+  when: jenkins_running.stdout != ""

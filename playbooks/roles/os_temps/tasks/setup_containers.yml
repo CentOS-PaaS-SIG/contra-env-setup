@@ -13,9 +13,9 @@
     recurse: yes
   register: os_templates
 
-- name: "Get OpenShift s2i template names from {{ sample_os_template_dir }}"
+- name: "Get sample OpenShift s2i template names from {{ sample_os_template_dir }}"
   find:
-    paths: "{{ os_template_dir }}"
+    paths: "{{ sample_os_template_dir }}"
     patterns: '*.yml,*.yaml'
     recurse: yes
   register: sample_os_templates
