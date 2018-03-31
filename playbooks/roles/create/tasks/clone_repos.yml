@@ -21,7 +21,7 @@
   when: ((pd_is_found.stdout is defined and pd_is_found.stdout == "")  or force_repo_clone|bool == true)
 
 # git clone sample_project_repo
-- name: "checkout the project repo @ {{ sample_project_repo }} to {{ sample_project_dir }}"
+- name: "checkout the sample project repo @ {{ sample_project_repo }} to {{ sample_project_dir }}"
   git:
     repo: "{{ sample_project_repo }}"
     dest: "{{ sample_project_dir }}"
