@@ -85,16 +85,24 @@ os_template_dir: "config/s2i"
 pipeline_dir: "config/pipelines"
 pipeline_dir_orig: "{{ pipeline_dir }}"
 
-# These are parameters that are passed to setup the containers for the pipeline
+# These are parameters that are passed to setup the containers from the project_repo
 PARAMS:
   - key: REPO_URL
     val: "{{ project_repo }}"
   - key: REPO_REF
     val: "{{ project_branch }}"
+
+# These are parameters that are passed to setup the containers from the sample_project_repo
+SAMPLE_PARAMS:
+  - key: REPO_URL
+    val: "{{ sample_project_repo }}"
+  - key: REPO_REF
+    val: "{{ sample_project_branch }}"
   - key: ENABLE_VM
     val: false
   - key: VM_IMG_URL
     val: http://artifacts.ci.centos.org/artifacts/fedora-atomic/f26/images/latest-atomic.qcow2
+
 params: []
 
 ## Sample containers and pipelines

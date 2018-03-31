@@ -2,6 +2,10 @@
 - set_fact:
     params: []
 
+- set_fact:
+    PARAMS: "{{ SAMPLE_PARAMS }}"
+  when: sample_os_templates.files is defined
+
 # Check for failed apps and cleanup
 - name: Check for any failed apps on the cluster
   shell: "oc get all | egrep 'Failed|Error' | egrep 'builds' | awk '{print $1}' | awk -F'/' '{print $2}' | sed 's/-[0-9+]//g' | head -1"
