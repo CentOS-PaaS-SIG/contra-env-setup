@@ -33,7 +33,7 @@
     patterns: '*.yml,*.yaml'
     recurse: yes
   register: sample_jenkins_os_templates
-  when: (project_repo != sample_project_repo and setup_sample_project|bool == true and jenkins_running.stdout != "")
+  when: (project_repo != sample_project_repo and setup_sample_project|bool == true and jenkins_running.stdout == "")
 
 - set_fact:
     all_templates: "{{ os_templates.files }}"
