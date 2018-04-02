@@ -8,6 +8,6 @@
   ignore_errors: yes
 
 # Setup project and sample pipeline setup_pipelines.yml
-- name: "Setup project_repo and sample Pipelines"
+- name: "Setup project_repo and sample pipelines"
   import_tasks: setup_pipelines.yml
   when: jenkins_running.stdout != ""
