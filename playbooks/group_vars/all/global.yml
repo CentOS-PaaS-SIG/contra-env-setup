@@ -83,7 +83,6 @@ os_template_dir: "config/s2i"
 
 # Jenkins pipelines directory
 pipeline_dir: "config/pipelines"
-pipeline_dir_orig: "{{ pipeline_dir }}"
 
 # These are parameters that are passed to setup the containers from the project_repo
 PARAMS:
@@ -124,5 +123,4 @@ sample_os_template_dir: "config/s2i"
 
 # Sample Jenkins pipelines directory
 sample_pipeline_dir: "config/pipelines"
-sample_pipeline_dir_orig: "{{ sample_pipeline_dir }}"
 
