@@ -8,14 +8,14 @@
 # Use the repo's OpenShift s2i templates as the list to process
 - name: "Get OpenShift s2i template names from {{ os_template_dir }}"
   find:
-    paths: "{{ os_template_dir }}"
+    paths: "{{ project_dir }}/{{ os_template_dir }}"
     patterns: '*.yml,*.yaml'
     recurse: yes
   register: os_templates
 
 - name: "Get sample OpenShift s2i template names from {{ sample_os_template_dir }}/samples"
   find:
-    paths: "{{ sample_os_template_dir }}/samples"
+    paths: "{{ sample_project_dir }}/{{ sample_os_template_dir }}/samples"
     patterns: '*.yml,*.yaml'
     recurse: yes
   register: sample_os_templates
@@ -29,7 +29,7 @@
 
 - name: "Get sample jenkins OpenShift s2i template names from {{ sample_os_template_dir }}/jenkins"
   find:
-    paths: "{{ sample_os_template_dir }}/jenkins"
+    paths: "{{ sample_project_dir }}/{{ sample_os_template_dir }}/jenkins"
     patterns: '*.yml,*.yaml'
     recurse: yes
   register: sample_jenkins_os_templates

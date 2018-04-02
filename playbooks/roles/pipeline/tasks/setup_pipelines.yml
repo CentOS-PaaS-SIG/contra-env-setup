@@ -34,7 +34,7 @@
 - name: "Generate Jenkins XML config for pipeline jobs from the templates"
   template:
     src: "{{ playbook_dir }}/roles/pipeline/templates/jenkins-pipeline-setup.xml.j2"
-    dest: "{{ pipeline_dir_orig }}/{{ item.path.split('/')[-2] }}/config.xml"
+    dest: "{{ loaded_pipelines_dir }}/{{ item.path.split('/')[-2] }}/config.xml"
     force: yes
     mode: 0755
   with_items: "{{ pipelines.files }}"
@@ -42,7 +42,7 @@
 - name: "Generate Jenkins XML config for sample pipeline jobs from the templates"
   template:
     src: "{{ playbook_dir }}/roles/pipeline/templates/contra-sample-pipeline-setup.xml.j2"
-    dest: "{{ sample_pipeline_dir_orig }}/{{ item.path.split('/')[-2] }}/config.xml"
+    dest: "{{ loaded_pipelines_dir }}/{{ item.path.split('/')[-2] }}/config.xml"
     force: yes
     mode: 0755
   with_items: "{{ sample_pipelines.files }}"

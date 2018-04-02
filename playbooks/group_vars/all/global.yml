@@ -83,7 +83,6 @@ os_template_dir: "config/s2i"
 
 # Jenkins pipelines directory
 pipeline_dir: "config/pipelines"
-pipeline_dir_orig: "{{ pipeline_dir }}"
 
 # These are parameters that are passed to setup the containers from the project_repo
 PARAMS:
@@ -117,12 +116,11 @@ sample_project_refspec: '+refs/pull/*:refs/heads/*'
 sample_project_branch: 'master'
 
 # Sample project directory
-sample_project_dir: "{{ contra_env_setup_dir }}/{{ sample_project_repo.split('/')[-1] | replace('.git', '')}}"
+sample_project_dir: "{{ contra_env_setup_dir }}/{{ sample_project_repo.split('/')[-1] | replace('.git', '') }}"
 
 # Sample OpenSift template directory
 sample_os_template_dir: "config/s2i"
 
 # Sample Jenkins pipelines directory
 sample_pipeline_dir: "config/pipelines"
-sample_pipeline_dir_orig: "{{ sample_pipeline_dir }}"
 
