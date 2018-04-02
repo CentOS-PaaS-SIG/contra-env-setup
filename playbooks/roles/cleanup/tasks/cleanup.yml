@@ -10,7 +10,7 @@
   shell: "{{ minishift_dest_dir }}/minishift delete --profile {{ profile }} --force"
   ignore_errors: yes
 
-- name: "Cleanup files and directories"
+- name: "Cleanup files and directories {{ minishift_dest_dir }}"
   file:
     path: "{{ minishift_dest_dir }}/{{ item }}"
     state: absent
@@ -18,6 +18,20 @@
     - "minishift"
     - "LICENSE"
     - "README.adoc"
+    - ".{{ profile }}"
+    - ".kube"
+  ignore_errors: yes
+
+- name: "Cleanup certain files and directories in {{ contra_env_setup_dir }}"
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ contra_env_setup_dir }}/.yml"
+    - "{{ contra_env_setup_dir }}/.yaml"
+    - "{{ project_dir }}"
+    - "{{ sample_project_dir }}"
+    - "{{ loaded_pipelines_dir }}"
     - ".{{ profile }}"
     - ".kube"
   ignore_errors: yes

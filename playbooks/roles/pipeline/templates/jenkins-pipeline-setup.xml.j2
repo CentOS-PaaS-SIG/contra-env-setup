@@ -38,19 +38,19 @@
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>{{ pipeline_repo }}</url>
+          <url>{{ project_repo }}</url>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
       <branches>
         <hudson.plugins.git.BranchSpec>
-          <name>{{ pipeline_branch }}</name>
+          <name>{{ project_branch }}</name>
         </hudson.plugins.git.BranchSpec>
       </branches>
       <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
       <submoduleCfg class="list"/>
       <extensions/>
     </scm>
-    <scriptPath>{{ item.jenkins_file }}</scriptPath>
+    <scriptPath>{{ pipeline_dir_orig }}/{{ item.path.split('/')[-2] }}/{{ item.path.split('/')[-1] }}</scriptPath>
     <lightweight>true</lightweight>
   </definition>
   <triggers/>

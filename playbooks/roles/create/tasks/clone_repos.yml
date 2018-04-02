@@ -10,7 +10,7 @@
 - name: "Set http.sslVerify false"
   shell: git config --global http.sslVerify false
 
-# git clone
+# git clone project_repo
 - name: "checkout the project repo @ {{ project_repo }} to {{ project_dir }}"
   git:
     repo: "{{ project_repo }}"
@@ -19,3 +19,13 @@
     version: "{{ project_branch }}"
     force: yes
   when: ((pd_is_found.stdout is defined and pd_is_found.stdout == "")  or force_repo_clone|bool == true)
+
+# git clone sample_project_repo
+- name: "checkout the sample project repo @ {{ sample_project_repo }} to {{ sample_project_dir }}"
+  git:
+    repo: "{{ sample_project_repo }}"
+    dest: "{{ sample_project_dir }}"
+    refspec: "{{ sample_project_refspec }}"
+    version: "{{ sample_project_branch }}"
+    force: yes
+  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)

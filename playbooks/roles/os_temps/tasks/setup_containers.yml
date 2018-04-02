@@ -6,19 +6,52 @@
     container_config_name: "OpenShift s2i templates"
 
 # Use the repo's OpenShift s2i templates as the list to process
-- name: "Get OpenShift s2i template names"
+- name: "Get OpenShift s2i template names from {{ os_template_dir }}"
   find:
     paths: "{{ os_template_dir }}"
     patterns: '*.yml,*.yaml'
     recurse: yes
   register: os_templates
 
+- name: "Get sample OpenShift s2i template names from {{ sample_os_template_dir }}/samples"
+  find:
+    paths: "{{ sample_os_template_dir }}/samples"
+    patterns: '*.yml,*.yaml'
+    recurse: yes
+  register: sample_os_templates
+  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
+
+# Check if Jenkins is running
+- name: "Check to see if a Jenkins Master instance is running"
+  shell: oc get pods | grep -i 'running' | grep -i 'jenkins' | tail -1 |  awk '{print $1}'
+  register: jenkins_running
+  ignore_errors: yes
+
+- name: "Get sample jenkins OpenShift s2i template names from {{ sample_os_template_dir }}/jenkins"
+  find:
+    paths: "{{ sample_os_template_dir }}/jenkins"
+    patterns: '*.yml,*.yaml'
+    recurse: yes
+  register: sample_jenkins_os_templates
+  when: (project_repo != sample_project_repo and setup_sample_project|bool == true and jenkins_running.stdout == "")
+
+- set_fact:
+    all_templates: "{{ os_templates.files }}"
+
+- set_fact:
+    all_templates: "{{ os_templates.files }} + {{ sample_os_templates.files }}"
+  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
+
+- debug:
+    msg: "{{ item.path }}"
+  with_items: "{{ all_templates }}"
+
 # Check that templates are valid
 - name: "Check that templates are valid"
   shell: oc process -f {{ item.path }}
-  with_items: "{{ os_templates.files }}"
+  with_items: "{{ all_templates }}"
 
 # Load templates into OpenShift
 - include_tasks: "setup_os_templates.yml template_name={{ item.path }}"
-  with_items: "{{ os_templates.files }}"
-  when: os_templates.files != ""
+  with_items: "{{ all_templates }}"
+  when: all_templates != ""

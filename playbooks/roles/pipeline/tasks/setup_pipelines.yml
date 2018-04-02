@@ -1,0 +1,59 @@
+---
+# create/update Jenkins pipelines
+
+- name: "Cycle through {{ pipeline_dir }}"
+  find:
+    paths: "{{ pipeline_dir }}"
+    recurse: yes
+  register: pipelines
+
+- name: "Cycle through {{ sample_pipeline_dir }}"
+  find:
+    paths: "{{ sample_pipeline_dir }}"
+    recurse: yes
+  register: sample_pipelines
+  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
+
+- set_fact:
+    all_pipelines: "{{ pipelines.files }}"
+
+- set_fact:
+    all_pipelines: "{{ pipelines.files }} + {{ sample_pipelines.files }}"
+  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
+
+- debug:
+    msg: "{{ item.path }}"
+  with_items: "{{ all_pipelines }}"
+
+- name: "Create all pipeline subdirectories"
+  file:
+    path: "{{ loaded_pipelines_dir }}/{{ item.path.split('/')[-2] }}"
+    state: directory
+  with_items: "{{ all_pipelines }}"
+
+- name: "Generate Jenkins XML config for pipeline jobs from the templates"
+  template:
+    src: "{{ playbook_dir }}/roles/pipeline/templates/jenkins-pipeline-setup.xml.j2"
+    dest: "{{ pipeline_dir_orig }}/{{ item.path.split('/')[-2] }}/config.xml"
+    force: yes
+    mode: 0755
+  with_items: "{{ pipelines.files }}"
+
+- name: "Generate Jenkins XML config for sample pipeline jobs from the templates"
+  template:
+    src: "{{ playbook_dir }}/roles/pipeline/templates/contra-sample-pipeline-setup.xml.j2"
+    dest: "{{ sample_pipeline_dir_orig }}/{{ item.path.split('/')[-2] }}/config.xml"
+    force: yes
+    mode: 0755
+  with_items: "{{ sample_pipelines.files }}"
+  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
+
+- name: "Update pipeline jobs inside the Jenkins Master pod"
+  shell: "oc rsync {{ loaded_pipelines_dir }}/{{ item.path.split('/')[-2] }} {{ jenkins_running.stdout }}:/var/lib/jenkins/jobs/"
+  with_items: "{{ all_pipelines }}"
+
+- name: "Scale the pod down to update the pipeline jobs in Jenkins"
+  shell: "oc scale --replicas=0 dc jenkins"
+
+- name: "Scale the pod up to update the pipeline jobs in Jenkins"
+  shell: "oc scale --replicas=1 dc jenkins"
