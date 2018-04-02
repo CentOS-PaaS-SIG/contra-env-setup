@@ -10,23 +10,23 @@
     - "{{ minishift_dest_dir }}"
     - "{{ loaded_pipelines_dir }}"
 
-- name: "Update os_template_dir based on repo"
-  set_fact:
-     os_template_dir: "{{ project_dir }}/{{ os_template_dir }}"
-
-- name: "Update pipeline_dir based on repo"
-  set_fact:
-     pipeline_dir: "{{ project_dir }}/{{ pipeline_dir }}"
-
-- name: "Update sample_os_template_dir based on repo"
-  set_fact:
-     sample_os_template_dir: "{{ sample_project_dir }}/{{ sample_os_template_dir }}"
-  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
-
-- name: "Update sample_pipeline_dir based on repo"
-  set_fact:
-     sample_pipeline_dir: "{{ sample_project_dir }}/{{ sample_pipeline_dir }}"
-  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
+#- name: "Update os_template_dir based on repo"
+#  set_fact:
+#     os_template_dir: "{{ project_dir }}/{{ os_template_dir }}"
+#
+#- name: "Update pipeline_dir based on repo"
+#  set_fact:
+#     pipeline_dir: "{{ project_dir }}/{{ pipeline_dir }}"
+#
+#- name: "Update sample_os_template_dir based on repo"
+#  set_fact:
+#     sample_os_template_dir: "{{ sample_project_dir }}/{{ sample_os_template_dir }}"
+#  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
+#
+#- name: "Update sample_pipeline_dir based on repo"
+#  set_fact:
+#     sample_pipeline_dir: "{{ sample_project_dir }}/{{ sample_pipeline_dir }}"
+#  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
 
 # Clone the project_repo and sample_project_repo
 - name: "Clone the project repo {{ project_repo }}"

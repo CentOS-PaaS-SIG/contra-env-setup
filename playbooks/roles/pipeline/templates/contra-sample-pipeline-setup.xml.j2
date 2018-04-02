@@ -50,7 +50,7 @@
       <submoduleCfg class="list"/>
       <extensions/>
     </scm>
-    <scriptPath>{{ item.path.split('/')[-3] }}/{{ item.path.split('/')[-2] }}/{{ item.path.split('/')[-1] }}</scriptPath>
+    <scriptPath>{{ sample_project_repo.split('/')[-1] | replace('.git', '') }}/{{ sample_pipeline_dir }}/{{ item.path.split('/')[-1] }}</scriptPath>
     <lightweight>true</lightweight>
   </definition>
   <triggers/>
