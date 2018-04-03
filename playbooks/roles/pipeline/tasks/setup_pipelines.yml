@@ -25,35 +25,18 @@
     msg: "{{ item.path }}"
   with_items: "{{ all_pipelines }}"
 
-- name: "Create all pipeline subdirectories"
-  file:
-    path: "{{ loaded_pipelines_dir }}/{{ item.path.split('/')[-2] }}"
-    state: directory
+- name: "Check if pipeline buildconfigs are present already"
+  shell: oc get buildconfig | grep 'JenkinsPipeline' | awk '{print $1}' | egrep '^{{ item.path.split('/')[-2] }}$'
+  register: "pipeline_name_check"
   with_items: "{{ all_pipelines }}"
+  ignore_errors: yes
 
-- name: "Generate Jenkins XML config for pipeline jobs from the templates"
-  template:
-    src: "{{ playbook_dir }}/roles/pipeline/templates/jenkins-pipeline-setup.xml.j2"
-    dest: "{{ loaded_pipelines_dir }}/{{ item.path.split('/')[-2] }}/config.xml"
-    force: yes
-    mode: 0755
-  with_items: "{{ pipelines.files }}"
+- name: "Replace pipeline buildconfigs"
+  shell: oc replace -f {{ item.item.path }}
+  with_items:  "{{ pipeline_name_check.results }}"
+  when: "{{ item.rc == 0 }}"
 
-- name: "Generate Jenkins XML config for sample pipeline jobs from the templates"
-  template:
-    src: "{{ playbook_dir }}/roles/pipeline/templates/contra-sample-pipeline-setup.xml.j2"
-    dest: "{{ loaded_pipelines_dir }}/{{ item.path.split('/')[-2] }}/config.xml"
-    force: yes
-    mode: 0755
-  with_items: "{{ sample_pipelines.files }}"
-  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
-
-- name: "Update pipeline jobs inside the Jenkins Master pod"
-  shell: "oc rsync {{ loaded_pipelines_dir }}/{{ item.path.split('/')[-2] }} {{ jenkins_running.stdout }}:/var/lib/jenkins/jobs/"
-  with_items: "{{ all_pipelines }}"
-
-- name: "Scale the pod down to update the pipeline jobs in Jenkins"
-  shell: "oc scale --replicas=0 dc jenkins"
-
-- name: "Scale the pod up to update the pipeline jobs in Jenkins"
-  shell: "oc scale --replicas=1 dc jenkins"
+- name: "Create pipeline buildconfigs"
+  shell: oc create -f {{ item.item.path }}
+  with_items:  "{{ pipeline_name_check.results }}"
+  when: "{{ item.rc != 0 }}"

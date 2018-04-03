@@ -75,9 +75,6 @@ project_branch: 'master'
 # Project directory
 project_dir: "{{ contra_env_setup_dir }}/{{ project_repo.split('/')[-1] | replace('.git', '') }}"
 
-# Loaded pipelines directory
-loaded_pipelines_dir: "{{ contra_env_setup_dir }}/loaded_pipelines"
-
 # OpenSift template directory
 os_template_dir: "config/s2i"
 
