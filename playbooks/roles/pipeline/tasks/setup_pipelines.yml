@@ -3,13 +3,13 @@
 
 - name: "Cycle through {{ pipeline_dir }}"
   find:
-    paths: "{{ pipeline_dir }}"
+    paths: "{{ project_dir }}/{{ pipeline_dir }}"
     recurse: yes
   register: pipelines
 
 - name: "Cycle through {{ sample_pipeline_dir }}"
   find:
-    paths: "{{ sample_pipeline_dir }}"
+    paths: "{{ sample_project_dir }}/{{ sample_pipeline_dir }}"
     recurse: yes
   register: sample_pipelines
   when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
