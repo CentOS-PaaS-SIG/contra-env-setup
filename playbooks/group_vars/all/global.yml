@@ -79,7 +79,7 @@ project_dir: "{{ contra_env_setup_dir }}/{{ project_repo.split('/')[-1] | replac
 os_template_dir: "config/s2i"
 
 # Jenkins pipelines directory
-pipeline_dir: "config/pipelines"
+pipeline_dir: "config/pipelines/buildconfigs"
 
 # These are parameters that are passed to setup the containers from the project_repo
 PARAMS:
@@ -119,5 +119,5 @@ sample_project_dir: "{{ contra_env_setup_dir }}/{{ sample_project_repo.split('/'
 sample_os_template_dir: "config/s2i"
 
 # Sample Jenkins pipelines directory
-sample_pipeline_dir: "config/pipelines"
+sample_pipeline_dir: "config/pipelines/buildconfigs"
 
