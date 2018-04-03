@@ -8,7 +8,6 @@
   with_items:
     - "{{ contra_env_setup_dir }}"
     - "{{ minishift_dest_dir }}"
-    - "{{ loaded_pipelines_dir }}"
 
 # Clone the project_repo and sample_project_repo
 - name: "Clone the project repo {{ project_repo }}"
