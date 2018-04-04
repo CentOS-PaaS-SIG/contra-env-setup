@@ -32,7 +32,7 @@
 
 - name: Install EPEL for non Fedora distros
   yum:
-    name: {{ ansible_env.HOME }}/epel-release-latest-7.noarch.rpm
+    name: "{{ ansible_env.HOME }}/epel-release-latest-7.noarch.rpm"
     state: present
   when: ((ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS') and epel_rpm.stdout == "")
   become: true
