@@ -121,7 +121,7 @@ contra-env-setup/playbooks/group_vars/all/global.yml
  
 ```
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
-    -e remote_user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline 
+    -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline 
     -e openshift_project=ari-ci-pipeline -K -k
 
 ```
@@ -142,7 +142,7 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
  
 ```
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
-    -e remote_user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
+    -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
     -e openshift_project=ari-ci-pipeline -e setup_pipelines=true -K -k
 
 ```
@@ -166,7 +166,7 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
  
 ```
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
-    -e remote_user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
+    -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
     -e openshift_project=ari-ci-pipeline -e tag=develop -e setup_pipelines=true \
     -e setup_sample_project -K -k
 

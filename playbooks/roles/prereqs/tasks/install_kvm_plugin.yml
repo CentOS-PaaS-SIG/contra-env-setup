@@ -16,9 +16,9 @@
     enabled: yes
   become: true
 
-- name: "Add user {{ remote_user }} to the libvirt group"
+- name: "Add user {{ user }} to the libvirt group"
   user:
-    name: "{{ remote_user }}"
+    name: "{{ user }}"
     groups: libvirt
     append: yes
   become: true
