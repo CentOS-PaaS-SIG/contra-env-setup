@@ -76,7 +76,6 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 
 ### Minishift setup options
 * setup_minishift: Setup a minishift cluster : default=true
-* start_minishift: Start existing minishift cluster : default=true
 * minishift_version: Minishift version to use : default=v1.12.0
 * minishift_dest_dir: Minishift binary and ISO directory : default={{ contra_env_setup_dir }}/minishift
 * profile: Minishift profile : default=minishift
@@ -105,8 +104,8 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 
 ### Jenkins 2.0 pipeline setup options
 * setup_pipelines: Setup Jenkins 2.0 pipelines : default=false
-* pipeline_dir: Relative directory in the project repo where Jenkins pipelines are stored: default=config/pipelines
-* sample_pipeline_dir: Relative directory in the sample project repo where Jenkins pipelines are stored: default=config/pipelines
+* pipeline_dir: Relative directory in the project repo where Jenkins pipelines are stored: default=config/pipelines/buildconfigs
+* sample_pipeline_dir: Relative directory in the sample project repo where Jenkins pipelines are stored: default=config/pipelines/buildconfigs
 
 ## Usage examples
 
