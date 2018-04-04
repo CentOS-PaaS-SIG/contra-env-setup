@@ -19,7 +19,6 @@
     - "LICENSE"
     - "README.adoc"
     - ".{{ profile }}"
-    - ".kube"
   ignore_errors: yes
 
 - name: "Cleanup certain files and directories in {{ contra_env_setup_dir }}"
