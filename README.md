@@ -109,9 +109,9 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 
 ## Usage examples
 
-### Example 1: Setup on a local server :: Setup Minishift + OS templates 
+### Example 1: Setup on a local machine :: Setup Minishift + OS templates 
 
- 1. Install on a local server as user cloud-user.
+ 1. Install on a local machine as user cloud-user.
  2. Setup pre-reqs (kvm driver and nested virtualization)
  3. Setup a minishift cluster
  4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/arilivigni/ci-pipeline
@@ -129,9 +129,9 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
        Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
 
-### Example 2: Setup on a local server :: Setup Minishift + OS templates + Jenkins 2.0 pipelines
+### Example 2: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines
 
- 1. Install on a local server as user cloud-user.
+ 1. Install on a local machine as user cloud-user.
  2. Setup pre-reqs (kvm driver and nested virtualization)
  3. Setup a minishift cluster
  4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/arilivigni/ci-pipeline
@@ -150,9 +150,9 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
        Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
        
-### Example 3: Setup on a local server :: Setup Minishift + OS templates + Jenkins 2.0 pipelines
+### Example 3: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines
 
- 1. Install on a local server as user cloud-user.
+ 1. Install on a local machine as user cloud-user.
  2. Setup pre-reqs (kvm driver and nested virtualization)
  3. Setup a minishift cluster
  4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/arilivigni/ci-pipeline
