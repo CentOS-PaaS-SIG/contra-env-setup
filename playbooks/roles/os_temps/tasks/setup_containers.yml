@@ -51,7 +51,17 @@
   shell: oc process -f {{ item.path }}
   with_items: "{{ all_templates }}"
 
-# Load templates into OpenShift
+# Load project_repo templates into OpenShift
 - include_tasks: "setup_os_templates.yml template_name={{ item.path }}"
-  with_items: "{{ all_templates }}"
-  when: all_templates != ""
+  with_items: "{{ os_templates.files }}"
+  when: os_templates.files != ""
+
+# Set PARAMS to the sample ones
+- set_fact:
+    PARAMS: "{{ SAMPLE_PARAMS }}"
+  when: sample_os_templates.files is defined
+
+# Load project_repo templates into OpenShift
+- include_tasks: "setup_os_templates.yml template_name={{ item.path }}"
+  with_items: "{{ sample_os_templates.files }}"
+  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)

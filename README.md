@@ -76,7 +76,6 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 
 ### Minishift setup options
 * setup_minishift: Setup a minishift cluster : default=true
-* start_minishift: Start existing minishift cluster : default=true
 * minishift_version: Minishift version to use : default=v1.12.0
 * minishift_dest_dir: Minishift binary and ISO directory : default={{ contra_env_setup_dir }}/minishift
 * profile: Minishift profile : default=minishift
@@ -105,14 +104,14 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 
 ### Jenkins 2.0 pipeline setup options
 * setup_pipelines: Setup Jenkins 2.0 pipelines : default=false
-* pipeline_dir: Relative directory in the project repo where Jenkins pipelines are stored: default=config/pipelines
-* sample_pipeline_dir: Relative directory in the sample project repo where Jenkins pipelines are stored: default=config/pipelines
+* pipeline_dir: Relative directory in the project repo where Jenkins pipelines are stored: default=config/pipelines/buildconfigs
+* sample_pipeline_dir: Relative directory in the sample project repo where Jenkins pipelines are stored: default=config/pipelines/buildconfigs
 
 ## Usage examples
 
-### Example 1: Setup on a local server :: Setup Minishift + OS templates 
+### Example 1: Setup on a local machine :: Setup Minishift + OS templates 
 
- 1. Install on a local server as user cloud-user.
+ 1. Install on a local machine as user cloud-user.
  2. Setup pre-reqs (kvm driver and nested virtualization)
  3. Setup a minishift cluster
  4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/arilivigni/ci-pipeline
@@ -122,7 +121,7 @@ contra-env-setup/playbooks/group_vars/all/global.yml
  
 ```
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
-    -e remote_user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline 
+    -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline 
     -e openshift_project=ari-ci-pipeline -K -k
 
 ```
@@ -130,9 +129,9 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
        Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
 
-### Example 2: Setup on a local server :: Setup Minishift + OS templates + Jenkins 2.0 pipelines
+### Example 2: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines
 
- 1. Install on a local server as user cloud-user.
+ 1. Install on a local machine as user cloud-user.
  2. Setup pre-reqs (kvm driver and nested virtualization)
  3. Setup a minishift cluster
  4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/arilivigni/ci-pipeline
@@ -143,7 +142,7 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
  
 ```
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
-    -e remote_user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
+    -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
     -e openshift_project=ari-ci-pipeline -e setup_pipelines=true -K -k
 
 ```
@@ -151,9 +150,9 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
        Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
        
-### Example 3: Setup on a local server :: Setup Minishift + OS templates + Jenkins 2.0 pipelines
+### Example 3: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines
 
- 1. Install on a local server as user cloud-user.
+ 1. Install on a local machine as user cloud-user.
  2. Setup pre-reqs (kvm driver and nested virtualization)
  3. Setup a minishift cluster
  4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/arilivigni/ci-pipeline
@@ -167,7 +166,7 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
  
 ```
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
-    -e remote_user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
+    -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
     -e openshift_project=ari-ci-pipeline -e tag=develop -e setup_pipelines=true \
     -e setup_sample_project -K -k
 
