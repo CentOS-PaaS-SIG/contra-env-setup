@@ -1,17 +1,23 @@
-# repository and branch that will be cloned to run the test with the ansible `command` below
+# repository and branch that will be cloned to run the test with
+# the ansible `command` below
+---
 repo: https://github.com/CentOS-PaaS-SIG/contra-env-setup.git
 branch: master
 
-# the ansible command to run on the VM to test (don't insert here: "-k" or "-K")
+# the ansible command to run on the VM to test
+# (don't insert here: "-k" or "-K")
 # the username used in the VM is always 'avocado'
-# ** Don't insert others commands in this option [only ansible, ansible-playbook] **
-command: ansible-playbook -vvv -i "localhost," playbooks/setup.yml -e user=avocado -e run_cleanup=true
+# ** Don't insert others commands in this option
+# [only ansible, ansible-playbook] **
+command: ansible-playbook -i "localhost," playbooks/setup.yml -e user=avocado
 
-# if enabled the debug mode [True, False] the 'minishift_iso_src_path' & 'minishift_iso_dest_path' have to
-# source and destine of minishift.iso to load into the VM. This option will enable interactive
-# mode before finish the test waiting 10 seconds to user press Ctrl+Z to stop the test
-# a new Ctrl+Z will resume the test calling to the 'extra_command' below
-debug: False
+# if enabled the debug mode [True, False] the 'minishift_iso_src_path'
+# & 'minishift_iso_dest_path' have to source and destine of minishift.iso
+# to load into the VM. This option will enable interactive
+# mode before finish the test waiting 10 seconds to user press Ctrl+Z to
+# stop the test a new Ctrl+Z will resume the test calling to
+# the 'extra_command' below
+debug: True
 
 # path that have the ISO in your host (don't insert last '/')
 minishift_iso_src_path: ~/.contra-env-setup/minishift
@@ -19,9 +25,18 @@ minishift_iso_src_path: ~/.contra-env-setup/minishift
 # path that will push the ISO in the VM (don't insert last '/')
 minishift_iso_dest_path: ~/.contra-env-setup/minishift
 
-# extra ansible command to run in the debug mode, normally used to validate your changes
+# username and password used by Avocado
+username: 'avocado'
+password: 'avocado'
+
+# name of the virtual machine that will used in the tests
+vm_name: 'contra-env-setup-01'
+
+# extra ansible command to run in the debug mode, normally used
+# to validate your changes
 # example:
-#   extra_command: ansible localhost -i "localhost," -m raw -a "ls -la" --user avocado
+#   extra_command:
+#        ansible localhost -i "localhost," -m raw -a "ls -la" --user avocado
 extra_command: Null
 
 # tree of distros used in the test
