@@ -17,7 +17,7 @@ $ pip install -r requirements.txt --user
 
 Should install the packages are requirements:
 ```
-$ sudo dnf install qemu qemu-img genisoimage python2-aexpect
+$ sudo dnf install ansible libvirt-client qemu qemu-img genisoimage python2-aexpect virt-install
 ```
 
 ## Tests
