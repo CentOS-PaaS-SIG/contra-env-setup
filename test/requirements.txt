@@ -1,3 +1,2 @@
 avocado-framework==59.0
 avocado-framework-plugin-varianter-yaml-to-mux==59.0
-avocado-qemu==0.2
