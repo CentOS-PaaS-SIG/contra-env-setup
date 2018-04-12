@@ -80,7 +80,7 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 * minishift_dest_dir: Minishift binary and ISO directory : default={{ contra_env_setup_dir }}/minishift
 * profile: Minishift profile : default=minishift
 * disk_size: Disk size to use for minishift : default=40gb
-* memory_size: Memory size to use for the VM : default=6400mb
+* memory: Memory size to use for the VM : default=6400mb
 * minishift_iso: ISO image to use : default=http://artifacts.ci.centos.org/fedora-atomic/minishift/iso/minishift.iso 
 
 ### oc setup options
