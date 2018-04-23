@@ -5,11 +5,11 @@
 - name: "Is minishift binary present in {{ minishift_dest_dir }}"
   stat:
     path: "{{ minishift_bin }}"
-  register: minishift_bin
+  register: minishift_bin_path
 
 # Install minishift
 - import_tasks: install_minishift_bin.yml
-  when: (minishift_bin.stat.exists == false or force_minishift_install|bool == true)
+  when: (minishift_bin_path.stat.exists == false or force_minishift_install|bool == true)
 
 # Set disk size, memory, set Openshift version, skip OpenShift version and release check
 - name: "Set minishift disk-size {{ disk_size }}"
