@@ -27,7 +27,7 @@
 
 - name: "Delete {{ ansible_env.HOME }}/{{ minishift_src_dir }}"
   file:
-    path: "{{ ansible_env.HOME }}/{{ minishift_src_dir }}"
+    path: "{{ minishift_dest_dir }}//{{ minishift_src_dir }}"
     state: absent
 
 #- import_tasks: set_minishift_path.yml
