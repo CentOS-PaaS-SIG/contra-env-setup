@@ -21,22 +21,10 @@
   vars:
     regexp: '(openshift-origin-client-tools-.*linux.*).tar.gz'
 
-- name: "Copy OpenShift client binary(oc) version files from {{ oc_src_dir }}//oc to {{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/linux/ "
-  shell: cp {{ oc_src_dir }}/oc {{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/linux/
+- name: "Copy OpenShift client binary(oc) version files from {{ oc_src_dir }}/oc to {{ oc_bin_path }}/ "
+  shell: cp {{ oc_src_dir }}/oc {{ oc_bin_path }}/
 
 - name: "Delete {{ oc_src_dir }}"
   file:
     path: "{{ oc_src_dir }}"
     state: absent
-
-- name: Update the path with the oc client
-  shell: export PATH="{{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/linux:$PATH"
-
-- name: "Set path for oc client in {{ ansible_env.HOME }}/.bashrc"
-  lineinfile:
-    path: "{{ ansible_env.HOME }}/.bashrc"
-    line: 'export PATH="{{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/linux:$PATH"'
-    create: yes
-
-- name: "Source {{ ansible_env.HOME }}/.bashrc"
-  shell: source {{ ansible_env.HOME }}/.bashrc

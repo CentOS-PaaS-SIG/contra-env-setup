@@ -26,17 +26,17 @@
   with_items: "{{ all_pipelines }}"
 
 - name: "Check if pipeline buildconfigs are present already"
-  shell: oc get buildconfig | grep 'JenkinsPipeline' | awk '{print $1}' | egrep '^{{ item.path.split('/')[-2] }}$'
+  shell: "{{ oc_bin }} get buildconfig | grep 'JenkinsPipeline' | awk '{print $1}' | egrep '^{{ item.path.split('/')[-2] }}$'"
   register: "pipeline_name_check"
   with_items: "{{ all_pipelines }}"
   ignore_errors: yes
 
 - name: "Replace pipeline buildconfigs"
-  shell: oc replace -f {{ item.item.path }}
+  shell: "{{ oc_bin }} replace -f {{ item.item.path }}"
   with_items:  "{{ pipeline_name_check.results }}"
   when: "{{ item.rc == 0 }}"
 
 - name: "Create pipeline buildconfigs"
-  shell: oc create -f {{ item.item.path }}
+  shell: "{{ oc_bin }} create -f {{ item.item.path }}"
   with_items:  "{{ pipeline_name_check.results }}"
   when: "{{ item.rc != 0 }}"

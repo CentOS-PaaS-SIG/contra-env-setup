@@ -22,6 +22,8 @@ minishift_version: v1.12.0
 # default location for minishift
 minishift_dest_dir: "{{ contra_env_setup_dir }}/minishift"
 
+minishift_bin: "{{ minishift_dest_dir }}/minishift"
+
 # default minishift profile name
 profile: minishift
 
@@ -59,6 +61,12 @@ modify_scc: true
 ## oc cli vars
 # oc version
 oc_version: v3.6.1
+
+# Path to oc binary directory
+oc_bin_path: "{{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/linux"
+
+# Path to oc binary
+oc_bin: "{{ oc_bin_path }}/oc"
 
 ## Project repo setup
 
