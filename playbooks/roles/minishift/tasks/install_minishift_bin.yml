@@ -29,5 +29,3 @@
   file:
     path: "{{ minishift_dest_dir }}//{{ minishift_src_dir }}"
     state: absent
-
-#- import_tasks: set_minishift_path.yml

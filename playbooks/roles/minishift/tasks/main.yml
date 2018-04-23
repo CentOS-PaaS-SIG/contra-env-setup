@@ -41,9 +41,9 @@
   register: minishift_exist
   ignore_errors: yes
 
-# Import_tasks to set_oc_client
+# Import_tasks install_oc_bin
 - name: "Get OpenShift client binary(oc) version {{ oc_version }} to {{ contra_env_setup_dir }}"
-  import_tasks: "{{ playbook_dir }}/roles/os_temps/tasks/set_oc_client.yml"
+  import_tasks: "{{ playbook_dir }}/roles/os_temps/tasks/install_oc_bin.yml"
 
 # Initialize minishift
 - import_tasks: init_minishift.yml
