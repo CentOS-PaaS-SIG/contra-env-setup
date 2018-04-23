@@ -13,7 +13,7 @@
 
 # Get ip of the cluster
 - name: "Get the cluster Server URL for project {{ openshift_project }}"
-  command: "{{ oc_bin }} status | egrep '{{ openshift_project }}.*server' | awk '{print $NF}'"
+  shell: "{{ oc_bin }} status | egrep '{{ openshift_project }}.*server' | awk '{print $NF}'"
   register: cluster_ip
 
 # Login to the cluster for the profile in use

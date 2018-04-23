@@ -21,8 +21,8 @@
   vars:
     regexp: '(openshift-origin-client-tools-.*linux.*).tar.gz'
 
-- name: "Copy OpenShift client binary(oc) version files from {{ oc_src_dir }}//oc to {{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/linux/ "
-  shell: cp {{ oc_src_dir }}/oc {{ oc_bin_path }}
+- name: "Copy OpenShift client binary(oc) version files from {{ oc_src_dir }}/oc to {{ oc_bin_path }}/ "
+  shell: cp {{ oc_src_dir }}/oc {{ oc_bin_path }}/
 
 - name: "Delete {{ oc_src_dir }}"
   file:

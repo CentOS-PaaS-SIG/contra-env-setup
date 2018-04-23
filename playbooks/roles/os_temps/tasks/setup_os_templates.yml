@@ -4,17 +4,17 @@
 
 # Check for failed apps and cleanup
 - name: Check for any failed apps on the cluster
-  command: "{{ oc_bin }} get all | egrep 'Failed|Error' | egrep 'builds' | awk '{print $1}' | awk -F'/' '{print $2}' | sed 's/-[0-9+]//g' | head -1"
+  shell: "{{ oc_bin }} get all | egrep 'Failed|Error' | egrep 'builds' | awk '{print $1}' | awk -F'/' '{print $2}' | sed 's/-[0-9+]//g' | head -1"
   register: oc_check_app_status
   ignore_errors: yes
 
 - name: Cleanup any failed dc, bc, routes, svc, and is for {{ oc_check_app_status.stdout }} on the cluster
-  command: "{{ oc_bin }} get all | grep '{{ oc_check_app_status.stdout }}' | awk '{print $1}' | egrep -v 'builds|po' | xargs -i oc delete {}"
+  shell: "{{ oc_bin }} get all | grep '{{ oc_check_app_status.stdout }}' | awk '{print $1}' | egrep -v 'builds|po' | xargs -i oc delete {}"
   ignore_errors: yes
   when: oc_check_app_status.stdout != ""
 
 - name: Cleanup any serviceaccounts, pvc, and rolebindings for an app if it exists on the cluster
-  command: "{{ oc_bin }} get {{ item }} | grep '{{ oc_check_app_status.stdout }}' | awk '{print $1}' | xargs -i oc delete {{ item }}/{}"
+  shell: "{{ oc_bin }} get {{ item }} | grep '{{ oc_check_app_status.stdout }}' | awk '{print $1}' | xargs -i oc delete {{ item }}/{}"
   ignore_errors: yes
   with_items:
     - serviceaccounts
@@ -23,14 +23,14 @@
   when: oc_check_app_status.stdout != ""
 
 - name: "{{ container_config_name }} :: Get template name from the yaml file"
-  command: "{{ oc_bin }} process -f {{ template_name }} | jq '.items[1].metadata.labels.template' | sed 's/\"//g'"
+  shell: "{{ oc_bin }} process -f {{ template_name }} | jq '.items[1].metadata.labels.template' | sed 's/\"//g'"
   register: "template_name_file"
 
 - debug:
     msg: "{{ container_config_name }} :: Template Name in file: {{ template_name_file.stdout }}"
 
 - name: "{{ container_config_name }} :: Get template name from querying the cluster"
-  command: "{{ oc_bin }} get templates | awk '{print $1}' | egrep '^{{ template_name_file.stdout }}$'"
+  shell: "{{ oc_bin }} get templates | awk '{print $1}' | egrep '^{{ template_name_file.stdout }}$'"
   register: "template_name_check"
   ignore_errors: yes
 
@@ -38,20 +38,20 @@
     msg: "{{ container_config_name }} :: Template Name from querying the cluster: {{ template_name_check.stdout }}"
 
 - name: "{{ container_config_name }} :: Updating buildconfig {{ template_name }}"
-  command: "{{ oc_bin }} replace -f {{ template_name }}"
+  shell: "{{ oc_bin }} replace -f {{ template_name }}"
   when: template_name_check.stdout != ""
 
 - name: "{{ container_config_name }} :: Creating buildconfig {{ template_name }}"
-  command: "{{ oc_bin }} create -f {{ template_name }}"
+  shell: "{{ oc_bin }} create -f {{ template_name }}"
   when: template_name_check.stdout == ""
 
 # imagestreams
 - name: "{{ container_config_name }} :: Get imagestream name from the yaml file"
-  command: "{{ oc_bin }} process -f {{ template_name }} | jq '.items[0].metadata.name' | sed 's/\"//g'"
+  shell: "{{ oc_bin }} process -f {{ template_name }} | jq '.items[0].metadata.name' | sed 's/\"//g'"
   register: "image_stream_name_file"
 
 - name: "{{ container_config_name }} :: Get imagestream from querying the cluster"
-  command: "{{ oc_bin }} get imagestream | awk '{print $1}' | egrep '^{{ image_stream_name_file.stdout }}$'"
+  shell: "{{ oc_bin }} get imagestream | awk '{print $1}' | egrep '^{{ image_stream_name_file.stdout }}$'"
   ignore_errors: yes
   register: "image_stream_name_check"
 
@@ -64,11 +64,11 @@
 
 # buildconfigs
 - name: "{{ container_config_name }} :: Get buildconfig name from the yaml file"
-  command: "{{ oc_bin }} process -f {{ template_name }} | jq '.items[1].metadata.name' | sed 's/\"//g'"
+  shell: "{{ oc_bin }} process -f {{ template_name }} | jq '.items[1].metadata.name' | sed 's/\"//g'"
   register: "build_config_name_file"
 
 - name: "{{ container_config_name }} :: Get buildconfig from querying the cluster"
-  command: "{{ oc_bin }} get buildconfig | awk '{print $1}' | egrep '^{{ build_config_name_file.stdout }}$'"
+  shell: "{{ oc_bin }} get buildconfig | awk '{print $1}' | egrep '^{{ build_config_name_file.stdout }}$'"
   ignore_errors: yes
   register: "build_config_name_check"
 
@@ -80,7 +80,7 @@
   when: build_config_name_check.stdout != ""
 
 - name: "{{ container_config_name }} :: Check if the template being loaded contains the parameter..."
-  command: "{{ oc_bin }} describe template {{ template_name_file.stdout }} | grep {{ item.key }}"
+  shell: "{{ oc_bin }} describe template {{ template_name_file.stdout }} | grep {{ item.key }}"
   register: check_temp_params
   with_items: "{{ PARAMS }}"
   ignore_errors: yes
@@ -106,7 +106,7 @@
 
 # Wait s2i container template to start building :: FINAL ATTEMPT
 - name: "{{ container_config_name }} :: Wait for {{  build_config_name_file.stdout }} to be queued :: FINAL ATTEMPT"
-  command: "{{ oc_bin }} get builds | grep '{{  build_config_name_file.stdout }}'"
+  shell: "{{ oc_bin }} get builds | grep '{{  build_config_name_file.stdout }}'"
   register: oc_build_result
   until: oc_build_result.stdout.find(" Pending ") == -1
   retries: 6
@@ -116,7 +116,7 @@
 
 # Wait s2i container template to be finished building :: FINAL ATTEMPT
 - name: "{{ container_config_name }} :: Wait for {{  build_config_name_file.stdout }} to be built and marked with latest tag :: FINAL ATTEMPT"
-  command: "{{ oc_bin }} get builds | grep '{{  build_config_name_file.stdout }}'"
+  shell: "{{ oc_bin }} get builds | grep '{{  build_config_name_file.stdout }}'"
   register: oc_build_result
   until: (oc_build_result.stdout.find(" Running ") == -1 or oc_build_result.stdout.find(" Failed ") != -1)
   retries: 300
@@ -125,18 +125,18 @@
 
 # Check for failed apps and cleanup
 - name: Check for any failed app on the cluster
-  command: "{{ oc_bin }} get all | egrep 'Failed|Error' | egrep 'builds' | awk '{print $1}' | awk -F'/' '{print $2}' | sed 's/-[0-9+]//g' | head -1"
+  shell: "{{ oc_bin }} get all | egrep 'Failed|Error' | egrep 'builds' | awk '{print $1}' | awk -F'/' '{print $2}' | sed 's/-[0-9+]//g' | head -1"
   register: oc_check_app_status
   ignore_errors: yes
   when: build_success|bool == false
 
 - name: Cleanup any failed dc, bc, routes, svc, and is for {{ oc_check_app_status.stdout }} on the cluster
-  command: "{{ oc_bin }} get all | grep '{{ oc_check_app_status.stdout }}' | awk '{print $1}' | egrep -v 'builds|po' | xargs -i oc delete {}"
+  shell: "{{ oc_bin }} get all | grep '{{ oc_check_app_status.stdout }}' | awk '{print $1}' | egrep -v 'builds|po' | xargs -i oc delete {}"
   ignore_errors: yes
   when: (build_success|bool == false and oc_check_app_status.stdout != "")
 
 - name: Cleanup any serviceaccounts, pvc, and rolebindings for an app if it exists on the cluster
-  command: "{{ oc_bin }} get {{ item }} | grep '{{ oc_check_app_status.stdout }}' | awk '{print $1}' | xargs -i oc delete {{ item }}/{}"
+  shell: "{{ oc_bin }} get {{ item }} | grep '{{ oc_check_app_status.stdout }}' | awk '{print $1}' | xargs -i oc delete {{ item }}/{}"
   ignore_errors: yes
   with_items:
     - serviceaccounts
@@ -151,5 +151,5 @@
 
 # Setup tag if container image build successful
 - name: Modify tags on images
-  command: "{{ oc_bin }} get is | awk '{print $2}' | grep -v DOCKER | sed 's/.*5000\\///g' | grep '{{ build_config_name_file.stdout }}' | xargs -i oc tag {}:latest {}:{{ tag }}"
+  shell: "{{ oc_bin }} get is | awk '{print $2}' | grep -v DOCKER | sed 's/.*5000\\///g' | grep '{{ build_config_name_file.stdout }}' | xargs -i oc tag {}:latest {}:{{ tag }}"
   when: modify_tags|bool == true and build_success|bool == true

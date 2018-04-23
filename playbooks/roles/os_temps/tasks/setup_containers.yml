@@ -23,7 +23,7 @@
 
 # Check if Jenkins is running
 - name: "Check to see if a Jenkins Master instance is running"
-  command: "{{ oc_bin }} get pods | grep -i 'running' | grep -i 'jenkins' | tail -1 |  awk '{print $1}'"
+  shell: "{{ oc_bin }} get pods | grep -i 'running' | grep -i 'jenkins' | tail -1 |  awk '{print $1}'"
   register: jenkins_running
   ignore_errors: yes
 
@@ -48,7 +48,7 @@
 
 # Check that templates are valid
 - name: "Check that templates are valid"
-  command: "{{ oc_bin }} process -f {{ item.path }}"
+  shell: "{{ oc_bin }} process -f {{ item.path }}"
   with_items: "{{ all_templates }}"
 
 # Load project_repo templates into OpenShift
