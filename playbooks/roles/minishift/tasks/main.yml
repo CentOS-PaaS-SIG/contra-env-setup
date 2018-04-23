@@ -4,7 +4,7 @@
 # Determine if minishift binary exists
 - name: "Is minishift binary present in {{ minishift_dest_dir }}"
   stat:
-    path: "{{ minishift_dest_dir }}/minishift"
+    path: "{{ minishift_bin }}"
   register: minishift_bin
 
 # Install minishift
@@ -13,20 +13,20 @@
 
 # Set disk size, memory, set Openshift version, skip OpenShift version and release check
 - name: "Set minishift disk-size {{ disk_size }}"
-  shell: "{{ minishift_dest_dir }}/minishift config set disk-size {{ disk_size }}"
+  shell: "{{ minishift_bin }} config set disk-size {{ disk_size }}"
 
 - name: "Set minishift memory {{ memory }}"
-  shell: "{{ minishift_dest_dir }}/minishift config set memory {{ memory }}"
+  shell: "{{ minishift_bin }} config set memory {{ memory }}"
 
 - name: "Set minishift openshift-version to {{ oc_version }}"
-  shell: "{{ minishift_dest_dir }}/minishift config set openshift-version {{ oc_version }}"
+  shell: "{{ minishift_bin }} config set openshift-version {{ oc_version }}"
 
 - name: "Set minishift skip-check-openshift-version"
-  shell: "{{ minishift_dest_dir }}/minishift config set skip-check-openshift-version true"
+  shell: "{{ minishift_bin }} config set skip-check-openshift-version true"
   when: minishift_version != "v1.12.0"
 
 - name: "Set minishift skip-check-openshift-release"
-  shell: "{{ minishift_dest_dir }}/minishift config set skip-check-openshift-release true"
+  shell: "{{ minishift_bin }} config set skip-check-openshift-release true"
   when: minishift_version != "v1.12.0"
 
 - name: "Pull down the minishift iso"
@@ -37,7 +37,7 @@
 
 # Check if the minishift profile exists
 - name: "Check if the minishift profile exists"
-  shell: "{{ minishift_dest_dir }}/minishift status --profile {{ profile }} | head -1 | grep -i 'does not exist'"
+  shell: "{{ minishift_bin }} status --profile {{ profile }} | head -1 | grep -i 'does not exist'"
   register: minishift_exist
   ignore_errors: yes
 

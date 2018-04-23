@@ -30,4 +30,4 @@
     path: "{{ ansible_env.HOME }}/{{ minishift_src_dir }}"
     state: absent
 
-- import_tasks: set_minishift_path.yml
+#- import_tasks: set_minishift_path.yml
