@@ -3,14 +3,14 @@
 
 # login to the cluster as admin
 - name: "Login to the Openshift cluster as an admin"
-  shell: "oc login {{ cluster_ip.stdout }} --username={{ admin_username }}:{{ admin_password }} --insecure-skip-tls-verify=true"
+  command: "{{ oc_bin }} login {{ cluster_ip.stdout }} --username={{ admin_username }}:{{ admin_password }} --insecure-skip-tls-verify=true"
 
 - name: "Check contra-env-setup scc name from the yaml file"
   shell: "cat {{ playbook_dir }}/roles/os_temps/templates/contra-env-setup-scc.yaml.j2 | grep name | awk '{print $NF}'"
   register: scc_file
 
 - name: "Check {{ scc_file.stdout }} name exists from querying the cluster"
-  shell: "oc get scc | grep '{{ scc_file.stdout }}' | awk '{print $1}'"
+  command: "{{ oc_bin }} get scc | grep '{{ scc_file.stdout }}' | awk '{print $1}'"
   register: scc_name_file
 
 - debug:
@@ -23,11 +23,11 @@
     mode: 0755
 
 - name: "Create the {{ scc_name_file.stdout }} security context constraints"
-  shell: "oc create -f '{{ contra_env_setup_dir }}/contra-env-setup-scc.yaml'"
+  command: "{{ oc_bin }} create -f '{{ contra_env_setup_dir }}/contra-env-setup-scc.yaml'"
   when: scc_name_file.stdout != scc_file.stdout
 
 - name: "Update the {{ scc_name_file.stdout }} security context constraints"
-  shell: "oc replace -f '{{ contra_env_setup_dir }}/contra-env-setup-scc.yaml'"
+  command: "{{ oc_bin }} replace -f '{{ contra_env_setup_dir }}/contra-env-setup-scc.yaml'"
   when: scc_name_file.stdout == scc_file.stdout
 
 # login to the cluster for the profile in use as a regular user

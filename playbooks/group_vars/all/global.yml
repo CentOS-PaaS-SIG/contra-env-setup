@@ -60,6 +60,12 @@ modify_scc: true
 # oc version
 oc_version: v3.6.1
 
+# Path to oc binary directory
+oc_bin_path: "{{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/linux/"
+
+# Path to oc binary
+oc_bin: "{{ oc_bin_path }}/oc"
+
 ## Project repo setup
 
 # Project repo
