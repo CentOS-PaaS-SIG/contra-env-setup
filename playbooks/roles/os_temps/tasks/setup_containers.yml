@@ -46,13 +46,19 @@
     msg: "{{ item.path }}"
   with_items: "{{ all_templates }}"
 
+- name: "Process the templates"
+  template:
+    src: "{{ item.path }}"
+    dest: "{{ item.path }}.processed"
+  with_items: "{{ all_templates }}"
+
 # Check that templates are valid
 - name: "Check that templates are valid"
-  shell: "{{ oc_bin }} process -f {{ item.path }}"
+  shell: "{{ oc_bin }} process -f {{ item.path }}.processed"
   with_items: "{{ all_templates }}"
 
 # Load project_repo templates into OpenShift
-- include_tasks: "setup_os_templates.yml template_name={{ item.path }}"
+- include_tasks: "setup_os_templates.yml template_name={{ item.path }}.processed"
   with_items: "{{ os_templates.files }}"
   when: os_templates.files != ""
 
