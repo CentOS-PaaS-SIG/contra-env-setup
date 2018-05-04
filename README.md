@@ -107,6 +107,10 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 * pipeline_dir: Relative directory in the project repo where Jenkins pipelines are stored: default=config/pipelines/buildconfigs
 * sample_pipeline_dir: Relative directory in the sample project repo where Jenkins pipelines are stored: default=config/pipelines/buildconfigs
 
+## Templates
+
+Note that it is possible to use {{ ansible_vars }} in your Openshift Templates.
+
 ## Usage examples
 
 ### Example 1: Setup on a local machine :: Setup Minishift + OS templates 
