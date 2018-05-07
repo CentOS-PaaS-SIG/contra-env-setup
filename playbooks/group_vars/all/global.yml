@@ -27,9 +27,10 @@ minishift_bin: "{{ minishift_dest_dir }}/minishift"
 # default minishift profile name
 profile: minishift
 
-# disk and memory size
+# disk, memory size and cpus
 disk_size: 40gb
 memory: 6400mb
+cpus: 2
 
 # minishift iso location
 minishift_iso: http://artifacts.ci.centos.org/fedora-atomic/minishift/iso/minishift.iso
