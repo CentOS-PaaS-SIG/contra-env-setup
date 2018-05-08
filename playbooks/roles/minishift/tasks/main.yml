@@ -18,6 +18,9 @@
 - name: "Set minishift memory {{ memory }}"
   shell: "{{ minishift_bin }} config set memory {{ memory }}"
 
+- name: "Set minishift cpus {{ cpus }}"
+  shell: "{{ minishift_bin }} config set cpus {{ cpus }}"
+
 - name: "Set minishift openshift-version to {{ oc_version }}"
   shell: "{{ minishift_bin }} config set openshift-version {{ oc_version }}"
 
