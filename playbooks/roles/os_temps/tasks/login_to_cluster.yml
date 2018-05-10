@@ -1,4 +1,4 @@
 ---
 # login to the cluster
 - name: "Login to the Openshift cluster"
-  shell: "{{ oc_bin }} login {{cluster_ip.stdout }} --username={{ username }} --password={{ password }} --insecure-skip-tls-verify=true"
+  shell: "{{ oc_bin }} login {{ cluster_ip }} --username={{ username }} --password={{ password }} --insecure-skip-tls-verify=true"

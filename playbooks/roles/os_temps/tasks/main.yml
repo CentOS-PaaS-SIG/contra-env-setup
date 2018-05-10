@@ -11,10 +11,19 @@
   import_tasks: install_oc_bin.yml
   when: setup_minishift|bool == false
 
-# Get ip of the cluster
+# Get ip of the cluster unless it was provided
 - name: "Get the cluster Server URL for project {{ openshift_project }}"
   shell: "{{ oc_bin }} status | egrep '{{ openshift_project }}.*server' | awk '{print $NF}'"
-  register: cluster_ip
+  register: cluster_ip_register
+  when: openshift_cluster_ip == ""
+
+- set_fact:
+    cluster_ip: "{{ openshift_cluster_ip }}"
+  when: openshift_cluster_ip != ""
+
+- set_fact:
+    cluster_ip: "{{ cluster_ip_register.stdout }}"
+  when: openshift_cluster_ip == ""
 
 # Login to the cluster for the profile in use
 - import_tasks: login_to_cluster.yml
