@@ -86,6 +86,7 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 
 ### oc setup options
 * openshift_project: OpenShift project name : default:contra-sample-project
+* openshift_cluster_ip: Cluster IP of OpenShift console. Set this if not using Minishift : default: <empty string>
 * modify_tags: Modify tags of containers : default=true
 * tag: Add a tag besides latest : default=stable
 * modify_scc: Create/update the security context constraints : default=true

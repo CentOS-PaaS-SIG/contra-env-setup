@@ -35,6 +35,10 @@ cpus: 2
 # minishift iso location
 minishift_iso: http://artifacts.ci.centos.org/fedora-atomic/minishift/iso/minishift.iso
 
+# Update this to be the cluster IP of Openshift console
+# Leave empty when using minishift
+openshift_cluster_ip: ""
+
 # cluster username
 username: developer
 

@@ -1,6 +1,10 @@
 ---
 # setup minishift
 
+- fail:
+    msg: 'setup_minishift cannot be true with a defined value for openshift_cluster_ip'
+  when: openshift_cluster_ip != ""
+
 # Determine if minishift binary exists
 - name: "Is minishift binary present in {{ minishift_dest_dir }}"
   stat:
