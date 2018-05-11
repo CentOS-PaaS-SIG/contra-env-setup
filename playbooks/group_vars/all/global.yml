@@ -51,8 +51,9 @@ admin_username: system
 # cluster admin password
 admin_password: admin
 
-# project for openshift
+# project name and display name for openshift
 openshift_project: contra-sample-project
+openshift_project_display_name: "Contra Sample Project"
 
 # modify tags on images
 modify_tags: true
