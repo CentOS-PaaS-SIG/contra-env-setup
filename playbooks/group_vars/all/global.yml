@@ -6,6 +6,7 @@ setup_minishift: true
 setup_containers: true
 setup_pipelines: false
 setup_sample_project: false
+setup_playbook_hooks: false
 force_minishift_install: false
 force_repo_clone: true
 
