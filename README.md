@@ -85,6 +85,7 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 * memory: Memory size to use for the VM : default=6400mb
 * cpus: Number of cpus to use for minishift VM: default=2
 * minishift_iso: ISO image to use : default=http://artifacts.ci.centos.org/fedora-atomic/minishift/iso/minishift.iso 
+* start_minishift: start an existing minishift instance: default=false
 
 ### oc setup options
 * openshift_project: OpenShift project name : default:contra-sample-project
