@@ -1,0 +1,3 @@
+# start minishift
+- name: "Initialization of minishift cluster with profile {{ profile }}"
+  shell: "{{ minishift_bin }} start --profile {{ profile }} --disk-size {{ disk_size }} --memory {{ memory }} --openshift-version {{ oc_version }} --iso-url file:///{{ minishift_dest_dir }}/minishift.iso"
