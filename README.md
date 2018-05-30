@@ -24,10 +24,7 @@
     - [Example 2: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines](#example-2-setup-on-a-local-machine--setup-minishift--os-templates--jenkins-20-pipelines)
     - [Example 3: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines](#example-3-setup-on-a-local-machine--setup-minishift--os-templates--jenkins-20-pipelines)
     - [Example 4: Setup on a local machine :: Start Minishift w/profile mysetup + OS templates + Jenkins 2.0 pipelines](#example-4-setup-on-a-local-machine--start-minishift-wprofile-mysetup--os-templates--jenkins-20-pipelines)
-    - [Example 1: Setup on a local machine :: Setup Minishift + OS templates](#example-1-setup-on-a-local-machine--setup-minishift--os-templates)
-    - [Example 2: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines](#example-2-setup-on-a-local-machine--setup-minishift--os-templates--jenkins-20-pipelines)
-    - [Example 3: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines](#example-3-setup-on-a-local-machine--setup-minishift--os-templates--jenkins-20-pipelines)
-    - [Example 4: Using the playbook hooks on contra-env-setup](#example-4-using-the-playbook-hooks-on-contra-env-setup)
+    - [Example 5: Setup on a local machine :: Using the playbook hooks on contra-env-setup](#example-5-setup-on-a-local-machine--using-the-playbook-hooks-on-contra-env-setup)
   - [Debugging Issues](#debugging-issues)
     - [Issue #1: Can't push images to the Minishift cluster](#issue-1-cant-push-images-to-the-minishift-cluster)
       - [Solution #1:](#solution-1)
@@ -213,7 +210,7 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
        Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
 
-### Example 4: Using the playbook hooks on contra-env-setup
+### Example 5: Setup on a local machine :: Using the playbook hooks on contra-env-setup
 
 This resource permit to create your playbooks to included as the last role that will be
 executed on contra-env-setup.
