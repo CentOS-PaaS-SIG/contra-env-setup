@@ -134,3 +134,10 @@ sample_os_template_dir: "config/s2i"
 # Sample Jenkins pipelines directory
 sample_pipeline_dir: "config/pipelines/buildconfigs"
 
+## Continuous-Infra helper containers
+
+# Helper project directory
+helper_project_dir: "{{ contra_env_setup_dir }}/{{ sample_project_repo.split('/')[-1] | replace('.git', '') }}"
+
+# Helper OpenSift template directory
+helper_os_template_dir: "{{ sample_os_template_dir }}"
