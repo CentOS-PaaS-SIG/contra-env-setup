@@ -24,6 +24,10 @@
     - [Example 2: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines](#example-2-setup-on-a-local-machine--setup-minishift--os-templates--jenkins-20-pipelines)
     - [Example 3: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines](#example-3-setup-on-a-local-machine--setup-minishift--os-templates--jenkins-20-pipelines)
     - [Example 4: Setup on a local machine :: Start Minishift w/profile mysetup + OS templates + Jenkins 2.0 pipelines](#example-4-setup-on-a-local-machine--start-minishift-wprofile-mysetup--os-templates--jenkins-20-pipelines)
+    - [Example 1: Setup on a local machine :: Setup Minishift + OS templates](#example-1-setup-on-a-local-machine--setup-minishift--os-templates)
+    - [Example 2: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines](#example-2-setup-on-a-local-machine--setup-minishift--os-templates--jenkins-20-pipelines)
+    - [Example 3: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines](#example-3-setup-on-a-local-machine--setup-minishift--os-templates--jenkins-20-pipelines)
+    - [Example 4: Using the playbook hooks on contra-env-setup](#example-4-using-the-playbook-hooks-on-contra-env-setup)
   - [Debugging Issues](#debugging-issues)
     - [Issue #1: Can't push images to the Minishift cluster](#issue-1-cant-push-images-to-the-minishift-cluster)
       - [Solution #1:](#solution-1)
@@ -85,7 +89,6 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 * memory: Memory size to use for the VM : default=6400mb
 * cpus: Number of cpus to use for minishift VM: default=2
 * minishift_iso: ISO image to use : default=http://artifacts.ci.centos.org/fedora-atomic/minishift/iso/minishift.iso 
-* start_minishift: start an existing minishift instance: default=false
 
 ### oc setup options
 * openshift_project: OpenShift project name : default:contra-sample-project
@@ -209,6 +212,20 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
 _Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
        Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
+
+### Example 4: Using the playbook hooks on contra-env-setup
+
+This resource permit to create your playbooks to included as the last role that will be
+executed on contra-env-setup.
+
+```
+    ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
+    -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
+    -e openshift_project=ari-ci-pipeline -e tag=develop -e setup_pipelines=true \
+    -e setup_sample_project -K -k
+    --extra-vars='{"hooks": ["/contra-env-setup/playbook_a.yml","/contra-env-setup/playbook_b.yml"]}'
+
+```
 
 ## Debugging Issues
 

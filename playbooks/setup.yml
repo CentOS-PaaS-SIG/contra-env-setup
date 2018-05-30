@@ -11,3 +11,4 @@
     - { role: minishift, when: "setup_minishift|bool == true and start_minishift == false" }
     - { role: os_temps, when: setup_containers|bool == true }
     - { role: pipeline, when: setup_pipelines|bool == true }
+    - { role: playbook_hooks, when: setup_playbook_hooks|bool == true }
