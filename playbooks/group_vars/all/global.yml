@@ -3,6 +3,7 @@
 run_cleanup: false
 run_prereqs: true
 setup_minishift: true
+startup_minishift: false
 setup_containers: true
 setup_pipelines: false
 setup_sample_project: false

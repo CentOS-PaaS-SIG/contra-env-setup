@@ -1,3 +1,16 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [contra-env-setup CI](#contra-env-setup-ci)
+  - [Avocado](#avocado)
+    - [How to install](#how-to-install)
+  - [Tests](#tests)
+    - [Running the test](#running-the-test)
+  - [References](#references)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # contra-env-setup CI
 This document describes how works the tests in the contra-env-setup repository.
 
