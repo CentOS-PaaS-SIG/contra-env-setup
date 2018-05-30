@@ -1,0 +1,6 @@
+---
+- debug: msg="{{ hooks }}"
+
+- name: "Adding external playbooks"
+  include: "{{ item }}"
+  with_items: "{{ hooks }}"
