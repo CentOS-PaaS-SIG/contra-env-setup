@@ -24,6 +24,7 @@
     - [Example 2: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines](#example-2-setup-on-a-local-machine--setup-minishift--os-templates--jenkins-20-pipelines)
     - [Example 3: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines](#example-3-setup-on-a-local-machine--setup-minishift--os-templates--jenkins-20-pipelines)
     - [Example 4: Using the playbook hooks on contra-env-setup](#example-4-using-the-playbook-hooks-on-contra-env-setup)
+    - [Example 5: Re-starting the minishift](#example-5-re-starting-the-minishift)
   - [Debugging Issues](#debugging-issues)
     - [Issue #1: Can't push images to the Minishift cluster](#issue-1-cant-push-images-to-the-minishift-cluster)
       - [Solution #1:](#solution-1)
@@ -196,6 +197,15 @@ executed on contra-env-setup.
     -e setup_sample_project -K -k
     --extra-vars='{"hooks": ["/contra-env-setup/playbook_a.yml","/contra-env-setup/playbook_b.yml"]}'
 
+```
+
+### Example 5: Re-starting the minishift
+
+This a simple resource to automate the long command line to re-start the minishift.
+
+```
+    ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
+    -e start_minishift=true
 ```
 
 ## Debugging Issues
