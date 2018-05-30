@@ -28,4 +28,4 @@
     refspec: "{{ sample_project_refspec }}"
     version: "{{ sample_project_branch }}"
     force: yes
-  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
+  when: project_repo != sample_project_repo

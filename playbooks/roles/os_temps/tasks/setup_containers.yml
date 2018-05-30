@@ -13,6 +13,14 @@
     recurse: yes
   register: os_templates
 
+- name: "Get helper OpenShift s2i template names from {{ helper_os_template_dir }}/helper"
+  find:
+    paths: "{{ helper_project_dir }}/{{ helper_os_template_dir }}/helper"
+    patterns: '*.yml,*.yaml'
+    recurse: yes
+  register: helper_os_templates
+  when: project_repo != sample_project_repo
+
 - name: "Get sample OpenShift s2i template names from {{ sample_os_template_dir }}/samples"
   find:
     paths: "{{ sample_project_dir }}/{{ sample_os_template_dir }}/samples"
@@ -39,7 +47,11 @@
     all_templates: "{{ os_templates.files }}"
 
 - set_fact:
-    all_templates: "{{ os_templates.files }} + {{ sample_os_templates.files }}"
+    all_templates: "{{ os_templates.files }} + {{ helper_os_templates.files }}"
+  when: (project_repo != sample_project_repo and setup_sample_project|bool == false)
+
+- set_fact:
+    all_templates: "{{ os_templates.files }} + {{ sample_os_templates.files }} + {{ helper_os_templates.files }} "
   when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
 
 - debug:

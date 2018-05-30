@@ -23,7 +23,8 @@
     - [Example 1: Setup on a local machine :: Setup Minishift + OS templates](#example-1-setup-on-a-local-machine--setup-minishift--os-templates)
     - [Example 2: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines](#example-2-setup-on-a-local-machine--setup-minishift--os-templates--jenkins-20-pipelines)
     - [Example 3: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines](#example-3-setup-on-a-local-machine--setup-minishift--os-templates--jenkins-20-pipelines)
-    - [Example 4: Using the playbook hooks on contra-env-setup](#example-4-using-the-playbook-hooks-on-contra-env-setup)
+    - [Example 4: Setup on a local machine :: Start Minishift w/profile mysetup + OS templates + Jenkins 2.0 pipelines](#example-4-setup-on-a-local-machine--start-minishift-wprofile-mysetup--os-templates--jenkins-20-pipelines)
+    - [Example 5: Setup on a local machine :: Using the playbook hooks on contra-env-setup](#example-5-setup-on-a-local-machine--using-the-playbook-hooks-on-contra-env-setup)
   - [Debugging Issues](#debugging-issues)
     - [Issue #1: Can't push images to the Minishift cluster](#issue-1-cant-push-images-to-the-minishift-cluster)
       - [Solution #1:](#solution-1)
@@ -184,7 +185,32 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
        Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
 
-### Example 4: Using the playbook hooks on contra-env-setup
+### Example 4: Setup on a local machine :: Start Minishift w/profile mysetup + OS templates + Jenkins 2.0 pipelines
+
+ 1. Install on a local machine as user cloud-user.
+ 2. Setup pre-reqs (kvm driver and nested virtualization)
+ 3. Start minishift cluster with profile mysetup
+ 4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/arilivigni/ci-pipeline
+    1. Override the project_repo with another one then the default in global.yml
+    2. OpenShift project -e openshift_project=ari-ci-pipeline 
+ 5. Modify my container tags with the tag=develop
+ 6. Setup Jenkins 2.0 pipelines from the project_repo=https://github.com/arilivigni/ci-pipeline
+ 7. Setup sample project templates and pipelines 
+    from the project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
+
+ 
+```
+    ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
+    -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
+    -e openshift_project=ari-ci-pipeline -e tag=develop -e setup_pipelines=true \
+    -e setup_sample_project -e start_minishift=true -e profile=mysetup -K -k
+
+```
+_Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
+       The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
+       Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
+
+### Example 5: Setup on a local machine :: Using the playbook hooks on contra-env-setup
 
 This resource permit to create your playbooks to included as the last role that will be
 executed on contra-env-setup.
