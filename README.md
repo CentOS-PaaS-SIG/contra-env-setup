@@ -124,15 +124,15 @@ Note that it is possible to use {{ ansible_vars }} in your Openshift Templates.
  1. Install on a local machine as user cloud-user.
  2. Setup pre-reqs (kvm driver and nested virtualization)
  3. Setup a minishift cluster
- 4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/arilivigni/ci-pipeline
+ 4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
     1. Override the project_repo with another one then the default in global.yml
-    2. OpenShift project -e openshift_project=ari-ci-pipeline  
+    2. OpenShift project -e openshift_project=ci-pipeline  
  5. Modify my container tags with the default tag. tag=stable
  
 ```
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
-    -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline 
-    -e openshift_project=ari-ci-pipeline -K -k
+    -e user=cloud-user -e project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project 
+    -e openshift_project=ci-pipeline -K -k
 
 ```
 _Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
@@ -144,16 +144,16 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
  1. Install on a local machine as user cloud-user.
  2. Setup pre-reqs (kvm driver and nested virtualization)
  3. Setup a minishift cluster
- 4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/arilivigni/ci-pipeline
+ 4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
     1. Override the project_repo with another one then the default in global.yml
-    2. OpenShift project -e openshift_project=ari-ci-pipeline  
+    2. OpenShift project -e openshift_project=ci-pipeline  
  5. Modify my container tags with the default tag. tag=stable
- 6. Setup Jenkins 2.0 pipelines from the project_repo=https://github.com/arilivigni/ci-pipeline
+ 6. Setup Jenkins 2.0 pipelines from the project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
  
 ```
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
-    -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
-    -e openshift_project=ari-ci-pipeline -e setup_pipelines=true -K -k
+    -e user=cloud-user -e project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project \
+    -e openshift_project=ci-pipeline -e setup_pipelines=true -K -k
 
 ```
 _Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
@@ -165,19 +165,19 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
  1. Install on a local machine as user cloud-user.
  2. Setup pre-reqs (kvm driver and nested virtualization)
  3. Setup a minishift cluster
- 4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/arilivigni/ci-pipeline
+ 4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
     1. Override the project_repo with another one then the default in global.yml
-    2. OpenShift project -e openshift_project=ari-ci-pipeline 
+    2. OpenShift project -e openshift_project=ci-pipeline 
  5. Modify my container tags with the tag=develop
- 6. Setup Jenkins 2.0 pipelines from the project_repo=https://github.com/arilivigni/ci-pipeline
+ 6. Setup Jenkins 2.0 pipelines from the project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
  7. Setup sample project templates and pipelines 
     from the project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
 
  
 ```
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
-    -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
-    -e openshift_project=ari-ci-pipeline -e tag=develop -e setup_pipelines=true \
+    -e user=cloud-user -e project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project \
+    -e openshift_project=ci-pipeline -e tag=develop -e setup_pipelines=true \
     -e setup_sample_project -K -k
 
 ```
@@ -190,19 +190,19 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
  1. Install on a local machine as user cloud-user.
  2. Setup pre-reqs (kvm driver and nested virtualization)
  3. Start minishift cluster with profile mysetup
- 4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/arilivigni/ci-pipeline
+ 4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
     1. Override the project_repo with another one then the default in global.yml
-    2. OpenShift project -e openshift_project=ari-ci-pipeline 
+    2. OpenShift project -e openshift_project=ci-pipeline 
  5. Modify my container tags with the tag=develop
- 6. Setup Jenkins 2.0 pipelines from the project_repo=https://github.com/arilivigni/ci-pipeline
+ 6. Setup Jenkins 2.0 pipelines from the project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
  7. Setup sample project templates and pipelines 
     from the project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
 
  
 ```
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
-    -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
-    -e openshift_project=ari-ci-pipeline -e tag=develop -e setup_pipelines=true \
+    -e user=cloud-user -e project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project \
+    -e openshift_project=ci-pipeline -e tag=develop -e setup_pipelines=true \
     -e setup_sample_project -e start_minishift=true -e profile=mysetup -K -k
 
 ```
@@ -217,8 +217,8 @@ executed on contra-env-setup.
 
 ```
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
-    -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
-    -e openshift_project=ari-ci-pipeline -e tag=develop -e setup_pipelines=true \
+    -e user=cloud-user -e project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project \
+    -e openshift_project=ci-pipeline -e tag=develop -e setup_pipelines=true \
     -e setup_sample_project -K -k
     --extra-vars='{"hooks": ["/contra-env-setup/playbook_a.yml","/contra-env-setup/playbook_b.yml"]}'
 
