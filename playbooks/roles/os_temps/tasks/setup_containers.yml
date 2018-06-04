@@ -21,38 +21,14 @@
   register: helper_os_templates
   when: project_repo != sample_project_repo
 
-- name: "Get sample OpenShift s2i template names from {{ sample_os_template_dir }}/samples"
-  find:
-    paths: "{{ sample_project_dir }}/{{ sample_os_template_dir }}/samples"
-    patterns: '*.yml,*.yaml'
-    recurse: yes
-  register: sample_os_templates
-  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
-
-# Check if Jenkins is running
-- name: "Check to see if a Jenkins Master instance is running"
-  shell: "{{ oc_bin }} get pods | grep -i 'running' | grep -i 'jenkins' | tail -1 |  awk '{print $1}'"
-  register: jenkins_running
-  ignore_errors: yes
-
-- name: "Get sample jenkins OpenShift s2i template names from {{ sample_os_template_dir }}/jenkins"
-  find:
-    paths: "{{ sample_project_dir }}/{{ sample_os_template_dir }}/jenkins"
-    patterns: '*.yml,*.yaml'
-    recurse: yes
-  register: sample_jenkins_os_templates
-  when: (project_repo != sample_project_repo and setup_sample_project|bool == true and jenkins_running.stdout == "")
-
-- set_fact:
+- name: "os_templates when project_repo == sample_project_repo"
+  set_fact:
     all_templates: "{{ os_templates.files }}"
 
-- set_fact:
+- name: "os_templates + helper_os_templates when project_repo != to sample_project_repo"
+  set_fact:
     all_templates: "{{ os_templates.files }} + {{ helper_os_templates.files }}"
-  when: (project_repo != sample_project_repo and setup_sample_project|bool == false)
-
-- set_fact:
-    all_templates: "{{ os_templates.files }} + {{ sample_os_templates.files }} + {{ helper_os_templates.files }} "
-  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
+  when: project_repo != sample_project_repo
 
 - debug:
     msg: "{{ item.path }}"
@@ -71,15 +47,12 @@
 
 # Load project_repo templates into OpenShift
 - include_tasks: "setup_os_templates.yml template_name={{ item.path }}.processed"
-  with_items: "{{ os_templates.files }}"
-  when: os_templates.files != ""
+  with_items: "{{ all_templates }}"
+  when: all_templates != ""
 
-# Set PARAMS to the sample ones
-- set_fact:
-    PARAMS: "{{ SAMPLE_PARAMS }}"
-  when: sample_os_templates.files is defined
-
-# Load project_repo templates into OpenShift
-- include_tasks: "setup_os_templates.yml template_name={{ item.path }}"
-  with_items: "{{ sample_os_templates.files }}"
+## Only run of project_repo != sample_project_repo and setup_sample_project == true
+- include_tasks: "setup_sample_proj.yml"
   when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
+
+
+
