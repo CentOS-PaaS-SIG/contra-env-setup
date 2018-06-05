@@ -103,6 +103,16 @@ PARAMS:
   - key: REPO_REF
     val: "{{ project_branch }}"
 
+# These are parameters that are passed to setup the helper containers in sample_project_repo
+SAMPLE_HELPER_PARAMS:
+  - key: REPO_URL
+    val: "{{ sample_project_repo }}"
+  - key: REPO_REF
+    val: "{{ sample_project_branch }}"
+
+# These are parameters that are passed to setup the Jenkins master/slave containers in sample_project_repo
+SAMPLE_JENKINS_PARAMS: "{{ SAMPLE_HELPER_CONTAINERS }}"
+
 # These are parameters that are passed to setup the containers from the sample_project_repo
 SAMPLE_PARAMS:
   - key: REPO_URL
