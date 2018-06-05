@@ -11,13 +11,9 @@
   import_tasks: install_oc_bin.yml
   when: setup_minishift|bool == false
 
-# Switch to right OpenShift project defined in {{ {{ openshift_project }}" }}
-- name: "Switch to project {{ openshift_project }}"
-  shell: "{{ oc_bin }} project {{ openshift_project }}"
-
 # Get ip of the cluster unless it was provided
 - name: "Get the cluster Server URL for project {{ openshift_project }}"
-  shell: "{{ oc_bin }} status | egrep '{{ openshift_project }}.*server' | awk '{print $NF}'"
+  shell: "{{ oc_bin }} status | grep 'https' | awk '{print $NF}'"
   register: cluster_ip_register
   when: openshift_cluster_ip == ""
 
