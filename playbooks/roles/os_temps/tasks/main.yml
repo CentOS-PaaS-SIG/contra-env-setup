@@ -38,12 +38,11 @@
   when: setup_minishift|bool == true
 
 # Setup project_repo containers
-- import_tasks: "setup_containers.yml os_template_path={{ project_dir }}/{{ os_template_dir }}"
+- include_tasks: "setup_containers.yml os_template_path={{ project_dir }}/{{ os_template_dir }}"
   when: setup_containers|bool == true
 
 # Setup sample_project_repo helper containers
-- import_tasks: "setup_containers.yml os_template_path={{ helper_project_dir }}/{{ helper_os_template_dir }}/helper PARAMS={{ SAMPLE_HELPER_PARAMS }}"
-  when: setup_containers|bool == true
+- include_tasks: "setup_containers.yml os_template_path={{ helper_project_dir }}/{{ helper_os_template_dir }}/helper PARAMS={{ SAMPLE_HELPER_PARAMS }}"
   when: (setup_containers|bool == true and project_repo != sample_project_repo)
 
 # Check if Jenkins is running
@@ -53,11 +52,11 @@
   ignore_errors: yes
 
 # Setup sample_project_repo Jenkins master/slave sample containers
-- import_tasks: "setup_containers.yml os_template_path={{ sample_project_dir }}/{{ sample_os_template_dir }}/jenkins PARAMS={{ SAMPLE_JENKINS_PARAMS }}"
+- include_tasks: "setup_containers.yml os_template_path={{ sample_project_dir }}/{{ sample_os_template_dir }}/jenkins PARAMS={{ SAMPLE_JENKINS_PARAMS }}"
   when: (setup_containers|bool == true and project_repo != sample_project_repo and setup_sample_project|bool == true and jenkins_running.stdout == "")
 
 # Setup sample_project_repo sample containers
-- import_tasks: "setup_containers.yml os_template_path={{ sample_project_dir }}/{{ sample_os_template_dir }}/samples PARAMS={{ SAMPLE_PARAMS }}"
+- include_tasks: "setup_containers.yml os_template_path={{ sample_project_dir }}/{{ sample_os_template_dir }}/samples PARAMS={{ SAMPLE_PARAMS }}"
   when: (setup_containers|bool == true and project_repo != sample_project_repo and setup_sample_project|bool == true)
 
 # Add security context constraints
