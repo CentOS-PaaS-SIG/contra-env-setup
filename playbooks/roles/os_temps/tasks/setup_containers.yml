@@ -6,80 +6,31 @@
     container_config_name: "OpenShift s2i templates"
 
 # Use the repo's OpenShift s2i templates as the list to process
-- name: "Get OpenShift s2i template names from {{ os_template_dir }}"
+- name: "Get OpenShift s2i template names from {{ os_template_path }}"
   find:
-    paths: "{{ project_dir }}/{{ os_template_dir }}"
+    paths: "{{ os_template_path }}"
     patterns: '*.yml,*.yaml'
     recurse: yes
   register: os_templates
 
-- name: "Get helper OpenShift s2i template names from {{ helper_os_template_dir }}/helper"
-  find:
-    paths: "{{ helper_project_dir }}/{{ helper_os_template_dir }}/helper"
-    patterns: '*.yml,*.yaml'
-    recurse: yes
-  register: helper_os_templates
-  when: project_repo != sample_project_repo
-
-- name: "Get sample OpenShift s2i template names from {{ sample_os_template_dir }}/samples"
-  find:
-    paths: "{{ sample_project_dir }}/{{ sample_os_template_dir }}/samples"
-    patterns: '*.yml,*.yaml'
-    recurse: yes
-  register: sample_os_templates
-  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
-
-# Check if Jenkins is running
-- name: "Check to see if a Jenkins Master instance is running"
-  shell: "{{ oc_bin }} get pods | grep -i 'running' | grep -i 'jenkins' | tail -1 |  awk '{print $1}'"
-  register: jenkins_running
-  ignore_errors: yes
-
-- name: "Get sample jenkins OpenShift s2i template names from {{ sample_os_template_dir }}/jenkins"
-  find:
-    paths: "{{ sample_project_dir }}/{{ sample_os_template_dir }}/jenkins"
-    patterns: '*.yml,*.yaml'
-    recurse: yes
-  register: sample_jenkins_os_templates
-  when: (project_repo != sample_project_repo and setup_sample_project|bool == true and jenkins_running.stdout == "")
-
-- set_fact:
-    all_templates: "{{ os_templates.files }}"
-
-- set_fact:
-    all_templates: "{{ os_templates.files }} + {{ helper_os_templates.files }}"
-  when: (project_repo != sample_project_repo and setup_sample_project|bool == false)
-
-- set_fact:
-    all_templates: "{{ os_templates.files }} + {{ sample_os_templates.files }} + {{ helper_os_templates.files }} "
-  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
-
 - debug:
     msg: "{{ item.path }}"
-  with_items: "{{ all_templates }}"
+  with_items: "{{ os_templates.files }}"
 
 - name: "Process the templates"
   template:
     src: "{{ item.path }}"
     dest: "{{ item.path }}.processed"
-  with_items: "{{ all_templates }}"
+  with_items: "{{ os_templates.files }}"
 
 # Check that templates are valid
 - name: "Check that templates are valid"
   shell: "{{ oc_bin }} process -f {{ item.path }}.processed"
-  with_items: "{{ all_templates }}"
+  with_items: "{{ os_templates.files }}"
 
 # Load project_repo templates into OpenShift
 - include_tasks: "setup_os_templates.yml template_name={{ item.path }}.processed"
   with_items: "{{ os_templates.files }}"
   when: os_templates.files != ""
 
-# Set PARAMS to the sample ones
-- set_fact:
-    PARAMS: "{{ SAMPLE_PARAMS }}"
-  when: sample_os_templates.files is defined
 
-# Load project_repo templates into OpenShift
-- include_tasks: "setup_os_templates.yml template_name={{ item.path }}"
-  with_items: "{{ sample_os_templates.files }}"
-  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
