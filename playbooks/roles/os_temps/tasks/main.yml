@@ -13,7 +13,7 @@
 
 # Get ip of the cluster unless it was provided
 - name: "Get the cluster Server URL for project {{ openshift_project }}"
-  shell: "{{ oc_bin }} status | grep 'https' | awk '{print $NF}'"
+  shell: "{{ oc_bin }} status | grep 'https' | awk '{print $NF}' | head -1"
   register: cluster_ip_register
   when: openshift_cluster_ip == ""
 

@@ -12,7 +12,3 @@
 
 - name: add-role-to-user
   shell: "{{ oc_bin }} policy add-role-to-user edit -z default -n '{{ openshift_project }}'"
-
-
-
-
