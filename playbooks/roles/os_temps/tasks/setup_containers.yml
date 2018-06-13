@@ -10,7 +10,7 @@
   find:
     paths: "{{ os_template_path }}"
     patterns: '*.yml,*.yaml'
-    contains: 'kind: Template|kind: \"Template\"'
+    contains: 'kind:\s*[\"\'']?Template[\"\'']?'
     recurse: yes
   register: os_templates
 
