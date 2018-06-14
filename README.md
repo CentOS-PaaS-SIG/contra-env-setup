@@ -224,6 +224,31 @@ executed on contra-env-setup.
 
 ```
 
+### Example 6: Setup on a local machine :: Start Minishift w/profile mysetup + OS templates + Jenkins 2.0 pipelines
+
+ 1. Install on a local machine as user cloud-user.
+ 2. Setup pre-reqs (kvm driver and nested virtualization)
+ 3. Start minishift cluster with profile mysetup
+ 4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/arilivigni/ci-pipeline
+    1. Override the project_repo with another one then the default in global.yml
+    2. OpenShift project -e openshift_project=ari-ci-pipeline 
+ 5. Disable setup of the helper containers ansible-executor and linchpin-executor
+ 6. Setup Jenkins 2.0 pipelines from the project_repo=https://github.com/arilivigni/ci-pipeline
+ 7. Setup sample project templates and pipelines 
+    from the project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
+
+ 
+```
+    ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
+    -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
+    -e openshift_project=ari-ci-pipeline -e setup_helper_containers=false -e setup_pipelines=true \
+    -e start_minishift=true -e profile=mysetup -K -k
+
+```
+_Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
+       The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
+       Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
+
 ## Debugging Issues
 
 ### Issue #1: Can't push images to the Minishift cluster
