@@ -5,6 +5,7 @@ run_prereqs: true
 setup_minishift: true
 start_minishift: false
 setup_containers: true
+setup_helper_containers: true
 setup_pipelines: false
 setup_sample_project: false
 setup_playbook_hooks: false
