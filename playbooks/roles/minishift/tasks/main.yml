@@ -28,6 +28,10 @@
 - name: "Set minishift openshift-version to {{ oc_version }}"
   shell: "{{ minishift_bin }} config set openshift-version {{ oc_version }}"
 
+- name: "Set minishift minishift_insecure_registry"
+  shell: "{{ minishift_bin }} config set insecure-registry \"{{ minishift_insecure_registry }}\""
+  when: minishift_insecure_registry != ""
+
 - name: "Set minishift skip-check-openshift-version"
   shell: "{{ minishift_bin }} config set skip-check-openshift-version true"
   when: minishift_version != "v1.12.0"
