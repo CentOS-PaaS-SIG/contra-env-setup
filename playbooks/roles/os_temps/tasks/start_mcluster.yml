@@ -10,3 +10,6 @@
 - name: "Start minishift profile {{ profile }}"
   shell: "{{ minishift_bin }} start --profile {{ profile }} --cpus {{ cpus }} --disk-size {{ disk_size }} --memory {{ memory }} --openshift-version {{ oc_version }} --iso-url file:///{{ minishift_dest_dir }}/minishift.iso"
   when: minishift_status.stdout == "Stopped"
+
+- name: "Workaround for wrong SELinux context"
+  shell: "{{ minishift_bin }} ssh --profile {{ profile }} -- sudo restorecon -R /var/lib/docker"
