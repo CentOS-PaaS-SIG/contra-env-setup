@@ -16,7 +16,7 @@ force_repo_clone: true
 contra_env_setup_dir: "{{ ansible_env.HOME }}/.contra-env-setup"
 
 # Docker KVM version
-dkvm_version: v0.7.0
+dkvm_version: v0.10.0
 
 ## minishift values
 # minishift version
