@@ -20,7 +20,7 @@ dkvm_version: v0.10.0
 
 ## minishift values
 # minishift version
-minishift_version: v1.12.0
+minishift_version: v1.17.0
 
 # default location for minishift
 minishift_dest_dir: "{{ contra_env_setup_dir }}/minishift"
