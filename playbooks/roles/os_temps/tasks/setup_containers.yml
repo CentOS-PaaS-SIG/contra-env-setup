@@ -29,9 +29,20 @@
   shell: "{{ oc_bin }} process -f {{ item.path }}.processed"
   with_items: "{{ os_templates.files }}"
 
-# Load project_repo templates into OpenShift
-- include_tasks: "setup_os_templates.yml template_name={{ item.path }}.processed"
+# Set the total build success
+- set_fact:
+    total_build_success: false
+
+# Setup project_repo templates and store variables for each template
+- name: "Setup project_repo templates and store variables for each template"
+  include_tasks: "setup_os_templates.yml template_name={{ item.path }}.processed"
   with_items: "{{ os_templates.files }}"
+  when: os_templates.files != ""
+
+# Handle loading of project_repo templates into OpenShift
+- name: "Handle loading of project_repo templates into OpenShift"
+  include_tasks: "check_os_templates.yml"
+  with_sequence: count=4
   when: os_templates.files != ""
 
 

@@ -1,0 +1,24 @@
+---
+
+# Start builds for each container defined in the template files
+- name: "Start builds for container defined in the template file {{ item.path }}"
+  include_tasks: "build_new_app.yml template_name={{ item.path }}.processed"
+  with_items: "{{ os_templates.files }}"
+  when: (total_build_success|bool == false)
+
+# Check on build status of each container sequentially
+- name: "Check on build status of container {{ item.path }}"
+  include_tasks: "check_new_app.yml template_name={{ item.path }}.processed"
+  with_items: "{{ os_templates.files }}"
+  when: (total_build_success|bool == false)
+
+- set_fact:
+    total_build_success: true
+
+# Check if all builds are marked as succesful
+- name: "Check if all builds are marked as succesful"
+  set_fact:
+    total_build_success: "{{ total_build_success|bool and template_result.value|bool }}"
+  with_dict: "{{ build_results }}"
+  loop_control:
+    loop_var: template_result
