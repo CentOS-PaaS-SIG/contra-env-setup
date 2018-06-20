@@ -39,10 +39,12 @@
   with_items: "{{ os_templates.files }}"
   when: os_templates.files != ""
 
-# Handle loading of project_repo templates into OpenShift
+# Handle loading of project_repo templates into OpenShift, retry 4 times
 - name: "Handle loading of project_repo templates into OpenShift"
-  include_tasks: "check_os_templates.yml"
+  include_tasks: "handle_os_templates.yml"
   with_sequence: count=4
+  loop_control:
+    loop_var: attempt_number
   when: os_templates.files != ""
 
 

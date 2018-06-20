@@ -13,6 +13,9 @@
     build_results: "{{ build_results | combine( {template_name: true}) }}"
   when: (build_results[template_name]|bool == false and oc_build_result is defined and oc_build_result.stdout.find(" Complete ") != -1)
 
+- set_fact:
+    oc_check_app_status: ""
+
 # Check for failed apps and cleanup
 - name: "Check for any failed app on the cluster"
   shell: "{{ oc_bin }} get all | egrep 'Failed|Error' | egrep 'builds' | awk '{print $1}' | awk -F'/' '{print $2}' | sed 's/-[0-9+]//g' | head -1"
