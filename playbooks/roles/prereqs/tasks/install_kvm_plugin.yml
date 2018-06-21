@@ -2,7 +2,7 @@
 # Install the kvm plugin
 - name: Pull down kvm plugin
   get_url:
-    url: https://github.com/dhiltgen/docker-machine-kvm/releases/download/{{ dkvm_version }}/docker-machine-driver-kvm
+    url: https://github.com/dhiltgen/docker-machine-kvm/releases/download/{{ dkvm_version }}/docker-machine-driver-kvm-centos7
     dest: /usr/local/bin/docker-machine-driver-kvm
     mode: 755
   become: true
