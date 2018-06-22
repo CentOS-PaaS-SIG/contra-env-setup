@@ -7,6 +7,9 @@
   pause:
     minutes: 3
 
+- name: Workaround for wrong SELinux context
+  shell: "{{ minishift_bin }} ssh --profile {{ profile }} -- sudo restorecon -R /var/lib/docker"
+
 - name: Stop the cluster
   shell: "{{ minishift_bin }} stop --profile {{ profile }}"
 

@@ -79,7 +79,7 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 
 ### Minishift setup options
 * setup_minishift: Setup a minishift cluster : default=true
-* minishift_version: Minishift version to use : default=v1.12.0
+* minishift_version: Minishift version to use : default=v1.17.0
 * minishift_dest_dir: Minishift binary and ISO directory : default={{ contra_env_setup_dir }}/minishift
 * profile: Minishift profile : default=minishift
 * disk_size: Disk size to use for minishift : default=40gb
