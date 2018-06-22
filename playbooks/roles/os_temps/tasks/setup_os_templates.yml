@@ -2,26 +2,6 @@
 - set_fact:
     params: []
 
-# Check for failed apps and cleanup
-- name: Check for any failed apps on the cluster
-  shell: "{{ oc_bin }} get all | egrep 'Failed|Error' | egrep 'builds' | awk '{print $1}' | awk -F'/' '{print $2}' | sed 's/-[0-9+]//g' | head -1"
-  register: oc_check_app_status
-  ignore_errors: yes
-
-- name: Cleanup any failed dc, bc, routes, svc, and is for {{ oc_check_app_status.stdout }} on the cluster
-  shell: "{{ oc_bin }} get all | grep '{{ oc_check_app_status.stdout }}' | awk '{print $1}' | egrep -v 'builds|po' | xargs -i {{ oc_bin }} delete {}"
-  ignore_errors: yes
-  when: oc_check_app_status.stdout != ""
-
-- name: Cleanup any serviceaccounts, pvc, and rolebindings for an app if it exists on the cluster
-  shell: "{{ oc_bin }} get {{ item }} | grep '{{ oc_check_app_status.stdout }}' | awk '{print $1}' | xargs -i {{ oc_bin }} delete {{ item }}/{}"
-  ignore_errors: yes
-  with_items:
-    - serviceaccounts
-    - pvc
-    - rolebindings
-  when: oc_check_app_status.stdout != ""
-
 - name: "{{ container_config_name }} :: Get template name from the yaml file"
   shell: "{{ oc_bin }} process -f {{ template_name }} | jq '.items[1].metadata.labels.template' | sed 's/\"//g'"
   register: "template_name_file"

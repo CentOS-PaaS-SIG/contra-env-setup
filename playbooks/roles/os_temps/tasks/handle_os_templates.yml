@@ -20,7 +20,7 @@
       stdout: ""
 
 # Check for failed apps and cleanup
-- name: "Check for all failed app on the cluster"
+- name: "Check for all failed apps on the cluster"
   shell: "{{ oc_bin }} get all | egrep 'Failed|Error' | egrep 'builds' | awk '{print $1}' | awk -F'/' '{print $2}' | sed 's/-[0-9+]//g' "
   register: oc_check_app_status
   ignore_errors: yes
