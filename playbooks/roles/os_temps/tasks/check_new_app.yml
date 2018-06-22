@@ -1,4 +1,8 @@
 ---
+# Set current build attempt status
+- set_fact:
+    current_build_succeeded: false
+
 # Wait container in the pipeline to be finished building
 - name: "{{ container_config_name }} :: Wait for {{  build_config_name_files[template_name] }} to be built and marked with latest tag"
   shell: "{{ oc_bin }} get builds | grep '{{  build_config_name_files[template_name] }}'"
@@ -11,6 +15,7 @@
 # Set fact if build result is Complete
 - set_fact:
     build_results: "{{ build_results | combine( {template_name: true}) }}"
+    current_build_succeeded: true
   when: (build_results[template_name]|bool == false and oc_build_result is defined and oc_build_result.stdout.find(" Complete ") != -1)
 
 # If oc_build result is defined publish the outcome
@@ -18,7 +23,7 @@
     msg: "End result of building the container image :: {{ oc_build_result.stdout }}"
   when: oc_build_result.stdout is defined
 
-# Setup tag if container image build successful
+# Setup tag if current container image build is successful
 - name: Modify tags on images
   shell: "{{ oc_bin }} get imagestream | awk '{print $2}' | grep -v DOCKER | sed 's/.*5000\\///g' | grep '{{ build_config_name_files[template_name] }}' | xargs -i {{ oc_bin }} tag {}:latest {}:{{ tag }}"
-  when: modify_tags|bool == true and build_results[template_name]|bool == true
+  when: modify_tags|bool == true and current_build_succeeded|bool == true
