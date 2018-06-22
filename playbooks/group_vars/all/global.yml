@@ -16,11 +16,11 @@ force_repo_clone: true
 contra_env_setup_dir: "{{ ansible_env.HOME }}/.contra-env-setup"
 
 # Docker KVM version
-dkvm_version: v0.7.0
+dkvm_version: v0.10.0
 
 ## minishift values
 # minishift version
-minishift_version: v1.12.0
+minishift_version: v1.17.0
 
 # default location for minishift
 minishift_dest_dir: "{{ contra_env_setup_dir }}/minishift"
@@ -36,7 +36,7 @@ memory: 8092mb
 cpus: 2
 
 # minishift iso location
-minishift_iso: http://artifacts.ci.centos.org/fedora-atomic/minishift/iso/minishift.iso
+minishift_iso: https://s3.amazonaws.com/continuous-infra/minishift/iso/minishift.iso
 
 # Additional insecure docker registries used inside minishift
 # Use comma separated values for more registries
