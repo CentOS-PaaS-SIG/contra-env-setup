@@ -1,0 +1,55 @@
+---
+# Start builds for each container defined in the template files
+- name: "Start builds for containers defined in the template files - attempt {{ attempt_number }}"
+  include_tasks: "build_new_app.yml template_name={{ template_filename.path }}.processed"
+  with_items: "{{ os_templates.files }}"
+  when: (total_build_success|bool == false)
+  loop_control:
+    loop_var: template_filename
+
+# Check on build status of each container, finalize if done
+- name: "Check on build status of containers, finalize if done - attempt {{ attempt_number }}"
+  include_tasks: "check_new_app.yml template_name={{ template_filename.path }}.processed"
+  with_items: "{{ os_templates.files }}"
+  when: (total_build_success|bool == false)
+  loop_control:
+    loop_var: template_filename
+
+- set_fact:
+    oc_check_app_status:
+      stdout: ""
+
+# Check for failed apps and cleanup
+- name: "Check for all failed apps on the cluster"
+  shell: "{{ oc_bin }} get all | egrep 'Failed|Error' | egrep 'builds\/' | awk '{print $1}' | awk -F'/' '{print $2}' | sed 's/-[0-9+]//g' "
+  register: oc_check_app_status
+  ignore_errors: yes
+  when: total_build_success|bool == false
+
+- name: "Cleanup all failed dc, bc, routes, svc, and imagestreams on the cluster"
+  shell: "{{ oc_bin }} get all | grep '{{ failed_container_name }}' | awk '{print $1}' | egrep -v 'builds\/|po\/' | xargs -i {{ oc_bin }} delete {}"
+  with_items: "{{ oc_check_app_status.stdout_lines }}"
+  loop_control:
+    loop_var: failed_container_name
+  ignore_errors: yes
+  when: (total_build_success|bool == false and oc_check_app_status.stdout != "")
+
+- name: "Cleanup any serviceaccounts, pvc, and rolebindings for an app if it exists on the cluster"
+  shell: "{{ oc_bin }} get {{ item }} | egrep '{{ oc_check_app_status.stdout_lines|join('|') }}' | awk '{print $1}' | xargs -i {{ oc_bin }} delete {{ item }}/{}"
+  ignore_errors: yes
+  with_items:
+    - serviceaccounts
+    - pvc
+    - rolebindings
+  when: (total_build_success|bool == false and oc_check_app_status.stdout != "")
+
+- set_fact:
+    total_build_success: true
+
+# Check if all builds are marked as succesful
+- name: "Check if all builds are marked as succesful"
+  set_fact:
+    total_build_success: "{{ total_build_success|bool and template_result.value|bool }}"
+  with_dict: "{{ build_results }}"
+  loop_control:
+    loop_var: template_result
