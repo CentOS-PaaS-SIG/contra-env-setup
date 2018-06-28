@@ -21,13 +21,13 @@
 
 # Check for failed apps and cleanup
 - name: "Check for all failed apps on the cluster"
-  shell: "{{ oc_bin }} get all | egrep 'Failed|Error' | egrep 'builds' | awk '{print $1}' | awk -F'/' '{print $2}' | sed 's/-[0-9+]//g' "
+  shell: "{{ oc_bin }} get all | egrep 'Failed|Error' | egrep 'builds\/' | awk '{print $1}' | awk -F'/' '{print $2}' | sed 's/-[0-9+]//g' "
   register: oc_check_app_status
   ignore_errors: yes
   when: total_build_success|bool == false
 
 - name: "Cleanup all failed dc, bc, routes, svc, and imagestreams on the cluster"
-  shell: "{{ oc_bin }} get all | grep '{{ failed_container_name }}' | awk '{print $1}' | egrep -v 'builds|po' | xargs -i {{ oc_bin }} delete {}"
+  shell: "{{ oc_bin }} get all | grep '{{ failed_container_name }}' | awk '{print $1}' | egrep -v 'builds\/|po\/' | xargs -i {{ oc_bin }} delete {}"
   with_items: "{{ oc_check_app_status.stdout_lines }}"
   loop_control:
     loop_var: failed_container_name
