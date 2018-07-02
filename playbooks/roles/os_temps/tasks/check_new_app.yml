@@ -5,7 +5,7 @@
 
 # Wait container in the pipeline to be finished building
 - name: "{{ container_config_name }} :: Wait for {{  build_config_name_files[template_name] }} to be built and marked with latest tag"
-  shell: "{{ oc_bin }} get builds | grep '{{  build_config_name_files[template_name] }}'"
+  shell: "{{ oc_bin }} get builds | grep '{{ build_config_name_files[template_name] }}'"
   register: oc_build_result
   until: (oc_build_result.stdout.find(" Running ") == -1 or oc_build_result.stdout.find(" Failed ") != -1)
   retries: 300
@@ -27,3 +27,24 @@
 - name: Modify tags on images
   shell: "{{ oc_bin }} get imagestream | awk '{print $2}' | grep -v DOCKER | sed 's/.*5000\\///g' | grep '{{ build_config_name_files[template_name] }}' | xargs -i {{ oc_bin }} tag {}:latest {}:{{ tag }}"
   when: modify_tags|bool == true and current_build_succeeded|bool == true
+
+# Output the OpenShift build logs if the current build failed
+- name: Output the OpenShift build logs if the current build failed
+  shell: "echo \"{{ oc_build_result.stdout }}\" | awk '{print $1}' | xargs -i {{ oc_bin }} logs builds/{}"
+  register: oc_build_log
+  when: build_results[template_name]|bool == false and oc_build_result.stdout is defined
+
+- name: "Publish build logs of the current failed build"
+  debug:
+    msg: "{{ oc_build_log.stdout_lines }}"
+  when: (build_results[template_name]|bool == false and oc_build_log.stdout_lines is defined)
+
+# If the build failed, cleanup all resources related to this build on the cluster
+- name: "Cleanup all resources related to this build on the cluster"
+  shell: "{{ oc_bin }} delete {{ failed_resource_name }}"
+  with_items: "{{ created_resources[template_name] }}"
+  loop_control:
+    loop_var: failed_resource_name
+  ignore_errors: yes
+  when: (build_results[template_name]|bool == false and created_resources[template_name] != "")
+
