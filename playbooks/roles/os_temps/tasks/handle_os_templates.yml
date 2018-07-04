@@ -16,10 +16,6 @@
     loop_var: template_filename
 
 - set_fact:
-    oc_check_app_status:
-      stdout: ""
-
-- set_fact:
     total_build_success: true
 
 # Check if all builds are marked as succesful
