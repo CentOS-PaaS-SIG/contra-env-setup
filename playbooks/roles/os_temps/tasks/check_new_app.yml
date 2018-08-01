@@ -34,9 +34,8 @@
   register: oc_build_log
   when: build_results[template_name]|bool == false and oc_build_result.stdout is defined
 
-- name: "Publish build logs of the current failed build"
-  debug:
-    msg: "{{ oc_build_log.stdout_lines }}"
+- name: "Write build logs of the current failed build to a log file"
+  copy: content="{{ oc_build_log.stdout }}" dest="/tmp/contra-env-setup/logs/run-{{ run_time }}/{{ template_name_files[template_name] }}-fail-{{ attempt_number }}.log"
   when: (build_results[template_name]|bool == false and oc_build_log.stdout_lines is defined)
 
 # If the build failed, cleanup all resources related to this build on the cluster
