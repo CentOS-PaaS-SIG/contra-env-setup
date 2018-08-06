@@ -82,6 +82,7 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 * minishift_version: Minishift version to use : default=v1.12.0
 * minishift_dest_dir: Minishift binary and ISO directory : default={{ contra_env_setup_dir }}/minishift
 * profile: Minishift profile : default=minishift
+* user: account to use for libvirt setup
 * disk_size: Disk size to use for minishift : default=40gb
 * memory: Memory size to use for the VM : default=6400mb
 * cpus: Number of cpus to use for minishift VM: default=2
