@@ -4,6 +4,19 @@
   when: ansible_distribution == 'Fedora'
   become: true
 
+- name: "Install libvirt, qemu-kvm, and jq on {{ ansible_distribution }}"
+  dnf:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - libvirt
+  - qemu-kvm
+  - jq
+  - libselinux-python
+  - git
+  when: ansible_distribution == 'Fedora'
+  become: true
+
 - name: Check if EPEL is installed for non Fedora distros
   shell: rpm -qa | grep epel-release
   register: epel_rpm
@@ -25,13 +38,14 @@
   become: true
 
 - name: "Install libvirt, qemu-kvm, and jq on {{ ansible_distribution }}"
-  package:
+  yum:
     name: "{{ item }}"
     state: present
   with_items:
-    - libvirt
-    - qemu-kvm
-    - jq
-    - libselinux-python
-    - git
+  - libvirt
+  - qemu-kvm
+  - jq
+  - libselinux-python
+  - git
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS'
   become: true
