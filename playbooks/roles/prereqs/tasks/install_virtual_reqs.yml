@@ -33,9 +33,9 @@
     name: "{{ item }}"
     state: present
   with_items:
-  - libvirt
-  - qemu-kvm
-  - jq
-  - libselinux-python
-  - git
+    - libvirt
+    - qemu-kvm
+    - jq
+    - libselinux-python
+    - git
   become: true
