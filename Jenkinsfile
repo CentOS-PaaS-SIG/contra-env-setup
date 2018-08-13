@@ -6,7 +6,7 @@
  */
 
 timestamps {
-    env.ghprbGhRepository = env.ghprbGhRepository ?: 'CentOS-PaaS-SIG/contra-env-setup'
+    env.ghprbGhRepository = env.ghprbGhRepository ?: 'dirgim/contra-env-setup'
     env.ghprbActualCommit = env.ghprbActualCommit ?: 'master'
     env.ghprbPullAuthorLogin = env.ghprbPullAuthorLogin ?: ''
     env.ghprbPullId = env.ghprbPullId ?: ''
