@@ -7,8 +7,6 @@
     mode: 755
   become: true
 
-- import_tasks: install_virtual_reqs.yml
-
 - name: Start and enable libvirtd
   service:
     name: libvirtd
