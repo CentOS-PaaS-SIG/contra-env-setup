@@ -7,7 +7,7 @@
 
 timestamps {
     env.ghprbGhRepository = env.ghprbGhRepository ?: 'dirgim/contra-env-setup'
-    env.ghprbActualCommit = env.ghprbActualCommit ?: 'master'
+    env.ghprbActualCommit = env.ghprbActualCommit ?: 'env-setup-ci'
     env.ghprbPullAuthorLogin = env.ghprbPullAuthorLogin ?: ''
     env.ghprbPullId = env.ghprbPullId ?: ''
 
