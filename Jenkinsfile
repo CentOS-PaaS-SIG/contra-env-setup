@@ -186,9 +186,9 @@ timestamps {
                                 currentStage = "test-env-setup"
                                 stage(currentStage) {
 
-                                    packagepipelineUtils.timedPipelineStep(stepName: currentStage, debug: true) {
+                                    envsetupUtils.timedPipelineStep(stepName: currentStage, debug: true) {
                                         // Set stage specific vars
-                                        packagepipelineUtils.setStageEnvVars(currentStage)
+                                        envsetupUtils.setStageEnvVars(currentStage)
 
                                         // Run env-setup test
                                         pipelineUtils.executeInContainer(currentStage, "env-setup-test-c7", "/home/prepare_and_test.sh")
