@@ -1,4 +1,4 @@
-import org.centos.contraenvsetup.EnvSetupUtils
+import org.contraenvsetup.pipeline.EnvSetupUtils
 
 /**
  * A class of methods used in the contra-env-setup CI pipeline.
