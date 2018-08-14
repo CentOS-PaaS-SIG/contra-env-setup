@@ -95,7 +95,7 @@ timestamps {
                                             description: 'Tag for slave image'),
                                     string(name: 'ENVSETUPTEST_TAG',
                                             defaultValue: 'stable',
-                                            description: 'Tag for env-setup-test image'),
+                                            description: 'Tag for env-setup-test-c7 image'),
                                     string(name: 'DOCKER_REPO_URL',
                                             defaultValue: '172.30.254.79:5000',
                                             description: 'Docker repo url for Openshift instance'),
@@ -124,10 +124,10 @@ timestamps {
                             args: '${computer.jnlpmac} ${computer.name}',
                             command: '',
                             workingDir: '/workDir'),
-                    // This adds the env-setup-test container to the pod.
-                    containerTemplate(name: 'env-setup-test',
+                    // This adds the env-setup-test-c7 container to the pod.
+                    containerTemplate(name: 'env-setup-test-c7',
                             alwaysPullImage: true,
-                            image: DOCKER_REPO_URL + '/' + OPENSHIFT_NAMESPACE + '/env-setup-test:' + ENVSETUPTEST_TAG,
+                            image: DOCKER_REPO_URL + '/' + OPENSHIFT_NAMESPACE + '/env-setup-test-c7:' + ENVSETUPTEST_TAG,
                             ttyEnabled: true,
                             command: 'cat',
                             privileged: true,
@@ -183,7 +183,7 @@ timestamps {
                                         packagepipelineUtils.setStageEnvVars(currentStage)
 
                                         // Run env-setup test
-                                        pipelineUtils.executeInContainer(currentStage, "env-setup-test", "/home/prepare_and_test.sh")
+                                        pipelineUtils.executeInContainer(currentStage, "env-setup-test-c7", "/home/prepare_and_test.sh")
                                     }
                                 }
                             } catch (e) {
