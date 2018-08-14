@@ -7,7 +7,7 @@
 
 timestamps {
     env.ghprbGhRepository = env.ghprbGhRepository ?: 'dirgim/contra-env-setup'
-    env.ghprbActualCommit = env.ghprbActualCommit ?: 'env-setup-ci'
+    env.ghprbActualCommit = env.ghprbActualCommit ?: 'master'
     env.ghprbPullAuthorLogin = env.ghprbPullAuthorLogin ?: ''
     env.ghprbPullId = env.ghprbPullId ?: ''
 
@@ -36,14 +36,22 @@ timestamps {
                                       remote: repo[1]])
     }
 
-    // Check out current version of this repo (to support stage environment)
-    library identifier: "contra-env-setup@${env.ghprbActualCommit}",
-            retriever: modernSCM([$class: 'GitSCMSource',
-                                  remote: "https://github.com/${env.ghprbGhRepository}",
+    library identifier: 'contra-env-setup@env-setup-ci',
+            retriever: modernSCM([$class: 'GitSCMSource', credentialsId: '',
+                                  id: '25651a23-bada-49f0-8b7a-2d735623d646',
+                                  remote: 'https://github.com/dirgim/contra-env-setup.git',
                                   traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait'],
                                            [$class: 'RefSpecsSCMSourceTrait',
-                                            templates: [[value: '+refs/heads/*:refs/remotes/@{remote}/*'],
-                                                        [value: '+refs/pull/*:refs/remotes/origin/pr/*']]]]])
+                                            templates: [[value: '+refs/heads/*:refs/remotes/@{remote}/*']]]]])
+
+    // Check out current version of this repo (to support stage environment)
+    //library identifier: "contra-env-setup@${env.ghprbActualCommit}",
+    //        retriever: modernSCM([$class: 'GitSCMSource',
+    //                              remote: "https://github.com/${env.ghprbGhRepository}",
+    //                              traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait'],
+    //                                       [$class: 'RefSpecsSCMSourceTrait',
+    //                                        templates: [[value: '+refs/heads/*:refs/remotes/@{remote}/*'],
+    //                                                    [value: '+refs/pull/*:refs/remotes/origin/pr/*']]]]])
     properties(
             [
                     buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '50', daysToKeepStr: '', numToKeepStr: '50')),
