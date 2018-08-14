@@ -1,5 +1,5 @@
 #!/usr/bin/groovy
-package org.centos.pipeline
+package org.contraenvsetup.pipeline
 
 import org.centos.*
 
