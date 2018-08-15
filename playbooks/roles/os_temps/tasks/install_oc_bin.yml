@@ -6,7 +6,7 @@
     state: directory
 
 - name: "Query for OpenShift client compressed binary version {{ oc_version }}"
-  shell: curl -s https://github.com/openshift/origin/releases/{{ oc_version }} | grep 'openshift-origin-client-tools-.*-linux.*.tar.gz' | head -1 | sed 's/.*<a href="\(.*\)" .*/https:\/\/github.com\1/'
+  shell: curl -s https://github.com/openshift/origin/releases/{{ oc_version }} | grep 'openshift-origin-client-tools-.*-linux.*.tar.gz' | head -1 | sed 's/.*<a href="\(.*\)" .*/https:\/\/github.com\1/' | cut -d'"' -f1
   register: get_oc_bin
 
 - name: "Pull down and extract OpenShift client binary(oc) to {{ contra_env_setup_dir }}"
