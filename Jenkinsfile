@@ -137,7 +137,6 @@ timestamps {
                             alwaysPullImage: true,
                             image: DOCKER_REPO_URL + '/' + OPENSHIFT_NAMESPACE + '/env-setup-test-c7:' + ENVSETUPTEST_TAG,
                             ttyEnabled: true,
-                            command: 'cat',
                             privileged: true,
                             workingDir: '/workDir'),
             ],
