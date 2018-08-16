@@ -6,7 +6,7 @@
  */
 
 timestamps {
-    env.ghprbGhRepository = env.ghprbGhRepository ?: 'dirgim/contra-env-setup'
+    env.ghprbGhRepository = env.ghprbGhRepository ?: 'CentOS-PaaS-SIG/contra-env-setup'
     env.ghprbActualCommit = env.ghprbActualCommit ?: 'master'
     env.ghprbPullAuthorLogin = env.ghprbPullAuthorLogin ?: ''
     env.ghprbPullId = env.ghprbPullId ?: ''
@@ -44,14 +44,6 @@ timestamps {
                                            [$class: 'RefSpecsSCMSourceTrait',
                                             templates: [[value: '+refs/heads/*:refs/remotes/@{remote}/*']]]]])
 
-    // Check out current version of this repo (to support stage environment)
-    //library identifier: "contra-env-setup@${env.ghprbActualCommit}",
-    //        retriever: modernSCM([$class: 'GitSCMSource',
-    //                              remote: "https://github.com/${env.ghprbGhRepository}",
-    //                              traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait'],
-    //                                       [$class: 'RefSpecsSCMSourceTrait',
-    //                                        templates: [[value: '+refs/heads/*:refs/remotes/@{remote}/*'],
-    //                                                    [value: '+refs/pull/*:refs/remotes/origin/pr/*']]]]])
     properties(
             [
                     buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '50', daysToKeepStr: '', numToKeepStr: '50')),
