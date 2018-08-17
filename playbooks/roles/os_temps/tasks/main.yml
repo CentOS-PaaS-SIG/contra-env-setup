@@ -1,6 +1,14 @@
 ---
 # tasks file for os_temps
 
+# Set run time to be used for logging
+- set_fact:
+    run_time: "{{ ansible_date_time.iso8601_basic_short }}"
+
+# Create directory for this run
+- name: "Create log directory"
+  file: path="/tmp/contra-env-setup/logs/run-{{ run_time }}" state=directory
+
 # Check if the minishift cluster is started if not then start the cluster
 - name: "Startup the minishift cluster"
   import_tasks: start_mcluster.yml

@@ -48,8 +48,8 @@
 
 # Check if the minishift profile exists
 - name: "Check if the minishift profile exists"
-  shell: "{{ minishift_bin }} status --profile {{ profile }} | head -1 | grep -i 'does not exist'"
-  register: minishift_exist
+  shell: "{{ minishift_bin }} status --profile {{ profile }} | head -1"
+  register: minishift_profile_status
   ignore_errors: yes
 
 # Import_tasks install_oc_bin
@@ -58,4 +58,4 @@
 
 # Initialize minishift
 - import_tasks: init_minishift.yml
-  when: minishift_exist.stdout != ""
+  when: (minishift_profile_status.stdout|lower == "does not exist") or (minishift_profile_status.rc != 0)
