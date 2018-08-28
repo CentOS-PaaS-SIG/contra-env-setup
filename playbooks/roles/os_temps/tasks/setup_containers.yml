@@ -70,4 +70,8 @@
     loop_var: attempt_number
   when: os_templates.files != ""
 
-
+# If there were failed builds, output the error message with log directory location
+- name: "If there were failed builds, direct user to log directory"
+  debug:
+    msg: "Some of the builds failed, check failed build logs in /tmp/contra-env-setup/logs/run-{{ run_time }}"
+  when: (total_build_success|bool == false)
