@@ -58,6 +58,6 @@ class envsetupUtils implements Serializable {
     }
 
     def influxDBPrefix() {
-        return "leapp-ci-pipeline"
+        return "contra-env-setup-ci-pipeline"
     }
 }

@@ -13,7 +13,7 @@ timestamps {
 
     // Needed for podTemplate()
     env.SLAVE_TAG = env.SLAVE_TAG ?: 'stable'
-    env.ENVSETUPTEST_TAG = env.ENVSETUPTEST_TAG ?: 'stable'
+    env.ENVSETUPTESTC7_TAG = env.ENVSETUPTESTC7_TAG ?: 'stable'
 
     env.DOCKER_REPO_URL = env.DOCKER_REPO_URL ?: '172.30.254.79:5000'
     env.OPENSHIFT_NAMESPACE = env.OPENSHIFT_NAMESPACE ?: 'continuous-infra'
@@ -23,7 +23,7 @@ timestamps {
     executionID = UUID.randomUUID().toString()
 
     // Pod name to use
-    podName = 'env-setup-' + executionID
+    podName = 'contra-env-setup-' + executionID
 
     // Get upstream libraries
 
@@ -93,9 +93,9 @@ timestamps {
                                     string(name: 'SLAVE_TAG',
                                             defaultValue: 'stable',
                                             description: 'Tag for slave image'),
-                                    string(name: 'ENVSETUPTEST_TAG',
+                                    string(name: 'ENVSETUPTESTC7_TAG',
                                             defaultValue: 'stable',
-                                            description: 'Tag for env-setup-test-c7 image'),
+                                            description: 'Tag for contra-env-setup-test-c7 image'),
                                     string(name: 'DOCKER_REPO_URL',
                                             defaultValue: '172.30.254.79:5000',
                                             description: 'Docker repo url for Openshift instance'),
@@ -124,10 +124,10 @@ timestamps {
                             args: '${computer.jnlpmac} ${computer.name}',
                             command: '',
                             workingDir: '/workDir'),
-                    // This adds the env-setup-test-c7 container to the pod.
-                    containerTemplate(name: 'env-setup-test-c7',
+                    // This adds the contra-env-setup-test-c7 container to the pod.
+                    containerTemplate(name: 'contra-env-setup-test-c7',
                             alwaysPullImage: true,
-                            image: DOCKER_REPO_URL + '/' + OPENSHIFT_NAMESPACE + '/env-setup-test-c7:' + ENVSETUPTEST_TAG,
+                            image: DOCKER_REPO_URL + '/' + OPENSHIFT_NAMESPACE + '/contra-env-setup-test-c7:' + ENVSETUPTESTC7_TAG,
                             ttyEnabled: true,
                             privileged: true,
                             workingDir: '/workDir'),
@@ -181,8 +181,8 @@ timestamps {
                                         // Set stage specific vars
                                         envsetupUtils.setStageEnvVars(currentStage)
 
-                                        // Run env-setup test
-                                        pipelineUtils.executeInContainer(currentStage, "env-setup-test-c7", "/home/prepare_and_test.sh")
+                                        // Run contra-env-setup test
+                                        pipelineUtils.executeInContainer(currentStage, "contra-env-setup-test-c7", "/home/prepare_and_test.sh")
                                     }
                                 }
                             } catch (e) {
