@@ -36,13 +36,13 @@ timestamps {
                                       remote: repo[1]])
     }
 
-    library identifier: 'contra-env-setup@env-setup-ci',
-            retriever: modernSCM([$class: 'GitSCMSource', credentialsId: '',
-                                  id: '25651a23-bada-49f0-8b7a-2d735623d646',
-                                  remote: 'https://github.com/dirgim/contra-env-setup.git',
+    library identifier: "contra-env-setup@${env.ghprbActualCommit}",
+            retriever: modernSCM([$class: 'GitSCMSource',
+                                  remote: "https://github.com/${env.ghprbGhRepository}.git",
                                   traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait'],
                                            [$class: 'RefSpecsSCMSourceTrait',
-                                            templates: [[value: '+refs/heads/*:refs/remotes/@{remote}/*']]]]])
+                                            templates: [[value: '+refs/heads/*:refs/remotes/@{remote}/*'],
+                                                        [value: '+refs/pull/*:refs/remotes/origin/pr/*']]]]])
 
     properties(
             [
