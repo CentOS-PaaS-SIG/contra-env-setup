@@ -179,7 +179,7 @@ def test_jenkins_master_pod(run_info):
         oc_result = check_output(oc_cmd.split())
 
         for line in oc_result.splitlines():
-            if 'jenkins' in line and 'Running' in line:
+            if 'jenkins' in line and 'slave' not in line and 'Running' in line:
                 jenkins_master_pod_running = True
 
     assert(jenkins_master_pod_running)
