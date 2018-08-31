@@ -2,7 +2,7 @@
 # get and set the project in the openshift cluster
 
 - name: Query to see if project is already present
-  shell: "{{ oc_bin }} get project {{ openshift_project }} | grep 'Active' | awk '{print $3}'"
+  shell: "{{ oc_bin }} get project {{ openshift_project }} | grep ' Active$'"
   register: project_query
   ignore_errors: true
 
