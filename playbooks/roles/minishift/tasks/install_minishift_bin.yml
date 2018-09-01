@@ -19,7 +19,6 @@
     remote_src: yes
     list_files: yes
   with_items: "{{linux_release}}"
-  when: minishift_bin.stat.exists == false or force_minishift_install|bool == true
   register: archive_contents
 
 - name: minishift source dir
@@ -30,17 +29,14 @@
   file:
     path: "{{ minishift_dest_dir }}"
     state: directory
-  when: (minishift_bin.stat.exists == false or force_minishift_install|bool == true)
 
 - name: "Copy minishift version files to {{ ansible_env.HOME }}/minishift/"
   shell: cp {{ ansible_env.HOME }}/{{ minishift_src_dir }}/* {{ minishift_dest_dir }}/
-  when: (minishift_bin.stat.exists == false or force_minishift_install|bool == true)
 
 - name: "Delete {{ ansible_env.HOME }}/{{ minishift_src_dir }}"
   file:
     path: "{{ ansible_env.HOME }}/{{ minishift_src_dir }}"
     state: absent
-  when: (minishift_bin.stat.exists == false or force_minishift_install|bool == true)
 
 - include: set_minishift_path.yml
 
