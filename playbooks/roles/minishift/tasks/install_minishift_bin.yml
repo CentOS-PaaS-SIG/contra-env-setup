@@ -15,7 +15,7 @@
 - name: "Pull down and extract minishift binary to {{ ansible_env.HOME }}"
   unarchive:
     src: "{{ item }}"
-    dest: "{{ ansible_env.HOME }}"
+    dest: "{{ minishift_dest_dir }}"
     remote_src: yes
     list_files: yes
   with_items: "{{linux_release}}"
