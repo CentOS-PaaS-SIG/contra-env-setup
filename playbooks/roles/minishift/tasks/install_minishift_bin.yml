@@ -2,20 +2,28 @@
 # Install minishift
 
 - name: Query for minishift compressed binary
-  shell: curl -s https://github.com/minishift/minishift/releases/{{ minishift_version }} | grep 'minishift-.*-linux.*' | head -1 | sed 's/.*<a href="\(.*\)" .*/https:\/\/github.com\1/' | cut -d'"' -f1
-  register: get_minishift_bin
+  uri:
+    url: "https://api.github.com/repos/minishift/minishift/releases/tags/{{minishift_version}}"
+    return_content: yes
+    body_format: json
+  register: release
 
-- name: "Pull down and extract minishift binary to {{ minishift_dest_dir }}"
+- name: filter for the particular release
+  set_fact:
+      linux_release: "{{ release.json.assets | selectattr('name', 'search', 'linux-amd64.tgz$') | map(attribute='browser_download_url') | list }}"
+
+- name: "Pull down and extract minishift binary to {{ ansible_env.HOME }}"
   unarchive:
-    src: "{{ get_minishift_bin.stdout }}"
+    src: "{{ item }}"
     dest: "{{ minishift_dest_dir }}"
     remote_src: yes
+    list_files: yes
+  with_items: "{{linux_release}}"
+  register: archive_contents
 
-- name: Set minishift_src_dir fact
+- name: set minishift source dir
   set_fact:
-    minishift_src_dir: "{{ get_minishift_bin.stdout | basename | regex_search(regexp,'\\1') | join(' ') }}"
-  vars:
-    regexp: '(minishift.*amd64).tgz'
+      minishift_src_dir: "{{ archive_contents.results[0].files[0] }}"
 
 - name: "Create a new {{ minishift_dest_dir }} if it doesn't exist"
   file:
