@@ -20,7 +20,7 @@ dkvm_version: v0.10.0
 
 ## minishift values
 # minishift version
-minishift_version: v1.17.0
+minishift_version: v1.23.0
 
 # host os stuff
 host_os: linux
@@ -77,7 +77,7 @@ modify_scc: true
 
 ## oc cli vars
 # oc version
-oc_version: v3.9.0
+oc_version: v3.10.0
 
 # Path to oc binary directory
 oc_bin_path: "{{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/{{ host_os }}"
