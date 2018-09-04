@@ -25,12 +25,12 @@
 
 # Setup tag if current container image build is successful
 - name: Modify tags on images
-  shell: "{{ oc_bin }} get imagestream | awk '{print $2}' | grep -v DOCKER | sed 's/.*5000\\///g' | grep '{{ build_config_name_files[template_name] }}' | xargs -i {{ oc_bin }} tag {}:latest {}:{{ tag }}"
+  shell: "{{ oc_bin }} get imagestream | awk '{print $2}' | grep -v DOCKER | grep '{{ build_config_name_files[template_name] }}' | xargs -I{} {{ oc_bin }} tag {}:latest {}:{{ tag }}"
   when: modify_tags|bool == true and current_build_succeeded|bool == true
 
 # Output the OpenShift build logs if the current build failed
 - name: Output the OpenShift build logs if the current build failed
-  shell: "echo \"{{ oc_build_result.stdout }}\" | awk '{print $1}' | xargs -i {{ oc_bin }} logs builds/{}"
+  shell: "echo \"{{ oc_build_result.stdout }}\" | awk '{print $1}' | xargs -I{} {{ oc_bin }} logs builds/{}"
   register: oc_build_log
   when: build_results[template_name]|bool == false and oc_build_result.stdout is defined
 
@@ -46,4 +46,3 @@
     loop_var: failed_resource_name
   ignore_errors: yes
   when: (build_results[template_name]|bool == false and created_resources[template_name] != "")
-

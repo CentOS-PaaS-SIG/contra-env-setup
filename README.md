@@ -25,13 +25,14 @@
     - [Example 3: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines](#example-3-setup-on-a-local-machine--setup-minishift--os-templates--jenkins-20-pipelines)
     - [Example 4: Setup on a local machine :: Start Minishift w/profile mysetup + OS templates + Jenkins 2.0 pipelines](#example-4-setup-on-a-local-machine--start-minishift-wprofile-mysetup--os-templates--jenkins-20-pipelines)
     - [Example 5: Setup on a local machine :: Using the playbook hooks on contra-env-setup](#example-5-setup-on-a-local-machine--using-the-playbook-hooks-on-contra-env-setup)
+  - [Mac Setup](#mac-setup)
   - [Debugging Issues](#debugging-issues)
     - [Issue #1: Can't push images to the Minishift cluster](#issue-1-cant-push-images-to-the-minishift-cluster)
       - [Solution #1:](#solution-1)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 ![CI-Pipeline](continuous-infra-logo.png "continuous-infra")
-# Contra Environment Setup 
+# Contra Environment Setup
 # minishift or OpenShift + OpenShift s2i templates + Jenkins pipelines
 
 
@@ -60,12 +61,12 @@ This will setup the minishift + pipeline development environment.  It can setup 
 or only certain components.  ex. minishift, jenkins infra, pipeline containers, and fed-msg relay
 
 ### default variables
-```
-contra-env-setup/playbooks/group_vars/all/global.yml
+`contra-env-setup/playbooks/group_vars/all/global.yml`
 
-```
 ## Pre-Setup options
 
+* host_os: Set the OS of the machine you are running the setup on : default=linux
+* shell_rc: Set your shell configuration file : default=.bashrc
 * run_cleanup: Run clean up of previous setup : default=false
 * run_prereqs: Run setting up virtualization and kvm-driver : default=true
 * contra_env_setup_dir: Directory to store the contra-env-setup :  default "{{ ansible_env.HOME }}/.contra-env-setup
@@ -86,7 +87,7 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 * disk_size: Disk size to use for minishift : default=40gb
 * memory: Recommended memory size to use for the VM : default=8092mb
 * cpus: Number of cpus to use for minishift VM: default=2
-* minishift_iso: ISO image to use : default=http://artifacts.ci.centos.org/fedora-atomic/minishift/iso/minishift.iso 
+* minishift_iso: ISO image to use : default=http://artifacts.ci.centos.org/fedora-atomic/minishift/iso/minishift.iso
 * minishift_insecure_registry: Additional insecure registries : default="" (not used)
 
 ### oc setup options
@@ -100,10 +101,10 @@ contra-env-setup/playbooks/group_vars/all/global.yml
 
 ## Project repo options that has s2i templates and Jenkins Pipelines
 * project_repo: Project repo to import templates and pipelines from : default=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
-* project_refspec: Project refspec : default=+refs/pull/*:refs/heads/* 
+* project_refspec: Project refspec : default=+refs/pull/*:refs/heads/*
 * project_branch: Project branch : default=master
 * project_dir: Project directory where repo is stored locally : default={{ contra_env_setup_dir }}/{{ project_repo.split('/')[-1] }}
-* setup_sample_project: Sample profect to setup 
+* setup_sample_project: Sample profect to setup
 
 ### OpenShift s2i template setup options
 * setup_containers: Setup OpenShift s2i templates : default=true
@@ -121,7 +122,7 @@ Note that it is possible to use {{ ansible_vars }} in your Openshift Templates.
 
 ## Usage examples
 
-### Example 1: Setup on a local machine :: Setup Minishift + OS templates 
+### Example 1: Setup on a local machine :: Setup Minishift + OS templates
 
  1. Install on a local machine as user cloud-user.
  2. Setup pre-reqs (kvm driver and nested virtualization)
@@ -130,12 +131,11 @@ Note that it is possible to use {{ ansible_vars }} in your Openshift Templates.
     1. Override the project_repo with another one then the default in global.yml
     2. OpenShift project -e openshift_project=ari-ci-pipeline  
  5. Modify my container tags with the default tag. tag=stable
- 
+
 ```
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
-    -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline 
+    -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline
     -e openshift_project=ari-ci-pipeline -K -k
-
 ```
 _Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
@@ -151,17 +151,16 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
     2. OpenShift project -e openshift_project=ari-ci-pipeline  
  5. Modify my container tags with the default tag. tag=stable
  6. Setup Jenkins 2.0 pipelines from the project_repo=https://github.com/arilivigni/ci-pipeline
- 
+
 ```
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
     -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
     -e openshift_project=ari-ci-pipeline -e setup_pipelines=true -K -k
-
 ```
 _Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
        Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
-       
+
 ### Example 3: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines
 
  1. Install on a local machine as user cloud-user.
@@ -169,19 +168,18 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
  3. Setup a minishift cluster
  4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/arilivigni/ci-pipeline
     1. Override the project_repo with another one then the default in global.yml
-    2. OpenShift project -e openshift_project=ari-ci-pipeline 
+    2. OpenShift project -e openshift_project=ari-ci-pipeline
  5. Modify my container tags with the tag=develop
  6. Setup Jenkins 2.0 pipelines from the project_repo=https://github.com/arilivigni/ci-pipeline
- 7. Setup sample project templates and pipelines 
+ 7. Setup sample project templates and pipelines
     from the project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
 
- 
+
 ```
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
     -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
     -e openshift_project=ari-ci-pipeline -e tag=develop -e setup_pipelines=true \
     -e setup_sample_project -K -k
-
 ```
 _Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
@@ -194,19 +192,18 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
  3. Start minishift cluster with profile mysetup
  4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/arilivigni/ci-pipeline
     1. Override the project_repo with another one then the default in global.yml
-    2. OpenShift project -e openshift_project=ari-ci-pipeline 
+    2. OpenShift project -e openshift_project=ari-ci-pipeline
  5. Modify my container tags with the tag=develop
  6. Setup Jenkins 2.0 pipelines from the project_repo=https://github.com/arilivigni/ci-pipeline
- 7. Setup sample project templates and pipelines 
+ 7. Setup sample project templates and pipelines
     from the project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
 
- 
+
 ```
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
     -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
     -e openshift_project=ari-ci-pipeline -e tag=develop -e setup_pipelines=true \
     -e setup_sample_project -e start_minishift=true -e profile=mysetup -K -k
-
 ```
 _Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
@@ -223,7 +220,6 @@ executed on contra-env-setup.
     -e openshift_project=ari-ci-pipeline -e tag=develop -e setup_pipelines=true \
     -e setup_sample_project -K -k
     --extra-vars='{"hooks": ["/contra-env-setup/playbook_a.yml","/contra-env-setup/playbook_b.yml"]}'
-
 ```
 
 ### Example 6: Setup on a local machine :: Start Minishift w/profile mysetup + OS templates + Jenkins 2.0 pipelines
@@ -233,23 +229,39 @@ executed on contra-env-setup.
  3. Start minishift cluster with profile mysetup
  4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/arilivigni/ci-pipeline
     1. Override the project_repo with another one then the default in global.yml
-    2. OpenShift project -e openshift_project=ari-ci-pipeline 
+    2. OpenShift project -e openshift_project=ari-ci-pipeline
  5. Disable setup of the helper containers ansible-executor and linchpin-executor
  6. Setup Jenkins 2.0 pipelines from the project_repo=https://github.com/arilivigni/ci-pipeline
- 7. Setup sample project templates and pipelines 
+ 7. Setup sample project templates and pipelines
     from the project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
 
- 
+
 ```
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
     -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
     -e openshift_project=ari-ci-pipeline -e setup_helper_containers=false -e setup_pipelines=true \
     -e start_minishift=true -e profile=mysetup -K -k
-
 ```
 _Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
        Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
+
+## Mac Setup
+
+In order to run this setup when using a mac, a few other steps must be taken.
+* Install [Homebrew](https://brew.sh/) and [Virtualbox](https://www.virtualbox.org/)
+* With Homebrew, install jq and gtar. `brew install jq gtar`
+* When running the `setup.yml` file..
+  - Override `host_os` with `darwin`
+  - Disable pre-reqs `run_prereqs=false`
+  - Add `--connection=local` to end of command
+
+Example:
+```
+    ansible-playbook -vv -i "localhost," playbooks/setup.yml \
+    -e user=cloud-user -e run_prereqs=false -e setup_pipelines=true \
+    -e host_os=darwin -e setup_sample_project -K -k --connection=local
+```
 
 ## Debugging Issues
 
@@ -258,10 +270,9 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
 This issue reveals itself as not being able to pull images from the docker registry.  This is because your minishift VM can't reach outside addresses.
 
 Pinpointing if you are hitting this issue:
-1. In the output of the following task: 
+1. In the output of the following task:
 ```    
     TASK [minishift : Initialization of minishift cluster with profile minishiftpipeline]
-    
 ```
 2.  Task contains:
 ```
@@ -270,7 +281,7 @@ Pinpointing if you are hitting this issue:
 
 3. Full example output: http://pastebin.centos.org/620286/
 
-#### Solution #1: 
+#### Solution #1:
 
 Make sure you can ping outside addresses from within the minishift vm.  
 

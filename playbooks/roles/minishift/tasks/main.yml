@@ -40,6 +40,11 @@
   shell: "{{ minishift_bin }} config set skip-check-openshift-release true"
   when: minishift_version != "v1.12.0"
 
+# Set vm-driver to virtualbox if using a mac 
+- name: "Set minishift vm-driver to virtualbox"
+  shell: "{{ minishift_bin }} config set vm-driver virtualbox"
+  when: host_os == "darwin"
+
 - name: "Pull down the minishift iso"
   get_url:
     url: "{{ minishift_iso }}"

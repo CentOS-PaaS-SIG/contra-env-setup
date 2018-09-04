@@ -2,7 +2,7 @@
 # Install minishift
 
 - name: Query for minishift compressed binary
-  shell: curl -s https://github.com/minishift/minishift/releases/{{ minishift_version }} | grep 'minishift-.*-linux.*' | head -1 | sed 's/.*<a href="\(.*\)" .*/https:\/\/github.com\1/' | cut -d'"' -f1
+  shell: curl -s https://github.com/minishift/minishift/releases/{{ minishift_version }} | grep 'minishift-.*-{{ host_os }}.*' | head -1 | sed 's/.*<a href="\(.*\)" .*/https:\/\/github.com\1/' | cut -d'"' -f1
   register: get_minishift_bin
 
 - name: "Pull down and extract minishift binary to {{ minishift_dest_dir }}"
