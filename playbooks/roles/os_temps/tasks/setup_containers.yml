@@ -40,7 +40,7 @@
   ignore_errors: yes
 
 - name: "Cleanup all failed dc, bc, routes, svc, and imagestreams on the cluster"
-  shell: "{{ oc_bin }} get all | grep '{{ failed_container_name }}' | awk '{print $1}' | egrep -v 'builds\\/|po\\/' | xargs -i {{ oc_bin }} delete {}"
+  shell: "{{ oc_bin }} get all | grep '{{ failed_container_name }}' | awk '{print $1}' | egrep -v 'builds\\/|po\\/' | xargs -I {{ oc_bin }} delete {}"
   with_items: "{{ oc_check_app_status.stdout_lines }}"
   loop_control:
     loop_var: failed_container_name
@@ -48,7 +48,7 @@
   when: oc_check_app_status.stdout != ""
 
 - name: "Cleanup any serviceaccounts, pvc, and rolebindings for an app if it exists on the cluster"
-  shell: "{{ oc_bin }} get {{ item }} | egrep '{{ oc_check_app_status.stdout_lines|join('|') }}' | awk '{print $1}' | xargs -i {{ oc_bin }} delete {{ item }}/{}"
+  shell: "{{ oc_bin }} get {{ item }} | egrep '{{ oc_check_app_status.stdout_lines|join('|') }}' | awk '{print $1}' | xargs -I {{ oc_bin }} delete {{ item }}/{}"
   ignore_errors: yes
   with_items:
     - serviceaccounts

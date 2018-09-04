@@ -22,6 +22,10 @@ dkvm_version: v0.10.0
 # minishift version
 minishift_version: v1.17.0
 
+# host os stuff
+host_os: linux
+shell_rc: .bashrc
+
 # default location for minishift
 minishift_dest_dir: "{{ contra_env_setup_dir }}/minishift"
 
@@ -76,7 +80,7 @@ modify_scc: true
 oc_version: v3.9.0
 
 # Path to oc binary directory
-oc_bin_path: "{{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/linux"
+oc_bin_path: "{{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/{{ host_os }}"
 
 # Path to oc binary
 oc_bin: "{{ oc_bin_path }}/oc"
