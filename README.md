@@ -65,6 +65,8 @@ or only certain components.  ex. minishift, jenkins infra, pipeline containers, 
 
 ## Pre-Setup options
 
+* host_os: Set the OS of the machine you are running the setup on : default=linux
+* shell_rc: Set your shell configuration file : default=.bashrc
 * run_cleanup: Run clean up of previous setup : default=false
 * run_prereqs: Run setting up virtualization and kvm-driver : default=true
 * contra_env_setup_dir: Directory to store the contra-env-setup :  default "{{ ansible_env.HOME }}/.contra-env-setup
@@ -134,7 +136,6 @@ Note that it is possible to use {{ ansible_vars }} in your Openshift Templates.
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
     -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline
     -e openshift_project=ari-ci-pipeline -K -k
-
 ```
 _Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
@@ -155,7 +156,6 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
     -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
     -e openshift_project=ari-ci-pipeline -e setup_pipelines=true -K -k
-
 ```
 _Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
@@ -180,7 +180,6 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
     -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
     -e openshift_project=ari-ci-pipeline -e tag=develop -e setup_pipelines=true \
     -e setup_sample_project -K -k
-
 ```
 _Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
@@ -205,7 +204,6 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
     -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
     -e openshift_project=ari-ci-pipeline -e tag=develop -e setup_pipelines=true \
     -e setup_sample_project -e start_minishift=true -e profile=mysetup -K -k
-
 ```
 _Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
@@ -222,7 +220,6 @@ executed on contra-env-setup.
     -e openshift_project=ari-ci-pipeline -e tag=develop -e setup_pipelines=true \
     -e setup_sample_project -K -k
     --extra-vars='{"hooks": ["/contra-env-setup/playbook_a.yml","/contra-env-setup/playbook_b.yml"]}'
-
 ```
 
 ### Example 6: Setup on a local machine :: Start Minishift w/profile mysetup + OS templates + Jenkins 2.0 pipelines
@@ -244,7 +241,6 @@ executed on contra-env-setup.
     -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
     -e openshift_project=ari-ci-pipeline -e setup_helper_containers=false -e setup_pipelines=true \
     -e start_minishift=true -e profile=mysetup -K -k
-
 ```
 _Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
@@ -255,8 +251,17 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
 In order to run this setup when using a mac, a few other steps must be taken.
 * Install [Homebrew](https://brew.sh/) and [Virtualbox](https://www.virtualbox.org/)
 * With Homebrew, install jq and gtar. `brew install jq gtar`
-* Make changes to `contra-env-setup/playbooks/group_vars/all/global.yml`
-  - `host_os: darwin`
+* When running the `setup.yml` file..
+  - Override `host_os` with `darwin`
+  - Disable pre-reqs `run_prereqs=false`
+  - Add `--connection=local` to end of command
+
+Example:
+```
+    ansible-playbook -vv -i "localhost," playbooks/setup.yml \
+    -e user=cloud-user -e run_prereqs=false -e setup_pipelines=true \
+    -e host_os=darwin -e setup_sample_project -K -k --connection=local
+```
 
 ## Debugging Issues
 
@@ -268,7 +273,6 @@ Pinpointing if you are hitting this issue:
 1. In the output of the following task:
 ```    
     TASK [minishift : Initialization of minishift cluster with profile minishiftpipeline]
-
 ```
 2.  Task contains:
 ```
