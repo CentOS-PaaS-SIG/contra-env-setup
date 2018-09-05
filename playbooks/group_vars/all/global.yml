@@ -22,8 +22,10 @@ dkvm_version: v0.10.0
 # minishift version
 minishift_version: v1.23.0
 
-# host os stuff
+# host os
 host_os: linux
+
+# shell configutation file
 shell_rc: .bashrc
 
 # default location for minishift

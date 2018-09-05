@@ -25,7 +25,7 @@
 
 # Setup tag if current container image build is successful
 - name: Modify tags on images
-  shell: "{{ oc_bin }} get imagestream | awk '{print $2}' | grep -v DOCKER | grep '{{ build_config_name_files[template_name] }}' | xargs -I{} {{ oc_bin }} tag {}:latest {}:{{ tag }}"
+  shell: "{{ oc_bin }} get imagestream | awk '{print $2}' | grep -v DOCKER | sed 's/.*5000\\///g' | grep '{{ build_config_name_files[template_name] }}' | xargs -I{} {{ oc_bin }} tag {}:latest {}:{{ tag }}"
   when: modify_tags|bool == true and current_build_succeeded|bool == true
 
 # Output the OpenShift build logs if the current build failed
