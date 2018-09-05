@@ -15,6 +15,9 @@
 - import_tasks: install_minishift_bin.yml
   when: (minishift_bin_path.stat.exists == false or force_minishift_install|bool == true)
 
+- name: "Make sure minishift profile {{ profile }} is active"
+  shell: "{{ minishift_bin}} profile set {{ profile }}"
+
 # Set disk size, memory, set Openshift version, skip OpenShift version and release check
 - name: "Set minishift disk-size {{ disk_size }}"
   shell: "{{ minishift_bin }} config set disk-size {{ disk_size }}"
@@ -46,8 +49,7 @@
     dest: "{{ minishift_dest_dir }}/minishift.iso"
     timeout: 120
 
-# Check if the minishift profile exists
-- name: "Check if the minishift profile exists"
+- name: "Check if the minishift profile is running"
   shell: "{{ minishift_bin }} status --profile {{ profile }}"
   register: minishift_profile_status
   ignore_errors: yes
