@@ -16,5 +16,4 @@
     insertafter: '\s+</features>'
     line: "  <cpu mode='host-passthrough'/>"
   become: yes
-
-
+  when: host_os == "linux"

@@ -2,12 +2,14 @@
 # Grab the oc client independent of minishift to talk to any Openshift cluster
 - name: "Create directory for the OpenShift client binary(oc)"
   file:
-    path: "{{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/linux"
+    path: "{{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/{{ host_os }}"
     state: directory
 
 - name: "Query for OpenShift client compressed binary version {{ oc_version }}"
-  shell: curl -s https://github.com/openshift/origin/releases/{{ oc_version }} | grep 'openshift-origin-client-tools-.*-linux.*.tar.gz' | head -1 | sed 's/.*<a href="\(.*\)" .*/https:\/\/github.com\1/' | cut -d'"' -f1
+  shell: curl -s https://github.com/openshift/origin/releases/{{ oc_version }} | grep {{ client_path }} | head -1 | sed 's/.*<a href="\(.*\)" .*/https:\/\/github.com\1/' | cut -d'"' -f1
   register: get_oc_bin
+  vars:
+    client_path: "{% if host_os == 'darwin' %}openshift-origin-client-tools-.*-mac.*.zip{% else %}openshift-origin-client-tools-.*-linux.*.tar.gz{% endif %}"
 
 - name: "Pull down and extract OpenShift client binary(oc) to {{ contra_env_setup_dir }}"
   unarchive:
@@ -19,10 +21,12 @@
   set_fact:
     oc_src_dir: "{{ contra_env_setup_dir }}/{{ get_oc_bin.stdout | basename | regex_search(regexp,'\\1') | join(' ') }}"
   vars:
-    regexp: '(openshift-origin-client-tools-.*linux.*).tar.gz'
+    regexp: "{% if host_os == 'darwin' %}(openshift-origin-client-tools-.*mac.*).zip{% else %}(openshift-origin-client-tools-.*linux.*).tar.gz{% endif %}"
 
-- name: "Copy OpenShift client binary(oc) version files from {{ oc_src_dir }}/oc to {{ oc_bin_path }}/ "
-  shell: cp {{ oc_src_dir }}/oc {{ oc_bin_path }}/
+- name: "Copy OpenShift client binary(oc) version files from {{ src_path }}/oc to {{ oc_bin_path }}/ "
+  shell: cp {{ src_path }}/oc {{ oc_bin_path }}/
+  vars:
+    src_path: "{% if host_os == 'darwin' %}{{ contra_env_setup_dir }}{% else %}{{ oc_src_dir }}{% endif %}"
 
 - name: "Delete {{ oc_src_dir }}"
   file:
