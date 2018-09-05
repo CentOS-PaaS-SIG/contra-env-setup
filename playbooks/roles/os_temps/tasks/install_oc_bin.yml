@@ -6,14 +6,10 @@
     state: directory
 
 - name: "Query for OpenShift client compressed binary version {{ oc_version }}"
-  shell: curl -s https://github.com/openshift/origin/releases/{{ oc_version }} | grep 'openshift-origin-client-tools-.*-linux.*.tar.gz' | head -1 | sed 's/.*<a href="\(.*\)" .*/https:\/\/github.com\1/' | cut -d'"' -f1
+  shell: curl -s https://github.com/openshift/origin/releases/{{ oc_version }} | grep {{ client_path }} | head -1 | sed 's/.*<a href="\(.*\)" .*/https:\/\/github.com\1/' | cut -d'"' -f1
   register: get_oc_bin
-  when: host_os != "darwin"
-
-- name: "Query for OpenShift client compressed binary version {{ oc_version }}"
-  shell: curl -s https://github.com/openshift/origin/releases/{{ oc_version }} | grep 'openshift-origin-client-tools-.*-mac.*.zip' | head -1 | sed 's/.*<a href="\(.*\)" .*/https:\/\/github.com\1/' | cut -d'"' -f1
-  register: get_oc_bin
-  when: host_os == "darwin"
+  vars:
+    client_path: "{% if host_os == 'darwin' %}openshift-origin-client-tools-.*-mac.*.zip{% else %}openshift-origin-client-tools-.*-linux.*.tar.gz{% endif %}"
 
 - name: "Pull down and extract OpenShift client binary(oc) to {{ contra_env_setup_dir }}"
   unarchive:
@@ -25,18 +21,12 @@
   set_fact:
     oc_src_dir: "{{ contra_env_setup_dir }}/{{ get_oc_bin.stdout | basename | regex_search(regexp,'\\1') | join(' ') }}"
   vars:
-    regexp: '(openshift-origin-client-tools-.*linux.*).tar.gz'
-  when: host_os != "darwin"
+    regexp: "{% if host_os == 'darwin' %}(openshift-origin-client-tools-.*mac.*).zip{% else %}(openshift-origin-client-tools-.*linux.*).tar.gz{% endif %}"
 
-- name: Set oc_src_dir fact
-  set_fact:
-    oc_src_dir: "{{ contra_env_setup_dir }}/{{ get_oc_bin.stdout | basename | regex_search(regexp,'\\1') | join(' ') }}"
+- name: "Copy OpenShift client binary(oc) version files from {{ src_path }}/oc to {{ oc_bin_path }}/ "
+  shell: cp {{ src_path }}/oc {{ oc_bin_path }}/
   vars:
-    regexp: '(openshift-origin-client-tools-.*mac.*).zip'
-  when: host_os == "darwin"
-
-- name: "Copy OpenShift client binary(oc) version files from {{ contra_env_setup_dir }}/oc to {{ oc_bin_path }}/ "
-  shell: cp {{ contra_env_setup_dir }}/oc {{ oc_bin_path }}/
+    src_path: "{% if host_os == 'darwin' %}{{ contra_env_setup_dir }}{% else %}{{ oc_src_dir }}{% endif %}"
 
 - name: "Delete {{ oc_src_dir }}"
   file:
