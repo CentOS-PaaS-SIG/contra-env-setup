@@ -4,6 +4,8 @@
   become_user: '{{ become_user | default("root") }}'
   remote_user: '{{ user | default("root") }}'
   gather_facts: '{{ gather_facts | default("yes") }}'
+  pre_tasks:
+    - import_tasks: 'roles/prereqs/tasks/check_os.yml'
   roles:
     - { role: cleanup, when: run_cleanup|bool == true }
     - role: create

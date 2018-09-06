@@ -25,7 +25,7 @@
     - [Example 3: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines](#example-3-setup-on-a-local-machine--setup-minishift--os-templates--jenkins-20-pipelines)
     - [Example 4: Setup on a local machine :: Start Minishift w/profile mysetup + OS templates + Jenkins 2.0 pipelines](#example-4-setup-on-a-local-machine--start-minishift-wprofile-mysetup--os-templates--jenkins-20-pipelines)
     - [Example 5: Setup on a local machine :: Using the playbook hooks on contra-env-setup](#example-5-setup-on-a-local-machine--using-the-playbook-hooks-on-contra-env-setup)
-  - [Mac Setup](#mac-setup)
+  - [Mac Users](#mac-users)
   - [Debugging Issues](#debugging-issues)
     - [Issue #1: Can't push images to the Minishift cluster](#issue-1-cant-push-images-to-the-minishift-cluster)
       - [Solution #1:](#solution-1)
@@ -65,10 +65,9 @@ or only certain components.  ex. minishift, jenkins infra, pipeline containers, 
 
 ## Pre-Setup options
 
-* host_os: Set the OS of the machine you are running the setup on : default=linux
-* shell_rc: Set your shell configuration file : default=.bashrc
 * run_cleanup: Run clean up of previous setup : default=false
 * run_prereqs: Run setting up virtualization and kvm-driver : default=true
+* shell_rc: Set your shell configuration file : default=.bashrc
 * contra_env_setup_dir: Directory to store the contra-env-setup :  default "{{ ansible_env.HOME }}/.contra-env-setup
 
 ## Override options
@@ -246,21 +245,16 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
        Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
 
-## Mac Setup
+## Mac Users
 
 In order to run this setup when using a mac, a few other steps must be taken.
-* Install [Homebrew](https://brew.sh/) and [Virtualbox](https://www.virtualbox.org/)
-* With Homebrew, install jq and gtar. `brew install jq gtar`
-* When running the `setup.yml` file..
-  - Override `host_os` with `darwin`
-  - Disable pre-reqs `run_prereqs=false`
-  - Add `--connection=local` to end of command
+* When running the `setup.yml` add `--connection=local` to end of command
 
 Example:
 ```
     ansible-playbook -vv -i "localhost," playbooks/setup.yml \
-    -e user=cloud-user -e run_prereqs=false -e setup_pipelines=true \
-    -e host_os=darwin -e setup_sample_project -K -k --connection=local
+    -e user=cloud-user -e setup_pipelines=true \
+    -e setup_sample_project -K -k --connection=local
 ```
 
 ## Debugging Issues
