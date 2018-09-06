@@ -1,5 +1,5 @@
 ---
-- name: "Set homebrew packages to install"
+- name: Set homebrew packages to install
   set_fact:
     brew_cask_packages:
       - "virtualbox"
@@ -7,28 +7,28 @@
       - "jq"
       - "gnu-tar"
 
-- name: "Ensuring Homebrew Is Installed"
+- name: Ensuring Homebrew Is Installed
   stat:
     path: "/usr/local/bin/brew"
   register: "homebrew_check"
 
-- name: "Installing Homebrew"
+- name: Installing Homebrew
   command: "/usr/bin/ruby -e '$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)'"
   when: not homebrew_check.stat.exists
 
-- name: "Updating Homebrew"
+- name: Updating Homebrew
   homebrew:
     update_homebrew: true
   when: homebrew_check.stat.exists
 
-- name: "Installing Homebrew Packages"
+- name: Installing Homebrew Packages
   homebrew:
     name: "{{ item }}"
     state: "present"
   with_items: "{{ brew_packages }}"
   when: homebrew_check.stat.exists
 
-- name: "Installing Homebrew Cask Packages"
+- name: Installing Homebrew Cask Packages
   homebrew_cask:
     name: "{{ item }}"
     state: "present"
