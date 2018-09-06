@@ -8,7 +8,7 @@
     - { role: cleanup, when: run_cleanup|bool == true }
     - role: create
     - { role: prereqs, when: "run_prereqs|bool == true and setup_minishift|bool == true" }
-    - { role: minishift, when: "setup_minishift|bool == true and start_minishift == false" }
+    - { role: minishift, when: "setup_minishift|bool == true" }
     - { role: os_temps, when: setup_containers|bool == true }
     - { role: pipeline, when: setup_pipelines|bool == true }
     - { role: playbook_hooks, when: setup_playbook_hooks|bool == true }
