@@ -5,7 +5,7 @@
 - name: Linux pre reqs setup
   block:
     - import_tasks: setup_nested_virt.yml
-      when: "setup_nested_virt|bool == true"
+      when: setup_nested_virt|bool == true
     - import_tasks: install_virtual_reqs.yml
     - import_tasks: install_kvm_plugin.yml
   when: host_os == "linux"
