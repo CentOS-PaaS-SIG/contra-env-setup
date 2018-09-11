@@ -2,6 +2,7 @@
 # run roles based on certain params
 run_cleanup: false
 run_prereqs: true
+setup_nested_virt: true
 setup_minishift: true
 start_minishift: false
 setup_containers: true
