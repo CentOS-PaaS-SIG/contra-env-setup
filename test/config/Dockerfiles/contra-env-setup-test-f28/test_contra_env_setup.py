@@ -5,6 +5,7 @@ import json
 import requests
 import os.path
 from subprocess import check_output
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 
 @pytest.fixture
@@ -13,7 +14,7 @@ def run_info():
     profile = None
     minishift_bin = None
     oc_bin = None
-
+    
     # Get Playbook ID from ara
     playbook_list_cmd = '/usr/bin/ara playbook list -f json'
     playbook_list = json.loads(check_output(playbook_list_cmd.split()))
@@ -33,7 +34,7 @@ def run_info():
         if result.get('Name') == 'playbook_hooks : debug-vars':
             debug_result_id = result.get('ID')
             break
-
+    
     if debug_result_id is not None:
         debug_result_cmd = '/usr/bin/ara result show %s --raw -f json' % debug_result_id
         debug_result = json.loads(check_output(debug_result_cmd.split()))
@@ -44,11 +45,11 @@ def run_info():
             oc_bin = test_run_info.get('oc_bin')
 
     return {
-        'playbook_id': playbook_id,
-        'profile': profile,
-        'minishift_bin': minishift_bin,
-        'oc_bin': oc_bin,
-    }
+               'playbook_id': playbook_id,
+               'profile': profile,
+               'minishift_bin': minishift_bin,
+               'oc_bin': oc_bin,
+           }
 
 
 def test_playbook_success(run_info):
@@ -70,7 +71,7 @@ def test_playbook_success(run_info):
             tasks_ok = stats.get('Ok')
             tasks_changed = stats.get('Changed')
             tasks_failed = stats.get('Failed')
-
+    
     assert(tasks_failed == 0)
     assert(tasks_changed > 0)
     assert(tasks_ok > 0)
@@ -79,7 +80,7 @@ def test_playbook_success(run_info):
 def test_binary_locations(run_info):
     minishift_bin = run_info.get('minishift_bin')
     oc_bin = run_info.get('oc_bin')
-
+ 
     assert(minishift_bin is not None)
     assert(os.path.isfile(minishift_bin))
     assert(oc_bin is not None)
@@ -136,7 +137,7 @@ def test_builds(run_info):
                 jenkins_success = True
             if 'jenkins-contra-sample-project-slave-' in line and 'Complete' in line:
                 jenkins_contra_slave_success = True
-
+ 
 
     assert(ansible_executor_success)
     assert(linchpin_executor_success)
@@ -199,6 +200,7 @@ def test_jenkins_running(run_info):
         for line in oc_result.splitlines():
             if 'jenkins' in line:
                 route = line.split()[1]
+                requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
                 request = requests.get('https://%s/login' % route, verify=False)
                 jenkins_running = True if request.status_code == 200 else False
 

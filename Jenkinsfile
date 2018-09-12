@@ -13,7 +13,8 @@ timestamps {
 
     // Needed for podTemplate()
     env.SLAVE_TAG = env.SLAVE_TAG ?: 'stable'
-    env.ENVSETUPTESTC7_TAG = env.ENVSETUPTESTC7_TAG ?: 'stable'
+    env.ENVSETUPTEST_C7_TAG = env.ENVSETUPTEST_C7_TAG ?: 'stable'
+    env.ENVSETUPTEST_F28_TAG = env.ENVSETUPTEST_F28_TAG ?: 'stable'
 
     env.DOCKER_REPO_URL = env.DOCKER_REPO_URL ?: '172.30.254.79:5000'
     env.OPENSHIFT_NAMESPACE = env.OPENSHIFT_NAMESPACE ?: 'continuous-infra'
@@ -62,7 +63,7 @@ timestamps {
                                     extensions: [
                                             [
                                                     $class: 'org.jenkinsci.plugins.ghprb.extensions.status.GhprbSimpleStatus',
-                                                    commitStatusContext: 'Contra Env Setup Stage Job',
+                                                    commitStatusContext: 'Contra Env Setup Testing Job',
                                                     showMatrixStatus: false,
                                                     triggeredStatus: 'Starting job...',
                                                     startedStatus: 'Testing...',
@@ -93,9 +94,12 @@ timestamps {
                                     string(name: 'SLAVE_TAG',
                                             defaultValue: 'stable',
                                             description: 'Tag for slave image'),
-                                    string(name: 'ENVSETUPTESTC7_TAG',
+                                    string(name: 'ENVSETUPTEST_C7_TAG',
                                             defaultValue: 'stable',
                                             description: 'Tag for contra-env-setup-test-c7 image'),
+                                    string(name: 'ENVSETUPTEST_F28_TAG',
+                                            defaultValue: 'stable',
+                                            description: 'Tag for contra-env-setup-test-f28 image'),
                                     string(name: 'DOCKER_REPO_URL',
                                             defaultValue: '172.30.254.79:5000',
                                             description: 'Docker repo url for Openshift instance'),
@@ -127,7 +131,14 @@ timestamps {
                     // This adds the contra-env-setup-test-c7 container to the pod.
                     containerTemplate(name: 'contra-env-setup-test-c7',
                             alwaysPullImage: true,
-                            image: DOCKER_REPO_URL + '/' + OPENSHIFT_NAMESPACE + '/contra-env-setup-test-c7:' + ENVSETUPTESTC7_TAG,
+                            image: DOCKER_REPO_URL + '/' + OPENSHIFT_NAMESPACE + '/contra-env-setup-test-c7:' + ENVSETUPTEST_C7_TAG,
+                            ttyEnabled: true,
+                            privileged: true,
+                            workingDir: '/workDir'),
+                    // This adds the contra-env-setup-test-f28 container to the pod.
+                    containerTemplate(name: 'contra-env-setup-test-f28',
+                            alwaysPullImage: true,
+                            image: DOCKER_REPO_URL + '/' + OPENSHIFT_NAMESPACE + '/contra-env-setup-test-f28:' + ENVSETUPTEST_F28_TAG,
                             ttyEnabled: true,
                             privileged: true,
                             workingDir: '/workDir'),
@@ -176,14 +187,33 @@ timestamps {
 
                                 currentStage = "test-env-setup"
                                 stage(currentStage) {
+                                    parallel (
+                                        'centos7': {
+                                            stage("${currentStage}-centos7") {
+                                                envsetupUtils.timedPipelineStep(stepName: "${currentStage}-centos7", debug: true) {
+                                                    // Set stage specific vars
+                                                    envsetupUtils.setStageEnvVars(currentStage)
 
-                                    envsetupUtils.timedPipelineStep(stepName: currentStage, debug: true) {
-                                        // Set stage specific vars
-                                        envsetupUtils.setStageEnvVars(currentStage)
+                                                    // Run contra-env-setup test
+                                                    pipelineUtils.executeInContainer("${currentStage}-centos7", "contra-env-setup-test-c7", "/home/prepare_and_test.sh")
+                                                }
+                                            }
+                                        },
+                                        'fedora28': {
+                                            stage("${currentStage}-fedora28") {
+                                                envsetupUtils.timedPipelineStep(stepName: "${currentStage}-fedora28", debug: true) {
+                                                    // Set stage specific vars
+                                                    envsetupUtils.setStageEnvVars(currentStage)
 
-                                        // Run contra-env-setup test
-                                        pipelineUtils.executeInContainer(currentStage, "contra-env-setup-test-c7", "/home/prepare_and_test.sh")
-                                    }
+                                                    // Fix for minishift cgrups/cpuset bug
+                                                    pipelineUtils.executeInContainer("${currentStage}-fedora28", "contra-env-setup-test-f28", "/home/fix-minishift.sh || true")
+
+                                                    // Run contra-env-setup test
+                                                    pipelineUtils.executeInContainer("${currentStage}-fedora28", "contra-env-setup-test-f28", "/home/prepare_and_test.sh")
+                                                }
+                                            }
+                                        }
+                                    )
                                 }
                             } catch (e) {
                                 // Set build result
@@ -207,6 +237,9 @@ timestamps {
                                 // set the metrics we want
                                 ciMetrics.setMetricTag(jobMeasurement, 'build_result', currentBuild.result)
                                 ciMetrics.setMetricField(jobMeasurement, 'build_time', currentBuild.getDuration())
+
+                                // Archive JUnit results
+                                step([$class: 'JUnitResultArchiver', testResults: '*.xml'])
 
                             }
                         }
