@@ -44,4 +44,4 @@ popd
                           --extra-vars='{"hooks": ["/home/debug_vars.yml"]}'
 
 # Run tests with pytest
-python -m pytest ${base_dir}/test_contra_env_setup.py -v --junitxml=${log_dir}/contra_env_setup_centos7.xml > ${log_dir}/contra_env_setup_centos7.log
+python -m pytest ${base_dir}/test_contra_env_setup.py -v --junitxml=${log_dir}/contra_env_setup_fedora28.xml > ${log_dir}/contra_env_setup_fedora28.log

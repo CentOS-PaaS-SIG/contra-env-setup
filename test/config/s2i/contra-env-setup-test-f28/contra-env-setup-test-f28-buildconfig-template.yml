@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: contra-env-setup-test-f28-builder
+metadata:
+  annotations:
+    description: pipeline-sample container
+    iconClass: contra-env-setup-test-f28
+    tags: instant-app
+  name: contra-env-setup-test-f28-builder
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+    labels:
+    name: contra-env-setup-test-f28
+  spec: {}
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    name: contra-env-setup-test-f28
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: contra-env-setup-test-f28:latest
+    resources: {}
+    source:
+      contextDir: ${REPO_CONTEXTDIR}
+      git:
+        ref: ${REPO_REF}
+        uri: ${REPO_URL}
+      type: Git
+    strategy:
+      dockerStrategy:
+        noCache: true
+        env:
+          - name: CONTAINER_NAME
+            value: contra-env-setup-test-f28
+      type: Docker
+    triggers:
+    - type: ConfigChange
+parameters:
+- description: Git repository with Dockerfile and slave entrypoint.
+  displayName: Repository URL
+  name: REPO_URL
+  value: https://github.com/CentOS-PaaS-SIG/contra-env-setup.git
+- description: The sub-directory inside the repository.
+  displayName: Context Directory
+  name: REPO_CONTEXTDIR
+  value: test/config/Dockerfiles/contra-env-setup-test-f28
+- description: The git ref or tag to use for customization.
+  displayName: Git Reference
+  name: REPO_REF
+  value: master

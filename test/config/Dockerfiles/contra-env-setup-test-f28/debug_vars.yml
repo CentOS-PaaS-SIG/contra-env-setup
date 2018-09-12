@@ -1,0 +1,10 @@
+- name: "Set debug vars"
+  set_fact:
+    test_run_info:
+      minishift_bin: "{{ minishift_bin }}"
+      oc_bin: "{{ oc_bin }}"
+      profile: "{{ profile }}"
+
+- name: "debug-vars"
+  debug:
+    var: test_run_info
