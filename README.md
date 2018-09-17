@@ -110,7 +110,7 @@ or only certain components.  ex. minishift, jenkins infra, pipeline containers, 
 * setup_containers: Setup OpenShift s2i templates : default=true
 * os_template_dir: Relative directory in the project repo where OpenShift s2i templates are stored: default=config/s2i
 * os_template_whitelist: List of OpenShift template names which will be built exclusively (other templates will be skipped) if this list isn't empty : default=[]
-* os_template_blacklist: List of Openshift template names which will be skipped, takes precendence over the os_template_whitelist : default=[]
+* os_template_blacklist: List of Openshift template names which will be skipped, takes precedence over the os_template_whitelist : default=[]
 * sample_os_template_dir: Relative directory in the sample project repo where OpenShift s2i templates are stored: default=config/s2i
 
 ### Jenkins 2.0 pipeline setup options

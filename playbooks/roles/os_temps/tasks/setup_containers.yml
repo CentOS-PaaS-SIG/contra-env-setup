@@ -15,7 +15,8 @@
     recurse: yes
   register: os_templates
 
-- debug:
+- name: "Publish all templates found in the directory"
+  debug:
     msg: "{{ item.path }}"
   with_items: "{{ os_templates.files }}"
 
@@ -25,7 +26,7 @@
   loop_control:
     loop_var: template_file
 
-- name: "Publish templates will be built"
+- name: "Publish templates which will be built"
   debug:
     msg: "{{ item.path }}"
   with_items: "{{ os_template_files }}"

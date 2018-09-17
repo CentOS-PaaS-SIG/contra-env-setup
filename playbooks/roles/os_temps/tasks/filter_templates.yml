@@ -5,11 +5,11 @@
   shell: "{{ oc_bin }} process -f {{ template_file.path }} | jq '.items[1].metadata.labels.template' | sed 's/\"//g'"
   register: "template_name"
 
-- name: "Template name"
+- name: "Publish template name"
   debug:
     msg: "Template name: {{ template_name.stdout }}"
 
-- name: "Add to templates list if template name is in whitelist"
+- name: "Add to templates list if template name is in whitelist and not in blacklist"
   set_fact:
     os_template_files: "{{ os_template_files|default([]) + [ template_file ] }}"
   when: (template_name.stdout in os_template_whitelist) and ((os_template_whitelist | default([])) | length != 0) and (template_name.stdout not in os_template_blacklist)
