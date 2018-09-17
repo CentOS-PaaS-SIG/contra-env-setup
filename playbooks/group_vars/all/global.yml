@@ -99,8 +99,14 @@ project_branch: 'master'
 # Project directory
 project_dir: "{{ contra_env_setup_dir }}/{{ project_repo.split('/')[-1] | replace('.git', '') }}"
 
-# OpenSift template directory
+# OpenShift template directory
 os_template_dir: "config/s2i"
+
+# OpenShift template whitelist, not used if empty
+os_template_whitelist: []
+
+# OpenShift template blacklist, not used if whitelist is set
+os_template_blacklist: []
 
 # Jenkins pipelines directory
 pipeline_dir: "config/pipelines/buildconfigs"

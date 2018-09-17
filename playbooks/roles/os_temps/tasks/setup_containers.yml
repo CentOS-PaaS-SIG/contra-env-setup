@@ -4,6 +4,7 @@
 - name: "Set the container_config_name to OpenShift s2i templates"
   set_fact:
     container_config_name: "OpenShift s2i templates"
+    os_template_files: []
 
 # Use the repo's OpenShift s2i templates as the list to process
 - name: "Get OpenShift s2i template names from {{ os_template_path }}"
@@ -18,16 +19,27 @@
     msg: "{{ item.path }}"
   with_items: "{{ os_templates.files }}"
 
+- name: "Filter the templates"
+  include_tasks: "filter_templates.yml"
+  with_items: "{{ os_templates.files }}"
+  loop_control:
+    loop_var: template_file
+
+- name: "Publish templates will be built"
+  debug:
+    msg: "{{ item.path }}"
+  with_items: "{{ os_template_files }}"
+
 - name: "Process the templates"
   template:
     src: "{{ item.path }}"
     dest: "{{ item.path }}.processed"
-  with_items: "{{ os_templates.files }}"
+  with_items: "{{ os_template_files }}"
 
 # Check that templates are valid
 - name: "Check that templates are valid"
   shell: "{{ oc_bin }} process -f {{ item.path }}.processed"
-  with_items: "{{ os_templates.files }}"
+  with_items: "{{ os_template_files }}"
 
 # Set the total build success
 - set_fact:
@@ -59,8 +71,8 @@
 # Setup project_repo templates and store variables for each template
 - name: "Setup project_repo templates and store variables for each template"
   include_tasks: "setup_os_templates.yml template_name={{ item.path }}.processed"
-  with_items: "{{ os_templates.files }}"
-  when: os_templates.files != ""
+  with_items: "{{ os_template_files }}"
+  when: os_template_files != ""
 
 # Handle loading of project_repo templates into OpenShift, retry 4 times
 - name: "Handle loading of project_repo templates into OpenShift"
@@ -68,7 +80,7 @@
   with_sequence: count=4
   loop_control:
     loop_var: attempt_number
-  when: os_templates.files != ""
+  when: os_template_files != ""
 
 # If there were failed builds, output the error message with log directory location
 - name: "If there were failed builds, fail the run and direct user to log directory"
