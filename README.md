@@ -67,6 +67,7 @@ or only certain components.  ex. minishift, jenkins infra, pipeline containers, 
 
 * run_cleanup: Run clean up of previous setup : default=false
 * run_prereqs: Run setting up virtualization and kvm-driver : default=true
+* setup_nested_virt: Run setting up of nested virtualization : default=true
 * shell_rc: Set your shell configuration file : default=.bashrc
 * contra_env_setup_dir: Directory to store the contra-env-setup :  default "{{ ansible_env.HOME }}/.contra-env-setup
 
@@ -108,6 +109,8 @@ or only certain components.  ex. minishift, jenkins infra, pipeline containers, 
 ### OpenShift s2i template setup options
 * setup_containers: Setup OpenShift s2i templates : default=true
 * os_template_dir: Relative directory in the project repo where OpenShift s2i templates are stored: default=config/s2i
+* os_template_whitelist: List of OpenShift template names which will be built exclusively (other templates will be skipped) if this list isn't empty : default=[]
+* os_template_blacklist: List of Openshift template names which will be skipped, takes precedence over the os_template_whitelist : default=[]
 * sample_os_template_dir: Relative directory in the sample project repo where OpenShift s2i templates are stored: default=config/s2i
 
 ### Jenkins 2.0 pipeline setup options
