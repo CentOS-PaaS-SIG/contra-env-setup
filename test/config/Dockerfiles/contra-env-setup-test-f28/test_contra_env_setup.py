@@ -4,6 +4,7 @@ import pytest
 import json
 import requests
 import os.path
+from time import sleep
 from subprocess import check_output
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
@@ -188,8 +189,13 @@ def test_jenkins_running(run_info):
             if 'jenkins' in line:
                 route = line.split()[1]
                 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-                request = requests.get('https://%s/login' % route, verify=False)
-                jenkins_running = True if request.status_code == 200 else False
+                for i in range(12):
+                    request = requests.get('https://%s/login' % route, verify=False)
+                    jenkins_running = True if request.status_code == 200 else False
+
+                    if jenkins_running:
+                        break
+                    sleep(10)
 
     assert(route_exists)
     assert(jenkins_running)
