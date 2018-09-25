@@ -74,7 +74,7 @@ or only certain components.  ex. minishift, jenkins infra, pipeline containers, 
 ## Override options
 
 * force_minishift_install: Override an existing install of minishift : default=false
-* force_repo_clone: Force cloning of project repo
+* force_repo_clone: Force cloning of project repo : default=false
 
 ## Minishift and OpenShift setup options
 
