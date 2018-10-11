@@ -4,6 +4,7 @@ import pytest
 import json
 import requests
 import os.path
+from time import sleep
 from subprocess import check_output
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
@@ -112,16 +113,12 @@ def test_buildconfigs(run_info):
         oc_cmd = '%s get buildconfigs' % oc_bin
         oc_result = check_output(oc_cmd.split())
 
-    assert(oc_result and 'ansible-executor' in oc_result)
-    assert(oc_result and 'linchpin-executor' in oc_result)
     assert(oc_result and 'jenkins-contra-sample-project-slave' in oc_result)
     assert(oc_result and 'jenkins ' in oc_result)
 
 
 def test_builds(run_info):
     oc_bin = run_info.get('oc_bin')
-    ansible_executor_success = False
-    linchpin_executor_success = False
     jenkins_success = False
     jenkins_contra_slave_success = False
 
@@ -129,18 +126,11 @@ def test_builds(run_info):
         oc_cmd = '%s get builds' % oc_bin
         oc_result = check_output(oc_cmd.split())
         for line in oc_result.splitlines():
-            if 'ansible-executor-' in line and 'Complete' in line:
-                ansible_executor_success = True
-            if 'linchpin-executor-' in line and 'Complete' in line:
-                linchpin_executor_success = True
             if 'jenkins-' in line and 'Complete' in line and 'slave' not in line:
                 jenkins_success = True
             if 'jenkins-contra-sample-project-slave-' in line and 'Complete' in line:
                 jenkins_contra_slave_success = True
- 
 
-    assert(ansible_executor_success)
-    assert(linchpin_executor_success)
     assert(jenkins_success)
     assert(jenkins_contra_slave_success)
 
@@ -153,8 +143,6 @@ def test_imagestreams(run_info):
         oc_cmd = '%s get imagestreams' % oc_bin
         oc_result = check_output(oc_cmd.split())
 
-    assert(oc_result and 'ansible-executor' in oc_result)
-    assert(oc_result and 'linchpin-executor' in oc_result)
     assert(oc_result and 'jenkins-contra-sample-project-slave' in oc_result)
     assert(oc_result and 'jenkins' in oc_result)
 
@@ -201,8 +189,13 @@ def test_jenkins_running(run_info):
             if 'jenkins' in line:
                 route = line.split()[1]
                 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-                request = requests.get('https://%s/login' % route, verify=False)
-                jenkins_running = True if request.status_code == 200 else False
+                for i in range(12):
+                    request = requests.get('https://%s/login' % route, verify=False)
+                    jenkins_running = True if request.status_code == 200 else False
+
+                    if jenkins_running:
+                        break
+                    sleep(10)
 
     assert(route_exists)
     assert(jenkins_running)
