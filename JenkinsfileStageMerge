@@ -6,6 +6,8 @@ STABLE_LABEL = "stable"
 // git commit default
 env.ghprbActualCommit = env.ghprbActualCommit ?: 'master'
 
+imageOperations = []
+
 library identifier: "ci-pipeline@master",
         retriever: modernSCM([$class: 'GitSCMSource',
                               remote: "https://github.com/CentOS-PaaS-SIG/ci-pipeline"])
@@ -76,6 +78,7 @@ pipeline {
                 steps {
                     script {
                         pipelineUtils.buildStableImage(OPENSHIFT_NAMESPACE, 'contra-env-setup-c7')
+                        imageOperations.add('contra-env-setup-c7')
                     }
                 }
             }
@@ -87,8 +90,18 @@ pipeline {
                 steps {
                     script {
                         pipelineUtils.buildStableImage(OPENSHIFT_NAMESPACE, 'contra-env-setup-f28')
+                        imageOperations.add('contra-env-setup-f28')
                     }
                 }
+            }
+        }
+        stage("Comment image promotions on PR") {
+            steps {
+                def MRComment = "\nThe following image promotions have taken place:\n\n"
+                imageOperations.each {
+                    MRComment = MRComment + "+ ${it}\n"
+                }
+                addGitLabMRComment comment: "$MRComment"
             }
         }
     }
