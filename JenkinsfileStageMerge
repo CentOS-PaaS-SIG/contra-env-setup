@@ -47,7 +47,7 @@ pipeline {
             containerTemplate {
                 name 'jnlp'
                 args '${computer.jnlpmac} ${computer.name}'
-                image DOCKER_REPO_URL + '/' + openshiftProject + '/jenkins-continuous-infra-slave:' + STABLE_LABEL
+                image DOCKER_REPO_URL + '/' + OPENSHIFT_NAMESPACE + '/jenkins-continuous-infra-slave:' + STABLE_LABEL
                 ttyEnabled false
                 command ''
             }
@@ -69,39 +69,39 @@ pipeline {
                 }
             }
         }
-        parallel {
-            stage("Rebuild centos7 testing image") {
-                when {
-                    // Only build if we have related files in changeset or we manually set the parameter for this image
-                    changeset 'test/config/Dockerfiles/contra-env-setup-c7/**'
-                }
-                steps {
-                    script {
-                        pipelineUtils.buildStableImage(OPENSHIFT_NAMESPACE, 'contra-env-setup-c7')
-                        imageOperations.add('contra-env-setup-c7')
+        stage('Rebuild images') {
+            parallel {
+                stage("Rebuild centos7 testing image") {
+                    when {
+                        // Only build if we have related files in changeset or we manually set the parameter for this image
+                        changeset 'test/config/Dockerfiles/contra-env-setup-c7/**'
+                    }
+                    steps {
+                        script {
+                            pipelineUtils.buildStableImage(OPENSHIFT_NAMESPACE, 'contra-env-setup-c7')
+                            imageOperations.add('contra-env-setup-c7')
+                        }
                     }
                 }
-            }
-            stage("Rebuild fedora28 testing image") {
-                when {
-                    // Only build if we have related files in changeset or we manually set the parameter for this image
-                    changeset 'test/config/Dockerfiles/contra-env-setup-f28/**'
-                }
-                steps {
-                    script {
-                        pipelineUtils.buildStableImage(OPENSHIFT_NAMESPACE, 'contra-env-setup-f28')
-                        imageOperations.add('contra-env-setup-f28')
+                stage("Rebuild fedora28 testing image") {
+                    when {
+                        // Only build if we have related files in changeset or we manually set the parameter for this image
+                        changeset 'test/config/Dockerfiles/contra-env-setup-f28/**'
+                    }
+                    steps {
+                        script {
+                            pipelineUtils.buildStableImage(OPENSHIFT_NAMESPACE, 'contra-env-setup-f28')
+                            imageOperations.add('contra-env-setup-f28')
+                        }
                     }
                 }
             }
         }
         stage("Comment image promotions on PR") {
             steps {
-                def MRComment = "\nThe following image promotions have taken place:\n\n"
-                imageOperations.each {
-                    MRComment = MRComment + "+ ${it}\n"
+                script {
+                    pipelineUtils.sendPRCommentforTags(imageOperations)
                 }
-                addGitLabMRComment comment: "$MRComment"
             }
         }
     }
