@@ -1,19 +1,19 @@
 ---
 # Start builds for each container defined in the template files
 - name: "Start builds for containers defined in the template files - attempt {{ attempt_number }}"
-  include_tasks: "build_new_app.yml template_name={{ template_filename.path }}.processed"
+  include_tasks: "build_new_app.yml"
   with_items: "{{ os_template_files }}"
   when: (total_build_success|bool == false)
   loop_control:
-    loop_var: template_filename
+    loop_var: template_file
 
 # Check on build status of each container, finalize if done
 - name: "Check on build status of containers, finalize if done - attempt {{ attempt_number }}"
-  include_tasks: "check_new_app.yml template_name={{ template_filename.path }}.processed"
+  include_tasks: "check_new_app.yml"
   with_items: "{{ os_template_files }}"
   when: (total_build_success|bool == false)
   loop_control:
-    loop_var: template_filename
+    loop_var: template_file
 
 - set_fact:
     total_build_success: true
