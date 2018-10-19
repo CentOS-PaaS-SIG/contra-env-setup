@@ -6,7 +6,7 @@
   shell: "{{ oc_bin }} new-app {{ template_name_files[template_name] }} {{ params | join(' ') }} | sed '1,/--> Creating resources .../d;/--> Success/,$d' | grep created | sed 's/\\\"//g' | awk '{print $1\"/\"$2}'"
   register: app_build_status
   args:
-    chdir: "{{ project_dir }}/config"
+    chdir: "{{ project_dir }}/{{ os_template_dir.split('/')[:-1]|join('/') }}"
   when: (image_stream_name_checks[template_name] == "" and build_config_name_checks[template_name] == "" and build_results[template_name]|bool == false)
 
 - name: "Save the created resource names"
