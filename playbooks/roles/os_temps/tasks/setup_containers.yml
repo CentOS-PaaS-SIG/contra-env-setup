@@ -71,8 +71,10 @@
 
 # Setup project_repo templates and store variables for each template
 - name: "Setup project_repo templates and store variables for each template"
-  include_tasks: "setup_os_templates.yml template_name={{ item.path }}.processed"
+  include_tasks: "setup_os_templates.yml"
   with_items: "{{ os_template_files }}"
+  loop_control:
+    loop_var: template_file
   when: os_template_files != ""
 
 # Handle loading of project_repo templates into OpenShift, retry 4 times
@@ -88,4 +90,3 @@
   fail:
     msg: "There were failed builds, check failed build logs in /tmp/contra-env-setup/logs/run-{{ run_time }}"
   when: (total_build_success|bool == false)
-
