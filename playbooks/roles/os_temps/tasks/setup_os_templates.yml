@@ -4,7 +4,7 @@
     params: []
 
 - name: "{{ container_config_name }} :: Get template name from the yaml file"
-  shell: "{{ oc_bin }} process -f {{ template_file.path }} --output=describe | grep 'Name:' | head -n1 | awk '{print $2}'"
+  shell: "{{ oc_bin }} process -f {{ template_file.path }} --output=describe | grep \"^Name:\" | head -n1 | awk '{print $2}'"
   register: "template_name_file"
 
 - debug:
