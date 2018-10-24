@@ -15,6 +15,12 @@
     recurse: yes
   register: os_templates
 
+- name: "Process the templates"
+  template:
+    src: "{{ item.path }}"
+    dest: "{{ item.path }}.processed"
+  with_items: "{{ os_template_files }}"
+
 - name: "Publish all templates found in the directory"
   debug:
     msg: "{{ item.path }}"
@@ -29,12 +35,6 @@
 - name: "Publish templates which will be built"
   debug:
     msg: "{{ item.path }}"
-  with_items: "{{ os_template_files }}"
-
-- name: "Process the templates"
-  template:
-    src: "{{ item.path }}"
-    dest: "{{ item.path }}.processed"
   with_items: "{{ os_template_files }}"
 
 # Check that templates are valid
