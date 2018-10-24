@@ -15,15 +15,15 @@
     recurse: yes
   register: os_templates
 
+- name: "Publish all templates found in the directory"
+  debug:
+    msg: "{{ item.path }}"
+  with_items: "{{ os_templates.files }}"
+
 - name: "Process the templates"
   template:
     src: "{{ item.path }}"
     dest: "{{ item.path }}.processed"
-  with_items: "{{ os_template_files }}"
-
-- name: "Publish all templates found in the directory"
-  debug:
-    msg: "{{ item.path }}"
   with_items: "{{ os_templates.files }}"
 
 - name: "Filter the templates"
