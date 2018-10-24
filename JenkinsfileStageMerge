@@ -23,7 +23,7 @@ properties([
                         triggerPhrase: '.*\\[merge\\].*',
                         onlyTriggerPhrase: true,
                         useGitHubHooks: true,
-                        permitAll: true,
+                        permitAll: false,
                         autoCloseFailedPullRequests: false,
                         displayBuildErrorsOnDownstreamBuilds: true,
                         extensions: [
