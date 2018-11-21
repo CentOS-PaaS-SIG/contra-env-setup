@@ -50,6 +50,15 @@ minishift_insecure_registry: ""
 # Leave empty when using minishift
 openshift_cluster_ip: ""
 
+# Set this to true to skip the log-in step and assume it had already been done
+# manually. This is useful to avoid having to store credentials in the
+# configuration files or specifying them on the command line
+skip_login: False
+
+# cluster security token - if set to '__undefined__' the username and password
+# will be used for logging in instead
+security_token: __undefined__
+
 # cluster username
 username: developer
 
