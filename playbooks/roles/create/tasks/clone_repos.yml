@@ -28,4 +28,14 @@
     refspec: "{{ sample_project_refspec }}"
     version: "{{ sample_project_branch }}"
     force: yes
-  when: project_repo != sample_project_repo
+  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
+
+# git clone helper_project_repo
+- name: "checkout the helper project repo @ {{ helper_project_repo }} to {{ helper_project_dir }}"
+  git:
+    repo: "{{ helper_project_repo }}"
+    dest: "{{ helper_project_dir }}"
+    refspec: "{{ helper_project_refspec }}"
+    version: "{{ helper_project_branch }}"
+    force: yes
+  when: (project_repo != helper_project_repo and setup_helper_containers|bool == true)

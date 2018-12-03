@@ -2,7 +2,7 @@
 # run roles based on certain params
 run_cleanup: false
 run_prereqs: true
-setup_nested_virt: true
+setup_nested_virt: false
 setup_minishift: true
 start_minishift: false
 setup_containers: true
@@ -21,7 +21,7 @@ dkvm_version: v0.10.0
 
 ## minishift values
 # minishift version
-minishift_version: v1.23.0
+minishift_version: v1.26.0
 
 # shell configutation file
 shell_rc: .bashrc
@@ -37,7 +37,7 @@ profile: minishift
 # disk, memory size and cpus
 disk_size: 40gb
 memory: 8092mb
-cpus: 2
+cpus: 4
 
 # minishift iso location
 minishift_iso: https://s3.amazonaws.com/continuous-infra/minishift/iso/minishift.iso
@@ -82,11 +82,11 @@ modify_tags: true
 tag: stable
 
 # modify security context contraints (SCC) to run privileged containers
-modify_scc: true
+modify_scc: false
 
 ## oc cli vars
 # oc version
-oc_version: v3.10.0
+oc_version: v3.11.0
 
 # Path to oc binary directory
 oc_bin_path: "{{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/{{ host_os }}"
@@ -134,20 +134,6 @@ SAMPLE_HELPER_PARAMS:
   - key: REPO_REF
     val: "{{ sample_project_branch }}"
 
-# These are parameters that are passed to setup the Jenkins master/slave containers in sample_project_repo
-SAMPLE_JENKINS_PARAMS: "{{ SAMPLE_HELPER_CONTAINERS }}"
-
-# These are parameters that are passed to setup the containers from the sample_project_repo
-SAMPLE_PARAMS:
-  - key: REPO_URL
-    val: "{{ sample_project_repo }}"
-  - key: REPO_REF
-    val: "{{ sample_project_branch }}"
-  - key: ENABLE_VM
-    val: false
-  - key: VM_IMG_URL
-    val: http://artifacts.ci.centos.org/artifacts/fedora-atomic/f26/images/latest-atomic.qcow2
-
 params: []
 
 ## Sample containers and pipelines
@@ -172,8 +158,17 @@ sample_pipeline_dir: "config/pipelines/buildconfigs"
 
 ## Continuous-Infra helper containers
 
+# Helper oroject repo
+helper_project_repo: https://github.com/arilivigni/contra-env-infra
+
+# Helper Project repo refspec
+helper_project_refspec: '+refs/pull/*:refs/heads/*'
+
+# Helper project repo branch or sha
+helper_project_branch: 'master'
+
 # Helper project directory
-helper_project_dir: "{{ contra_env_setup_dir }}/{{ sample_project_repo.split('/')[-1] | replace('.git', '') }}"
+helper_project_dir: "{{ contra_env_setup_dir }}/{{ helper_project_repo.split('/')[-1] | replace('.git', '') }}"
 
 # Helper OpenSift template directory
-helper_os_template_dir: "{{ sample_os_template_dir }}"
+helper_os_template_dir: "./"
