@@ -120,15 +120,6 @@ os_template_blacklist: []
 # Jenkins pipelines directory
 pipeline_dir: "config/pipelines/buildconfigs"
 
-# These are parameters that are passed to setup the containers from the project_repo
-PARAMS:
-  - key: REPO_URL
-    val: "{{ project_repo }}"
-  - key: REPO_REF
-    val: "{{ project_branch }}"
-
-params: []
-
 ## Sample containers and pipelines
 
 # Sample project repo
