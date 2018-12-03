@@ -143,7 +143,7 @@ sample_pipeline_dir: "config/pipelines/buildconfigs"
 ## Continuous-Infra helper containers
 
 # Helper oroject repo
-helper_project_repo: https://github.com/arilivigni/contra-env-infra
+helper_project_repo: https://github.com/CentOS-PaaS-SIG/contra-env-infra
 
 # Helper Project repo refspec
 helper_project_refspec: '+refs/pull/*:refs/heads/*'
