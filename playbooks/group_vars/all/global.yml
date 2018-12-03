@@ -127,13 +127,6 @@ PARAMS:
   - key: REPO_REF
     val: "{{ project_branch }}"
 
-# These are parameters that are passed to setup the helper containers in sample_project_repo
-SAMPLE_HELPER_PARAMS:
-  - key: REPO_URL
-    val: "{{ sample_project_repo }}"
-  - key: REPO_REF
-    val: "{{ sample_project_branch }}"
-
 params: []
 
 ## Sample containers and pipelines
