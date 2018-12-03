@@ -60,17 +60,6 @@
     msg: "{{ container_config_name }} :: Buildconfig {{ build_config_name_check.stdout }} already exists"
   when: build_config_name_check.stdout != ""
 
-- name: "{{ container_config_name }} :: Check if the template being loaded contains the parameter..."
-  shell: "{{ oc_bin }} describe template {{ template_name_file.stdout }} | grep {{ item.key }}"
-  register: check_temp_params
-  with_items: "{{ PARAMS }}"
-  ignore_errors: yes
-
-- set_fact:
-    params: "{{ params | default([]) }} + [ '-p {{ item.item.key }}={{ item.item.val }}' ]"
-  when: (item.stdout != "" and item.item.val != "")
-  with_items: "{{ check_temp_params.results }}"
-
 # Set all the necessary facts for building of templates and subsequent retries
 - set_fact:
     build_results: "{{ build_results|default({}) | combine( {template_name: false} ) }}"
