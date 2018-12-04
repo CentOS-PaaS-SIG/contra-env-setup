@@ -66,4 +66,3 @@
     build_config_name_checks: "{{ build_config_name_checks|default({}) | combine( {template_name: build_config_name_check.stdout}) }}"
     image_stream_name_checks: "{{ image_stream_name_checks|default({}) | combine( {template_name: image_stream_name_check.stdout}) }}"
     template_name_files: "{{ template_name_files|default({}) | combine( {template_name: template_name_file.stdout}) }}"
-    params: "{{ params|default({}) }}"

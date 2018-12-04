@@ -94,9 +94,6 @@ oc_bin_path: "{{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/{{
 # Path to oc binary
 oc_bin: "{{ oc_bin_path }}/oc"
 
-# override s2i template parameters
-params: []
-
 ## Project repo setup
 
 # Project repo
