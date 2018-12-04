@@ -116,7 +116,7 @@ os_template_whitelist: []
 
 # OpenShift template blacklist, not used if whitelist is set
 os_template_blacklist:
-  - influxfb
+  - influxdb
   - grafana
 
 # Jenkins pipelines directory
