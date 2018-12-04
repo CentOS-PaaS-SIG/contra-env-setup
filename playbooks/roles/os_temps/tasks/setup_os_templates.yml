@@ -1,7 +1,6 @@
 ---
 - set_fact:
     template_name: "{{ template_file.path }}.processed"
-    params: []
 
 - name: "{{ container_config_name }} :: Get template name from the yaml file"
   shell: "{{ oc_bin }} process -f {{ template_name }} --output=describe | grep \"^Name:\" | head -n1 | awk '{print $2}'"
@@ -67,4 +66,4 @@
     build_config_name_checks: "{{ build_config_name_checks|default({}) | combine( {template_name: build_config_name_check.stdout}) }}"
     image_stream_name_checks: "{{ image_stream_name_checks|default({}) | combine( {template_name: image_stream_name_check.stdout}) }}"
     template_name_files: "{{ template_name_files|default({}) | combine( {template_name: template_name_file.stdout}) }}"
-    build_params: "{{ build_params|default({}) | combine( {template_name: params}) }}"
+    params: "{{ params|default({}) }}"
