@@ -53,7 +53,7 @@
   ignore_errors: yes
 
 - name: "Cleanup all failed dc, bc, routes, svc, and imagestreams on the cluster"
-  shell: "{{ oc_bin }} get all | grep '{{ failed_container_name }}' | awk '{print $1}' | egrep -v 'builds\\/|po\\/' | xargs -I{} {{ oc_bin }} delete {}"
+  shell: "{{ oc_bin }} get all | grep '{{ failed_container_name }}' | awk '{print $1}' | egrep -v 'builds\\/||build.build|po\\/' | xargs -I{} {{ oc_bin }} delete {}"
   with_items: "{{ oc_check_app_status.stdout_lines }}"
   loop_control:
     loop_var: failed_container_name

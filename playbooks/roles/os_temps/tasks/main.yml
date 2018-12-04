@@ -54,12 +54,12 @@
   when: setup_containers|bool == true
 
 - set_fact:
-    os_template_path: "{{ helper_project_dir }}/{{ helper_os_template_dir }}/helper PARAMS={{ SAMPLE_HELPER_PARAMS }}"
-  when: (setup_containers|bool == true and project_repo != sample_project_repo and setup_helper_containers|bool == true)
+    os_template_path: "{{ helper_project_dir }}/{{ helper_os_template_dir }}"
+  when: (setup_containers|bool == true and project_repo != helper_project_repo and setup_helper_containers|bool == true)
 
-# Setup sample_project_repo helper containers
+# Setup helper containers
 - include_tasks: "setup_containers.yml"
-  when: (setup_containers|bool == true and project_repo != sample_project_repo and setup_helper_containers|bool == true)
+  when: (setup_containers|bool == true and project_repo != helper_project_repo and setup_helper_containers|bool == true)
 
 # Check if Jenkins is running
 - name: "Check to see if a Jenkins Master instance is running"
@@ -68,15 +68,15 @@
   ignore_errors: yes
 
 - set_fact:
-    os_template_path: "{{ sample_project_dir }}/{{ sample_os_template_dir }}/jenkins PARAMS={{ SAMPLE_JENKINS_PARAMS }}"
-  when: (setup_containers|bool == true and project_repo != sample_project_repo and setup_sample_project|bool == true and jenkins_running.stdout == "")
+    os_template_path: "{{ helper_project_dir }}/{{ helper_os_template_dir }}/jenkins"
+  when: (setup_containers|bool == true and project_repo != helper_project_repo and setup_helper_containers|bool == true and jenkins_running.stdout == "")
 
-# Setup sample_project_repo Jenkins master/slave sample containers
+# Setup helper_project_repo Jenkins master/slave sample containers
 - include_tasks: setup_containers.yml
-  when: (setup_containers|bool == true and project_repo != sample_project_repo and setup_sample_project|bool == true and jenkins_running.stdout == "")
+  when: (setup_containers|bool == true and project_repo != helper_project_repo and setup_helper_containers|bool == true and jenkins_running.stdout == "")
 
 - set_fact:
-    os_template_path: "{{ sample_project_dir }}/{{ sample_os_template_dir }}/samples PARAMS={{ SAMPLE_PARAMS }}"
+    os_template_path: "{{ sample_project_dir }}/{{ sample_os_template_dir }}"
   when: (setup_containers|bool == true and project_repo != sample_project_repo and setup_sample_project|bool == true)
 
 # Setup sample_project_repo sample containers

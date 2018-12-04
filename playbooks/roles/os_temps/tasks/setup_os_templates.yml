@@ -1,7 +1,6 @@
 ---
 - set_fact:
     template_name: "{{ template_file.path }}.processed"
-    params: []
 
 - name: "{{ container_config_name }} :: Get template name from the yaml file"
   shell: "{{ oc_bin }} process -f {{ template_name }} --output=describe | grep \"^Name:\" | head -n1 | awk '{print $2}'"
@@ -60,17 +59,6 @@
     msg: "{{ container_config_name }} :: Buildconfig {{ build_config_name_check.stdout }} already exists"
   when: build_config_name_check.stdout != ""
 
-- name: "{{ container_config_name }} :: Check if the template being loaded contains the parameter..."
-  shell: "{{ oc_bin }} describe template {{ template_name_file.stdout }} | grep {{ item.key }}"
-  register: check_temp_params
-  with_items: "{{ PARAMS }}"
-  ignore_errors: yes
-
-- set_fact:
-    params: "{{ params | default([]) }} + [ '-p {{ item.item.key }}={{ item.item.val }}' ]"
-  when: (item.stdout != "" and item.item.val != "")
-  with_items: "{{ check_temp_params.results }}"
-
 # Set all the necessary facts for building of templates and subsequent retries
 - set_fact:
     build_results: "{{ build_results|default({}) | combine( {template_name: false} ) }}"
@@ -78,4 +66,3 @@
     build_config_name_checks: "{{ build_config_name_checks|default({}) | combine( {template_name: build_config_name_check.stdout}) }}"
     image_stream_name_checks: "{{ image_stream_name_checks|default({}) | combine( {template_name: image_stream_name_check.stdout}) }}"
     template_name_files: "{{ template_name_files|default({}) | combine( {template_name: template_name_file.stdout}) }}"
-    build_params: "{{ build_params|default({}) | combine( {template_name: params}) }}"
