@@ -20,11 +20,16 @@
     - [Jenkins 2.0 pipeline setup options](#jenkins-20-pipeline-setup-options)
   - [Templates](#templates)
   - [Usage examples](#usage-examples)
-    - [Example 1: Setup on a local machine :: Setup Minishift + OS templates](#example-1-setup-on-a-local-machine--setup-minishift--os-templates)
-    - [Example 2: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines](#example-2-setup-on-a-local-machine--setup-minishift--os-templates--jenkins-20-pipelines)
+    - [Example 1: Setup on a local machine :: Setup Minishift + Helper infra OS templates + OS templates from some project](#example-1-setup-on-a-local-machine--setup-minishift--helper-infra-os-templates--os-templates-from-some-project)
+    - [Example 2: Setup on a local machine :: Setup Minishift + Helper infra OS templates + Jenkins 2.0 pipelines](#example-2-setup-on-a-local-machine--setup-minishift--helper-infra-os-templates--jenkins-20-pipelines)
     - [Example 3: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines](#example-3-setup-on-a-local-machine--setup-minishift--os-templates--jenkins-20-pipelines)
     - [Example 4: Setup on a local machine :: Start Minishift w/profile mysetup + OS templates + Jenkins 2.0 pipelines](#example-4-setup-on-a-local-machine--start-minishift-wprofile-mysetup--os-templates--jenkins-20-pipelines)
     - [Example 5: Setup on a local machine :: Using the playbook hooks on contra-env-setup](#example-5-setup-on-a-local-machine--using-the-playbook-hooks-on-contra-env-setup)
+    - [Example 6: Setup on a local machine :: Start Minishift w/profile mysetup + OS templates + Jenkins 2.0 pipelines](#example-6-setup-on-a-local-machine--start-minishift-wprofile-mysetup--os-templates--jenkins-20-pipelines)
+    - [Example 7a: OpenShift cluster instance endpoint + Helper infra OS templates + OS templates from some project](#example-7a-openshift-cluster-instance-endpoint--helper-infra-os-templates--os-templates-from-some-project)
+    - [Example 7b: From a File ex. ari-my-project.yml](#example-7b-from-a-file-ex-ari-my-projectyml)
+      - [File ari-my-project.yml](#file-ari-my-projectyml)
+      - [Command Execution with file ari-my-project.yml](#command-execution-with-file-ari-my-projectyml)
   - [Mac Users](#mac-users)
   - [Debugging Issues](#debugging-issues)
     - [Issue #1: Can't push images to the Minishift cluster](#issue-1-cant-push-images-to-the-minishift-cluster)
@@ -124,40 +129,51 @@ Note that it is possible to use {{ ansible_vars }} in your Openshift Templates.
 
 ## Usage examples
 
-### Example 1: Setup on a local machine :: Setup Minishift + OS templates
+### Example 1: Setup on a local machine :: Setup Minishift + Helper infra OS templates + OS templates from some project
 
  1. Install on a local machine as user cloud-user.
  2. Setup pre-reqs (kvm driver and nested virtualization)
  3. Setup a minishift cluster
- 4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/arilivigni/ci-pipeline
+ 4. Setup helper infrastructure containers such as:
+    1. Jenkins
+    2. Jenkins-slave
+    3. ansible-execeutor
+    4. linchpin-executor
+    5. container-tools<br>
+    _Note: Exclude other helper containers influxdb and grafana_
+ 5. Setup OpenShift s2i templates from the -e project_repo=https://github.com/arilivigni/my-project-example
     1. Override the project_repo with another one then the default in global.yml
-    2. OpenShift project -e openshift_project=ari-ci-pipeline  
- 5. Modify my container tags with the default tag. tag=stable
+    2. OpenShift project -e openshift_project=ari-my-project 
+ 6. Modify my container tags with the default tag. tag=stable
 
 ```
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
-    -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline
+    -e user=cloud-user -e project_repo=https://github.com/arilivigni/my-project-example
     -e openshift_project=ari-ci-pipeline -K -k
 ```
 _Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
        Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
 
-### Example 2: Setup on a local machine :: Setup Minishift + OS templates + Jenkins 2.0 pipelines
+### Example 2: Setup on a local machine :: Setup Minishift + Helper infra OS templates + Jenkins 2.0 pipelines
 
  1. Install on a local machine as user cloud-user.
  2. Setup pre-reqs (kvm driver and nested virtualization)
  3. Setup a minishift cluster
- 4. Setup OpenShift s2i templates from the -e project_repo=https://github.com/arilivigni/ci-pipeline
-    1. Override the project_repo with another one then the default in global.yml
-    2. OpenShift project -e openshift_project=ari-ci-pipeline  
- 5. Modify my container tags with the default tag. tag=stable
- 6. Setup Jenkins 2.0 pipelines from the project_repo=https://github.com/arilivigni/ci-pipeline
+ 4. Setup helper infrastructure containers such as:
+    1. Jenkins
+    2. Jenkins-slave
+    3. ansible-execeutor
+    4. linchpin-executor
+    5. container-tools<br>   
+ 5. Exclude my-test-app template
+ 6. Modify my container tags with the default tag. tag=stable
+ 7. Setup Jenkins 2.0 pipelines from the sample project
 
 ```
     ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
-    -e user=cloud-user -e project_repo=https://github.com/arilivigni/ci-pipeline \
-    -e openshift_project=ari-ci-pipeline -e setup_pipelines=true -K -k
+    -e user=cloud-user -e os_template_blacklist=['my-test-app'] \
+    -e openshift_project=ari-my-project -e setup_pipelines=true -K -k
 ```
 _Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
@@ -247,6 +263,130 @@ executed on contra-env-setup.
 _Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
        Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
+
+### Example 7a: OpenShift cluster instance endpoint + Helper infra OS templates + OS templates from some project
+
+ 1. Install on an OpenShift cluster endpoint.
+ 2. Setup helper infrastructure containers such as:
+    1. Jenkins
+    2. Jenkins-slave
+    3. ansible-execeutor
+    4. linchpin-executor
+    5. container-tools<br>
+    _Note: Exclude other helper containers influxdb and grafana_
+ 3. Setup OpenShift s2i templates from the -e project_repo=https://github.com/arilivigni/my-project-example
+    1. Override the project_repo with another one then the default in global.yml
+    2. OpenShift project -e openshift_project=ari-my-project 
+ 4. Modify my container tags with the default tag. tag=stable
+ 5. Don't setup or start minishift
+ 6. Don't run pre-reqs
+ 7. Dont setup nested virt
+
+```
+    ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
+    -e user=cloud-user -e project_repo=https://github.com/arilivigni/my-project-example \
+    -e openshift_project=ari-ci-pipeline -e setup_minishift=false -e start_minishift=true \
+    -e run_prereqs=false -e setup_nested_virt=false -K -k
+```
+_Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
+       The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
+       Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
+
+### Example 7b: From a File ex. ari-my-project.yml
+
+#### File ari-my-project.yml
+```
+
+---
+# run roles based on certain params
+run_cleanup: true
+run_prereqs: false
+setup_nested_virt: false
+setup_minishift: false
+start_minishift: false
+setup_containers: true
+setup_helper_containers: true
+setup_pipelines: false
+setup_sample_project: false 
+setup_playbook_hooks: false
+force_minishift_install: false
+force_repo_clone: false
+
+# Default location to store contra-env-setup
+contra_env_setup_dir: "{{ ansible_env.HOME }}/.contra-env-setup"
+
+
+# cluster username
+username: developer
+
+# cluster password
+password: developer
+
+# cluster admin username
+admin_username: system
+
+# cluster admin password
+admin_password: admin
+
+# project name and display name for openshift
+openshift_project: ari-ci-pipeline
+openshift_project_display_name: "ari ci pipeline"
+
+# modify tags on images
+modify_tags: true
+
+# tag to use
+tag: stable
+
+# modify security context contraints (SCC) to run privileged containers
+modify_scc: false
+
+## oc cli vars
+# oc version
+oc_version: v3.11.0
+
+# Path to oc binary directory
+oc_bin_path: "{{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/{{ host_os }}"
+
+# Path to oc binary
+oc_bin: "{{ oc_bin_path }}/oc"
+
+## Project repo setup
+
+# Project repo
+project_repo: https://github.com/arilivigni/my-project-example
+
+# Project repo refspec
+project_refspec: '+refs/pull/*:refs/heads/*'
+
+# Project repo branch or sha
+project_branch: 'development'
+
+# Project directory
+project_dir: "{{ contra_env_setup_dir }}/{{ project_repo.split('/')[-1] | replace('.git', '') }}"
+
+# OpenShift template directory
+os_template_dir: "config/templates"
+
+# OpenShift template blacklist, not used if whitelist is set
+os_template_blacklist:
+  - influxdb
+  - grafana
+
+```
+ 
+#### Command Execution with file ari-my-project.yml
+
+
+```
+    ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
+    -e user=cloud-user -e @ari-my-project.yml -K -k
+```
+_Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
+       The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
+       Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
+
+
 
 ## Mac Users
 

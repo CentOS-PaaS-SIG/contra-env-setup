@@ -115,7 +115,9 @@ os_template_dir: "config/s2i"
 os_template_whitelist: []
 
 # OpenShift template blacklist, not used if whitelist is set
-os_template_blacklist: []
+os_template_blacklist:
+  - influxfb
+  - grafana
 
 # Jenkins pipelines directory
 pipeline_dir: "config/pipelines/buildconfigs"
