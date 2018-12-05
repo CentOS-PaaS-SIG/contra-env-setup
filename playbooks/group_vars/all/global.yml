@@ -50,6 +50,17 @@ minishift_insecure_registry: ""
 # Leave empty when using minishift
 openshift_cluster_ip: ""
 
+# Optionally set this to be the IP of an existing prepared VM, either local or remote
+# See https://docs.okd.io/latest/minishift/using/run-against-an-existing-machine.html
+# Leave empty when using minishift locally
+minishift_external_vm_ip: ""
+
+# Optionally set this to the external VM user with sudo privileges
+minishift_external_vm_user: ""
+
+# Optionally set this to the location of the ssh key for the external VM
+minishift_external_vm_ssh_key_location: ""
+
 # Set this to true to skip the log-in step and assume it had already been done
 # manually. This is useful to avoid having to store credentials in the
 # configuration files or specifying them on the command line
