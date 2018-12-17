@@ -11,7 +11,8 @@
 - shell: echo "{{ oc_version }}" | awk -F'[v.]' '{print $2 "." $3}'
   register: oc_needed_version
 
-- set_fact: oc_need_install=false
+- set_fact:
+    oc_need_install: false
   when: oc_exists_version.stdout is defined and (oc_exists_version.stdout == oc_needed_version.stdout)
 
 # Grab the oc client independent of minishift to talk to any Openshift cluster
