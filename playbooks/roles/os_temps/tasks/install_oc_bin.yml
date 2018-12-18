@@ -2,7 +2,7 @@
 # Grab the oc client independent of minishift to talk to any Openshift cluster
 - name: "Create directory for the OpenShift client binary(oc)"
   file:
-    path: "{{ ansible_env.HOME }}/.{{ profile }}/cache/oc/{{ oc_version }}/{{ host_os }}"
+    path: "{{ oc_bin_path }}"
     state: directory
 
 - name: "Query for OpenShift client compressed binary version {{ oc_version }}"
