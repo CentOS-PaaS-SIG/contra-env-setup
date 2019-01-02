@@ -45,6 +45,7 @@
   package:
     name: jq
   when: (host_os == "linux")
+  become: true
 
 - set_fact:
     os_template_path: "{{ project_dir }}/{{ os_template_dir }}"
