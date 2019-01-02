@@ -10,7 +10,7 @@
 - name: "Get OpenShift s2i template names from {{ os_template_path }}"
   find:
     paths: "{{ os_template_path }}"
-    patterns: '*.yml,*.yaml'
+    patterns: '*.yml,*.yaml,*.yaml.j2'
     contains: 'kind:\s*[\"\'']?Template[\"\'']?'
     recurse: yes
   register: os_templates
@@ -22,24 +22,28 @@
 
 - name: "Process the templates"
   template:
-    src: "{{ item.path }}"
-    dest: "{{ item.path }}.processed"
-  with_items: "{{ os_templates.files }}"
+    src: "{{ item[0].path }}"
+    dest: "{{ item[0].path }}.{{ item[1] }}.processed"
+  with_nested: 
+    - "{{ os_templates.files }}"
+    - "{{ instance_names }}"
 
 - name: "Filter the templates"
   include_tasks: "filter_templates.yml"
-  with_items: "{{ os_templates.files }}"
+  with_nested:
+    - "{{ os_templates.files }}"
+    - "{{ instance_names }}"
   loop_control:
     loop_var: template_file
-
+ 
 - name: "Publish templates which will be built"
   debug:
-    msg: "{{ item.path }}"
+    msg: "{{ item }}"
   with_items: "{{ os_template_files }}"
 
 # Check that templates are valid
 - name: "Check that templates are valid"
-  shell: "{{ oc_bin }} process -f {{ item.path }}.processed"
+  shell: "{{ oc_bin }} process -f {{ item }}"
   with_items: "{{ os_template_files }}"
 
 # Set the total build success

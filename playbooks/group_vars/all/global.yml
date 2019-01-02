@@ -86,6 +86,9 @@ admin_password: admin
 openshift_project: contra-sample-project
 openshift_project_display_name: "Contra Sample Project"
 
+# names of instances
+instance_names: ["{{ openshift_project }}"]
+
 # modify tags on images
 modify_tags: true
 

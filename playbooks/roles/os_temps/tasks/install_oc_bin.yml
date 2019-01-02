@@ -1,34 +1,56 @@
 ---
+
+- command: "{{ oc_bin_path }}/oc version"
+  register: oc_exists
+  ignore_errors: true
+
+- shell: echo "{{ oc_exists.stdout_lines[0] }}" | awk -F' v' '{print $2}' | awk -F'.' '{print $1 "." $2}'
+  register: oc_exists_version
+  when: oc_exists.stdout_lines is defined
+
+- shell: echo "{{ oc_version }}" | awk -F'[v.]' '{print $2 "." $3}'
+  register: oc_needed_version
+
+- set_fact:
+    oc_need_install: false
+  when: oc_exists_version.stdout is defined and (oc_exists_version.stdout == oc_needed_version.stdout)
+
 # Grab the oc client independent of minishift to talk to any Openshift cluster
 - name: "Create directory for the OpenShift client binary(oc)"
   file:
     path: "{{ oc_bin_path }}"
     state: directory
+  when: not (oc_need_install is defined and oc_need_install|bool == false)
 
 - name: "Query for OpenShift client compressed binary version {{ oc_version }}"
   shell: curl -s https://github.com/openshift/origin/releases/{{ oc_version }} | grep {{ client_path }} | head -1 | sed 's/.*<a href="\(.*\)" .*/https:\/\/github.com\1/' | cut -d'"' -f1
   register: get_oc_bin
   vars:
     client_path: "{% if host_os == 'darwin' %}openshift-origin-client-tools-.*-mac.*.zip{% else %}openshift-origin-client-tools-.*-linux.*.tar.gz{% endif %}"
+  when: not (oc_need_install is defined and oc_need_install|bool == false)
 
 - name: "Pull down and extract OpenShift client binary(oc) to {{ contra_env_setup_dir }}"
   unarchive:
     src: "{{ get_oc_bin.stdout }}"
     dest: "{{ contra_env_setup_dir }}"
     remote_src: yes
+  when: not (oc_need_install is defined and oc_need_install|bool == false)
 
 - name: Set oc_src_dir fact
   set_fact:
     oc_src_dir: "{{ contra_env_setup_dir }}/{{ get_oc_bin.stdout | basename | regex_search(regexp,'\\1') | join(' ') }}"
   vars:
     regexp: "{% if host_os == 'darwin' %}(openshift-origin-client-tools-.*mac.*).zip{% else %}(openshift-origin-client-tools-.*linux.*).tar.gz{% endif %}"
+  when: not (oc_need_install is defined and oc_need_install|bool == false)
 
 - name: "Copy OpenShift client binary(oc) version files from {{ src_path }}/oc to {{ oc_bin_path }}/ "
   shell: cp {{ src_path }}/oc {{ oc_bin_path }}/
   vars:
     src_path: "{% if host_os == 'darwin' %}{{ contra_env_setup_dir }}{% else %}{{ oc_src_dir }}{% endif %}"
+  when: not (oc_need_install is defined and oc_need_install|bool == false)
 
 - name: "Delete {{ oc_src_dir }}"
   file:
     path: "{{ oc_src_dir }}"
     state: absent
+  when: not (oc_need_install is defined and oc_need_install|bool == false)

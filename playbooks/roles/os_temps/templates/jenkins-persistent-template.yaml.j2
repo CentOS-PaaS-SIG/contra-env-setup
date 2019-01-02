@@ -1,0 +1,324 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  name: {{ item[1] }}-jenkins-persistent
+  creationTimestamp:
+  annotations:
+    openshift.io/display-name: Jenkins (Persistent)
+    description: |-
+      Jenkins service, with persistent storage.
+
+      NOTE: You must have persistent volumes available in your cluster to use this template.
+    iconClass: icon-jenkins
+    tags: instant-app,jenkins
+    template.openshift.io/long-description: This template deploys a Jenkins server
+      capable of managing OpenShift Pipeline builds and supporting OpenShift-based
+      oauth login.
+    template.openshift.io/provider-display-name: Red Hat, Inc.
+    template.openshift.io/documentation-url: https://docs.openshift.org/latest/using_images/other_images/jenkins.html
+    template.openshift.io/support-url: https://access.redhat.com
+message: A Jenkins service has been created in your project.  Log into Jenkins with
+  your OpenShift account.  The tutorial at https://github.com/openshift/origin/blob/master/examples/jenkins/README.md
+  contains more information about using this template.
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: {{ item[1] }}-jenkins
+    name: {{ item[1] }}-jenkins
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      app: {{ item[1] }}-jenkins
+    name: {{ item[1] }}-jenkins
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: {{ item[1] }}-jenkins:latest
+    resources:
+      limits:
+        memory: ${MEMORY_LIMIT}
+    source:
+      contextDir: ${CONTEXT_DIR}
+      git:
+        uri: ${REPO_URL}
+        ref: ${REPO_REF}
+      secrets: []
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: DockerImage
+          name: docker.io/openshift/jenkins-2-centos7:v3.11
+        env:
+          - name: GIT_SSL_NO_VERIFY
+            value: 'true'
+      type: Source
+    triggers:
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- kind: Route
+  apiVersion: v1
+  metadata:
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
+    creationTimestamp:
+  spec:
+    to:
+      kind: Service
+      name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: Redirect
+- kind: PersistentVolumeClaim
+  apiVersion: v1
+  metadata:
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: "${VOLUME_CAPACITY}"
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
+    creationTimestamp:
+  spec:
+    strategy:
+      type: Recreate
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - jenkins
+        from:
+          kind: ImageStreamTag
+          name: "${JENKINS_IMAGE_STREAM_TAG}"
+        lastTriggeredImage: ''
+    - type: ConfigChange
+    replicas: 1
+    selector:
+      name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
+    template:
+      metadata:
+        creationTimestamp:
+        labels:
+          name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
+      spec:
+        serviceAccountName: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
+        containers:
+        - name: jenkins
+          image: " "
+          readinessProbe:
+            timeoutSeconds: 3
+            initialDelaySeconds: 3
+            httpGet:
+              path: "/login"
+              port: 8080
+          livenessProbe:
+            timeoutSeconds: 3
+            initialDelaySeconds: 420
+            failureThreshold: 30
+            httpGet:
+              path: "/login"
+              port: 8080
+          env:
+          - name: OPENSHIFT_ENABLE_OAUTH
+            value: "${ENABLE_OAUTH}"
+          - name: OPENSHIFT_ENABLE_REDIRECT_PROMPT
+            value: 'true'
+          - name: KUBERNETES_MASTER
+            value: https://kubernetes.default:443
+          - name: KUBERNETES_TRUST_CERTIFICATES
+            value: 'true'
+          - name: JENKINS_SERVICE_NAME
+            value: "${JENKINS_SERVICE_NAME}"
+          - name: JNLP_SERVICE_NAME
+            value: "${JNLP_SERVICE_NAME}"
+          - name: JAVA_OPTS
+            value: >-
+                -Dhudson.model.ParametersAction.keepUndefinedParameters=true
+                -Djenkins.model.Jenkins.logStartupPerformance=true
+                -Djava.security.egd=file:/dev/./urandom
+                -Djenkins.install.runSetupWizard=false
+                -Dhudson.DNSMultiCast.disabled=true
+          - name: JAVA_GC_OPTS
+            value: >-
+                -XX:+UseParallelGC -XX:MaxPermSize=100m -XX:MinHeapFreeRatio=20
+                -XX:MaxHeapFreeRatio=40 -XX:GCTimeRatio=4
+                -XX:AdaptiveSizePolicyWeight=90 -XX:MaxMetaspaceSize=500m
+          - name: GIT_SSL_NO_VERIFY
+            value: 'true'
+          - name: OVERRIDE_PV_CONFIG_WITH_IMAGE_CONFIG
+            value: 'true'
+          - name: OVERRIDE_PV_PLUGINS_WITH_IMAGE_PLUGINS
+            value: 'true'
+          - name: LOAD_SEED_JOB
+            value: ${LOAD_SEED_JOB}
+          - name: DSL_JOB_REPO
+            value: ${DSL_JOB_REPO}
+          - name: ENABLE_INFLUXDB
+            value: ${ENABLE_INFLUXDB}
+          - name: INFLUXDB_ROUTE
+            value: ${INFLUXDB_ROUTE}
+          - name: INFLUXDB_USERNAME
+            value: ${INFLUXDB_USERNAME}
+          - name: INFLUXDB_PASSWORD
+            value: ${INFLUXDB_PASSWORD}
+          - name: INFLUXDB_INSTANCE
+            value: ${INFLUXDB_INSTANCE}
+          - name: INFLUXDB_DATABASE
+            value: ${INFLUXDB_DATABASE}
+          resources:
+            limits:
+              memory: "${MEMORY_LIMIT}"
+          volumeMounts:
+          - name: "${JENKINS_SERVICE_NAME}-data"
+            mountPath: "/var/lib/jenkins"
+          terminationMessagePath: "/dev/termination-log"
+          imagePullPolicy: IfNotPresent
+          capabilities: {}
+          securityContext:
+            capabilities: {}
+            privileged: false
+        volumes:
+        - name: "${JENKINS_SERVICE_NAME}-data"
+          persistentVolumeClaim:
+            claimName: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
+        restartPolicy: Always
+        dnsPolicy: ClusterFirst
+- kind: ServiceAccount
+  apiVersion: v1
+  metadata:
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
+    annotations:
+      serviceaccounts.openshift.io/oauth-redirectreference.jenkins: '{"kind":"OAuthRedirectReference","apiVersion":"v1","reference":{"kind":"Route","name":"{{ item[1] }}-${JENKINS_SERVICE_NAME}"}}'
+- kind: RoleBinding
+  apiVersion: v1
+  metadata:
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}_edit"
+  groupNames:
+  subjects:
+  - kind: ServiceAccount
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
+  roleRef:
+    name: edit
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: "{{ item[1] }}-${JNLP_SERVICE_NAME}"
+  spec:
+    ports:
+    - name: agent
+      protocol: TCP
+      port: 50000
+      targetPort: 50000
+      nodePort: 0
+    selector:
+      name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
+    type: ClusterIP
+    sessionAffinity: None
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
+    annotations:
+      service.alpha.openshift.io/dependencies: '[{"name": "{{ item[1] }}-${JNLP_SERVICE_NAME}",
+        "namespace": "", "kind": "Service"}]'
+      service.openshift.io/infrastructure: 'true'
+    creationTimestamp:
+  spec:
+    ports:
+    - name: web
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+      nodePort: 0
+    selector:
+      name: "{{ item[1] }}-${JENKINS_SERVICE_NAME}"
+    type: ClusterIP
+    sessionAffinity: None
+parameters:
+- description: Git source URI for Jenkins S2I
+  name: REPO_URL
+  required: true
+  value: https://github.com/CentOS-PaaS-SIG/contra-env-infra
+- description: Git branch/tag reference
+  name: REPO_REF
+  value: master
+- description: Path within Git project to build; empty for root project directory.
+  name: CONTEXT_DIR
+  value: jenkins
+- name: JENKINS_SERVICE_NAME
+  displayName: Jenkins Service Name
+  description: The name of the OpenShift Service exposed for the Jenkins container.
+  value: jenkins
+- name: JNLP_SERVICE_NAME
+  displayName: Jenkins JNLP Service Name
+  description: The name of the service used for master/slave communication.
+  value: jenkins-jnlp
+- name: ENABLE_OAUTH
+  displayName: Enable OAuth in Jenkins
+  description: Whether to enable OAuth OpenShift integration. If false, the static
+    account 'admin' will be initialized with the password 'password'.
+  value: 'true'
+- name: MEMORY_LIMIT
+  displayName: Memory Limit
+  description: Maximum amount of memory the container can use.
+  value: 512Mi
+- name: VOLUME_CAPACITY
+  displayName: Volume Capacity
+  description: Volume space available for data, e.g. 512Mi, 2Gi.
+  value: 1Gi
+  required: true
+- name: JENKINS_IMAGE_STREAM_TAG
+  displayName: Jenkins ImageStreamTag
+  description: Name of the ImageStreamTag to be used for the Jenkins image.
+  value: {{ item[1] }}-jenkins:latest
+- name: LOAD_SEED_JOB
+  displayName: Load seed job
+  description: Whether to load a dsl seed job
+  value: 'true'
+- name: DSL_JOB_REPO
+  displayName: DSL job repo
+  description: The repository of dsl jobs
+  value: 'CentOS-PaaS-SIG/contra-env-infra'
+- name: DSL_REPO_BRANCH
+  displayName: DSL repo branch
+  description: The branch to use for job dsl repository
+  value: master
+- name: ENABLE_INFLUXDB
+  displayName: Enable Influxdb
+  description: Install and configure the Influxdb plugin
+  value: 'false'
+- name: INFLUXDB_ROUTE
+  displayName: Influxdb route
+  description: The http api for Influxdb
+  value: influxdb-continuous-infra.apps.ci.centos.org
+- name: INFLUXDB_USERNAME
+  displayName: Influxdb username
+  description: The username to auth to influxdb
+  value: contra
+- name: INFLUXDB_PASSWORD
+  displayName: Influxdb password
+  description: The password to auth to influxdb
+  value: ''
+- name: INFLUXDB_INSTANCE
+  displayName: Influxdb instance
+  description: The name of the configured influx instance
+  value: localInflux
+- name: INFLUXDB_DATABASE
+  displayName: Influxdb database
+  description: The database to use for metrics
+  value: db0
+labels:
+  template: {{ item[1] }}-jenkins-persistent
