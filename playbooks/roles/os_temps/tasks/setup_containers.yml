@@ -39,7 +39,7 @@
 
 # Check that templates are valid
 - name: "Check that templates are valid"
-  shell: "{{ oc_bin }} process -f {{ item }}"
+  shell: "{{ oc_bin }} process -f {{ item.path }}.processed"
   with_items: "{{ os_template_files }}"
 
 # Set the total build success
