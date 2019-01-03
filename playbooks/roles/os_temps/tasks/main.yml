@@ -12,7 +12,8 @@
 # Check if the minishift cluster is started if not then start the cluster
 - name: "Startup the minishift cluster"
   import_tasks: start_mcluster.yml
-  when: (setup_minishift|bool == true or start_minishift|bool == true)
+  when: (setup_minishift|bool == true) or
+        (start_minishift|bool == true)
 
 # Import_tasks install_oc_bin
 - name: "Get OpenShift client binary(oc) version {{ oc_version }} to {{ contra_env_setup_dir }}"
@@ -44,24 +45,32 @@
 - name: "Install jq for querying container config files"
   package:
     name: jq
-  when: (host_os == "linux")
+  when: host_os == "linux"
   become: true
 
 - set_fact:
     os_template_path: "{{ project_dir }}/{{ os_template_dir }}"
-  when: setup_containers|bool == true
+  when:
+    - setup_containers|bool == true
 
 # Setup project_repo containers
 - include_tasks: "setup_containers.yml"
-  when: setup_containers|bool == true
+  when:
+    - setup_containers|bool == true
 
 - set_fact:
     os_template_path: "{{ helper_project_dir }}/{{ helper_os_template_dir }}"
-  when: (setup_containers|bool == true and project_repo != helper_project_repo and setup_helper_containers|bool == true)
+  when:
+    - setup_containers|bool == true
+    - project_repo != helper_project_repo
+    - setup_helper_containers|bool == true
 
 # Setup helper containers
 - include_tasks: "setup_containers.yml"
-  when: (setup_containers|bool == true and project_repo != helper_project_repo and setup_helper_containers|bool == true)
+  when:
+    - setup_containers|bool == true
+    - project_repo != helper_project_repo
+    - setup_helper_containers|bool == true
 
 # Check if Jenkins is running
 - name: "Check to see if a Jenkins Master instance is running"
@@ -71,19 +80,33 @@
 
 - set_fact:
     os_template_path: "{{ helper_project_dir }}/{{ helper_os_template_dir }}/jenkins"
-  when: (setup_containers|bool == true and project_repo != helper_project_repo and setup_helper_containers|bool == true and jenkins_running.stdout == "")
+  when:
+    - setup_containers|bool == true
+    - project_repo != helper_project_repo
+    - setup_helper_containers|bool == true
+    - jenkins_running.stdout == ""
 
-# Setup helper_project_repo Jenkins master/slave sample containers
+# Setup helper_project_repo Jenkins master/slave helper containers
 - include_tasks: setup_containers.yml
-  when: (setup_containers|bool == true and project_repo != helper_project_repo and setup_helper_containers|bool == true and jenkins_running.stdout == "")
+  when:
+    - setup_containers|bool == true
+    - project_repo != helper_project_repo
+    - setup_helper_containers|bool == true
+    - jenkins_running.stdout == ""
 
 - set_fact:
     os_template_path: "{{ sample_project_dir }}/{{ sample_os_template_dir }}"
-  when: (setup_containers|bool == true and project_repo != sample_project_repo and setup_sample_project|bool == true)
+  when:
+    - setup_containers|bool == true
+    - project_repo != sample_project_repo
+    - setup_sample_project|bool == true
 
 # Setup sample_project_repo sample containers
 - include_tasks: setup_containers.yml
-  when: (setup_containers|bool == true and project_repo != sample_project_repo and setup_sample_project|bool == true)
+  when:
+    - setup_containers|bool == true
+    - project_repo != sample_project_repo
+    - setup_sample_project|bool == true
 
 # Add security context constraints
 - import_tasks: add_scc.yml

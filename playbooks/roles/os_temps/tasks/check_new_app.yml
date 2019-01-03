@@ -2,10 +2,7 @@
 # Set current build attempt status
 - set_fact:
     current_build_succeeded: false
-    template_name: "{{ template_file }}"
-
-- debug: var=build_config_name_files
-- debug: var=template_name
+    template_name: "{{ template_file.path }}.processed"
 
 # Wait container in the pipeline to be finished building
 - name: "{{ container_config_name }} :: Wait for {{  build_config_name_files[template_name] }} to be built and marked with latest tag"
@@ -20,7 +17,10 @@
 - set_fact:
     build_results: "{{ build_results | combine( {template_name: true}) }}"
     current_build_succeeded: true
-  when: (build_results[template_name]|bool == false and oc_build_result is defined and oc_build_result.stdout.find(" Complete ") != -1)
+  when:
+    - build_results[template_name]|bool == false
+    - oc_build_result is defined
+    - oc_build_result.stdout.find(" Complete ") != -1
 
 # If oc_build result is defined publish the outcome
 - debug:
@@ -30,17 +30,23 @@
 # Setup tag if current container image build is successful
 - name: Modify tags on images
   shell: "{{ oc_bin }} get imagestream | awk '{print $2}' | grep -v DOCKER | sed 's/.*5000\\///g' | grep '{{ build_config_name_files[template_name] }}' | xargs -I{} {{ oc_bin }} tag {}:latest {}:{{ tag }}"
-  when: modify_tags|bool == true and current_build_succeeded|bool == true
+  when:
+    - modify_tags|bool == true
+    - current_build_succeeded|bool == true
 
 # Output the OpenShift build logs if the current build failed
 - name: Output the OpenShift build logs if the current build failed
   shell: "echo \"{{ oc_build_result.stdout }}\" | awk '{print $1}' | xargs -I{} {{ oc_bin }} logs builds/{}"
   register: oc_build_log
-  when: build_results[template_name]|bool == false and oc_build_result.stdout is defined
+  when:
+    - build_results[template_name]|bool == false
+    - oc_build_result.stdout is defined
 
 - name: "Write build logs of the current failed build to a log file"
   copy: content="{{ oc_build_log.stdout }}" dest="/tmp/contra-env-setup/logs/run-{{ run_time }}/{{ template_name_files[template_name] }}-fail-{{ attempt_number }}.log"
-  when: (build_results[template_name]|bool == false and oc_build_log.stdout_lines is defined)
+  when:
+    - build_results[template_name]|bool == false
+    - oc_build_log.stdout_lines is defined
 
 # If the build failed, cleanup all resources related to this build on the cluster
 - name: "Cleanup all resources related to this build on the cluster"
@@ -49,4 +55,6 @@
   loop_control:
     loop_var: failed_resource_name
   ignore_errors: yes
-  when: (build_results[template_name]|bool == false and created_resources[template_name] != "")
+  when:
+    - build_results[template_name]|bool == false
+    - created_resources[template_name] != ""

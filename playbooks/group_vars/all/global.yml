@@ -111,7 +111,7 @@ oc_bin: "{{ oc_bin_path }}/oc"
 ## Project repo setup
 
 # Project repo
-project_repo: https://github.com/CentOS-PaaS-SIG/contra-env-sample-project
+project_repo: https://github.com/CentOS-PaaS-SIG/contra-env-infra
 
 # Project repo refspec
 project_refspec: '+refs/pull/*:refs/heads/*'
@@ -123,7 +123,7 @@ project_branch: 'master'
 project_dir: "{{ contra_env_setup_dir }}/{{ project_repo.split('/')[-1] | replace('.git', '') }}"
 
 # OpenShift template directory
-os_template_dir: "config/s2i"
+os_template_dir: "./"
 
 # OpenShift template whitelist, not used if empty
 os_template_whitelist: []
@@ -151,14 +151,14 @@ sample_project_branch: 'master'
 sample_project_dir: "{{ contra_env_setup_dir }}/{{ sample_project_repo.split('/')[-1] | replace('.git', '') }}"
 
 # Sample OpenSift template directory
-sample_os_template_dir: "config/s2i"
+sample_os_template_dir: "config/s2i/samples"
 
 # Sample Jenkins pipelines directory
 sample_pipeline_dir: "config/pipelines/buildconfigs"
 
 ## Continuous-Infra helper containers
 
-# Helper oroject repo
+# Helper project repo
 helper_project_repo: https://github.com/CentOS-PaaS-SIG/contra-env-infra
 
 # Helper Project repo refspec

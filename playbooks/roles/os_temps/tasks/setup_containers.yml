@@ -22,23 +22,19 @@
 
 - name: "Process the templates"
   template:
-    src: "{{ item[0].path }}"
-    dest: "{{ item[0].path }}.{{ item[1] }}.processed"
-  with_nested: 
-    - "{{ os_templates.files }}"
-    - "{{ instance_names }}"
+    src: "{{ item.path }}"
+    dest: "{{ item.path }}.processed"
+  with_items: "{{ os_templates.files }}"
 
 - name: "Filter the templates"
   include_tasks: "filter_templates.yml"
-  with_nested:
-    - "{{ os_templates.files }}"
-    - "{{ instance_names }}"
+  with_items: "{{ os_templates.files }}"
   loop_control:
     loop_var: template_file
  
 - name: "Publish templates which will be built"
   debug:
-    msg: "{{ item }}"
+    msg: "{{ item.path }}"
   with_items: "{{ os_template_files }}"
 
 # Check that templates are valid
@@ -93,4 +89,4 @@
 - name: "If there were failed builds, fail the run and direct user to log directory"
   fail:
     msg: "There were failed builds, check failed build logs in /tmp/contra-env-setup/logs/run-{{ run_time }}"
-  when: (total_build_success|bool == false)
+  when: total_build_success|bool == false

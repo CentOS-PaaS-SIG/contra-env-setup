@@ -12,7 +12,9 @@
     paths: "{{ sample_project_dir }}/{{ sample_pipeline_dir }}"
     recurse: yes
   register: sample_pipelines
-  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
+  when:
+    - project_repo != sample_project_repo
+    - setup_sample_project|bool == true
 
 - name: "Setting facts"
   set_fact:
@@ -21,7 +23,9 @@
 - name: "Setting facts with conditional"
   set_fact:
     all_pipelines: "{{ pipelines.files }} + {{ sample_pipelines.files }}"
-  when: (project_repo != sample_project_repo and setup_sample_project|bool == true)
+  when:
+    - project_repo != sample_project_repo
+    - setup_sample_project|bool == true
 
 - debug:
     msg: "{{ item.path }}"
