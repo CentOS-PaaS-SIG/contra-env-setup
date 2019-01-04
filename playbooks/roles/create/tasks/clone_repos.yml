@@ -18,8 +18,7 @@
     refspec: "{{ project_refspec }}"
     version: "{{ project_branch }}"
     force: yes
-  when: (not pd_is_found.stat.exists) or
-        (force_repo_clone|bool == true)
+  when: (not pd_is_found.stat.exists) or (force_repo_clone|bool == true)
 
 # git clone sample_project_repo
 - name: "checkout the sample project repo @ {{ sample_project_repo }} to {{ sample_project_dir }}"
