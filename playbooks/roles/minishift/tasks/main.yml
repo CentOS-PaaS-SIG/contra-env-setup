@@ -66,10 +66,10 @@
 
 # Initialize minishift locally
 - import_tasks: init_minishift.yml
-  when: (minishift_profile_status.stdout_lines and minishift_profile_status.stdout_lines[0]|lower == "does not exist") or (minishift_profile_status.rc != 0 and minishift_external_vm_ip == "")
+  when: ((minishift_profile_status.stdout_lines and minishift_profile_status.stdout_lines[0]|lower == "does not exist") or (minishift_profile_status.rc != 0)) and (minishift_external_vm_ip == "")
 
 # Start minishift on an external VM if configured
 - name: "Initialization of minishift cluster with profile {{ profile }} on an existing VM ip {{ minishift_external_vm_ip }}"
   shell: "{{ minishift_bin }} start --profile {{ profile }} --openshift-version {{ oc_version }} --vm-driver generic --remote-ipaddress {{ minishift_external_vm_ip }} --remote-ssh-user {{ minishift_external_vm_user }} --remote-ssh-key {{ minishift_external_vm_ssh_key_location }}"
-  when: (minishift_profile_status.stdout_lines and minishift_profile_status.stdout_lines[0]|lower == "does not exist") or (minishift_profile_status.rc != 0 and minishift_external_vm_ip != "")
+  when: ((minishift_profile_status.stdout_lines and minishift_profile_status.stdout_lines[0]|lower == "does not exist") or (minishift_profile_status.rc != 0)) and (minishift_external_vm_ip != "")
 
