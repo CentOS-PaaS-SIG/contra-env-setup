@@ -83,8 +83,8 @@ admin_username: system
 admin_password: admin
 
 # project name and display name for openshift
-openshift_project: contra-sample-project
-openshift_project_display_name: "Contra Sample Project"
+openshift_project: contra-env-infra
+openshift_project_display_name: "Contra Env Infra Project"
 
 # names of instances
 instance_names: ["{{ openshift_project }}"]
