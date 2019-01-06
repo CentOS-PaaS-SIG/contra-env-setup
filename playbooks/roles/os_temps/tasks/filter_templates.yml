@@ -2,7 +2,7 @@
 # Filter templates according to whitelist/blacklist rules (No filtering by default)
 
 - name: "{{ container_config_name }} :: Get template name from the yaml file"
-  shell: "{{ oc_bin }} process -f {{ template_file.path }}.processed --output=describe | grep \"^Name:\" | head -n1 | awk '{print $2}'"
+  shell: "{{ oc_bin }} process -f {{ template_file[0].path }}.{{ template_file[1] }}.processed --output=describe | grep \"^Name:\" | head -n1 | awk '{print $2}'"
   register: template_name
 
 - name: "Publish template name"
@@ -11,7 +11,7 @@
 
 - name: "Add to templates list if template name is in whitelist and not in blacklist"
   set_fact:
-    os_template_files: "{{ os_template_files|default([]) + [ template_file ] }}"
+    os_template_files: "{{ os_template_files|default([]) + [ template_file[0].path + '.' + template_file[1] + '.processed' ] }}"
   when:
     - template_name.stdout in os_template_whitelist
     - ((os_template_whitelist | default([])) | length != 0)
@@ -19,7 +19,7 @@
 
 - name: "Add to templates list if template name is not in blacklist and whitelist isn't set"
   set_fact:
-    os_template_files: "{{ os_template_files|default([]) + [ template_file ] }}"
+    os_template_files: "{{ os_template_files|default([]) + [ template_file[0].path + '.' + template_file[1] + '.processed' ] }}"
   when:
     - template_name.stdout not in os_template_blacklist
     - ((os_template_whitelist | default([])) | length == 0)
