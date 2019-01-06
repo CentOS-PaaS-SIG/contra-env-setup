@@ -37,4 +37,3 @@
   when:
     - build_results[template_name]|bool == false
     - app_build_status.stdout_lines is defined
-
