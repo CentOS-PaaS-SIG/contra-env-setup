@@ -132,6 +132,7 @@ os_template_whitelist: []
 os_template_blacklist:
   - influxdb
   - grafana
+  - container-tools
 
 # Jenkins pipelines directory
 pipeline_dir: "config/pipelines/buildconfigs"
