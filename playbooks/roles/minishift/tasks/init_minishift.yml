@@ -18,11 +18,13 @@
   - name: "Wait for the cluster to come up completely"
     pause:
       minutes: 3
-    when: (cpu_mode_not_configured|bool) or (start_minishift|bool == false)
+    when: (cpu_mode_not_configured|bool) or
+          (start_minishift|bool == false)
 
   - name: "Stop the minishift profile {{ profile }}"
     shell: "{{ minishift_bin }} stop --profile {{ profile }}"
-    when: (cpu_mode_not_configured|bool) or (start_minishift|bool == false)
+    when: (cpu_mode_not_configured|bool) or
+          (start_minishift|bool == false)
 
   - name: "Update the minishift VM config"
     lineinfile:

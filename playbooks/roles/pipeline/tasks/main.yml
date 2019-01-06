@@ -4,7 +4,8 @@
 # Check if the minishift cluster is started if not then start the cluster
 - name: "Startup the minishift cluster"
   import_tasks: "{{ playbook_dir }}/roles/os_temps/tasks//start_mcluster.yml"
-  when: (setup_minishift|bool == true) or (start_minishift|bool == true)
+  when: (setup_minishift|bool == true) or
+        (start_minishift|bool == true)
 
 # Check if Jenkins is running
 - name: "Check to see if a Jenkins Master instance is running"
