@@ -41,7 +41,7 @@ popd
 # Run the playbook locally with added hook for debugging variables needed for testing
 /usr/bin/ansible-playbook -vv -i "localhost," ${base_dir}/contra-env-setup/playbooks/setup.yml -e user=root \
                           -e ansible_connection=local -e setup_nested_virt=false -e setup_playbook_hooks=true \
-                          --extra-vars='{"hooks": ["/home/debug_vars.yml"], "os_template_whitelist": ["jenkins-persistent", "jenkins-contra-sample-project-slave-builder"]}'
+                          --extra-vars='{"hooks": ["/home/debug_vars.yml"], "os_template_whitelist": ["jenkins-persistent", "jenkins-contra-slave-builder"]}'
 
 # Run tests with pytest
 python -m pytest ${base_dir}/test_contra_env_setup.py -v --junitxml=${log_dir}/contra_env_setup_centos7.xml > ${log_dir}/contra_env_setup_centos7.log

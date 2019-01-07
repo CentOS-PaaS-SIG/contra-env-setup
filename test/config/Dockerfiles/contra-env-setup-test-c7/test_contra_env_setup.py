@@ -113,7 +113,7 @@ def test_buildconfigs(run_info):
         oc_cmd = '%s get buildconfigs' % oc_bin
         oc_result = check_output(oc_cmd.split())
 
-    assert(oc_result and 'jenkins-contra-sample-project-slave' in oc_result)
+    assert(oc_result and 'jenkins-contra-slave' in oc_result)
     assert(oc_result and 'jenkins ' in oc_result)
 
 
@@ -128,7 +128,7 @@ def test_builds(run_info):
         for line in oc_result.splitlines():
             if 'jenkins-' in line and 'Complete' in line and 'slave' not in line:
                 jenkins_success = True
-            if 'jenkins-contra-sample-project-slave-' in line and 'Complete' in line:
+            if 'jenkins-contra-slave' in line and 'Complete' in line:
                 jenkins_contra_slave_success = True
 
     assert(jenkins_success)
@@ -143,7 +143,7 @@ def test_imagestreams(run_info):
         oc_cmd = '%s get imagestreams' % oc_bin
         oc_result = check_output(oc_cmd.split())
 
-    assert(oc_result and 'jenkins-contra-sample-project-slave' in oc_result)
+    assert(oc_result and 'jenkins-contra-slave' in oc_result)
     assert(oc_result and 'jenkins' in oc_result)
 
 
