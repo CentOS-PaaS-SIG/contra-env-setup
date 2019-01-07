@@ -190,7 +190,7 @@ timestamps {
                                             userRemoteConfigs  : [
                                                 [refspec:
                                                     '+refs/heads/*:refs/remotes/origin/*  +refs/tags/*:refs/tags/*',
-                                                    url: "https:github.com/${env.ghprbGhRepository}"]
+                                                    url: "https://github.com/${env.ghprbGhRepository}"]
                                                 ]
                                         ])
                                         
