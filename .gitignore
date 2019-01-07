@@ -1,10 +1,25 @@
 # Created by .ignore support plugin (hsz.mobi)
-### Example user template
-
+### Needed for contra-env-setup repo
+#(skatlapa)TODO: remove if needed, added extra for cushioning
+*.egg-info
+*.eggs
+*.log
+*.pyc
+*.retry
+.cache
+.idea/
+.profiles
+.tox/
+.tox_*
+.venv
+.workspaces
+/.eggs
+/AUTHORS
+/ChangeLog
+/ansible.cfg
+/build
+/dist
 # IntelliJ project files
-.idea
 *.iml
 out
 gen
-*.pyc
-*.retry
