@@ -182,6 +182,18 @@ timestamps {
                                         envsetupUtils.setDefaultEnvVars()
                                         // Gather some info about the node we are running on for diagnostics
                                         pipelineUtils.verifyPod(OPENSHIFT_NAMESPACE, env.NODE_NAME)
+                                        checkout([$class: 'GitSCM',
+                                            branches: [[name: env.ghprbActualCommit]],
+                                            recursiveSubmodules: true,
+                                            extensions         : [],
+                                            submoduleCfg       : [],
+                                            userRemoteConfigs  : [
+                                                [refspec:
+                                                    '+refs/heads/*:refs/remotes/origin/*  +refs/tags/*:refs/tags/*',
+                                                    url: "https:github.com/${env.ghprbGhRepository}"]
+                                                ]
+                                        ])
+                                        
                                     }
                                 }
 
