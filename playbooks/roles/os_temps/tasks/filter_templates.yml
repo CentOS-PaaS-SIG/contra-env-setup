@@ -12,9 +12,14 @@
 - name: "Add to templates list if template name is in whitelist and not in blacklist"
   set_fact:
     os_template_files: "{{ os_template_files|default([]) + [ template_file[0].path + '.' + template_file[1] + '.processed' ] }}"
-  when: (template_name.stdout in os_template_whitelist) and ((os_template_whitelist | default([])) | length != 0) and (template_name.stdout not in os_template_blacklist)
+  when:
+    - template_name.stdout in os_template_whitelist
+    - ((os_template_whitelist | default([])) | length != 0)
+    - template_name.stdout not in os_template_blacklist
 
 - name: "Add to templates list if template name is not in blacklist and whitelist isn't set"
   set_fact:
     os_template_files: "{{ os_template_files|default([]) + [ template_file[0].path + '.' + template_file[1] + '.processed' ] }}"
-  when: (template_name.stdout not in os_template_blacklist) and ((os_template_whitelist | default([])) | length == 0)
+  when:
+    - template_name.stdout not in os_template_blacklist
+    - ((os_template_whitelist | default([])) | length == 0)

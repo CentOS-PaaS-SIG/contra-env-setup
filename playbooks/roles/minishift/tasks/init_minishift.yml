@@ -18,11 +18,13 @@
   - name: "Wait for the cluster to come up completely"
     pause:
       minutes: 3
-    when: (cpu_mode_not_configured|bool) or (start_minishift|bool == false)
+    when: (cpu_mode_not_configured|bool) or
+          (start_minishift|bool == false)
 
   - name: "Stop the minishift profile {{ profile }}"
     shell: "{{ minishift_bin }} stop --profile {{ profile }}"
-    when: (cpu_mode_not_configured|bool) or (start_minishift|bool == false)
+    when: (cpu_mode_not_configured|bool) or
+          (start_minishift|bool == false)
 
   - name: "Update the minishift VM config"
     lineinfile:
@@ -34,6 +36,8 @@
 
   - name: "Start minishift profile {{ profile }} again if configured"
     shell: "{{ minishift_bin }} start --profile {{ profile }} --cpus {{ cpus }} --disk-size {{ disk_size }} --memory {{ memory }} --openshift-version {{ oc_version }} --iso-url file:///{{ minishift_dest_dir }}/minishift.iso"
-    when: (cpu_mode_not_configured|bool) and (start_minishift|bool == true)
+    when:
+      - cpu_mode_not_configured|bool
+      - start_minishift|bool == true
 
   when: host_os == "linux"

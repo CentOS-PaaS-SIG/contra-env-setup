@@ -70,7 +70,9 @@
 
 - name: "Exit if nested virtualization is off"
   fail: msg="NESTED VIRT HAS BEEN ENABLED PLEASE REBOOT"
-  when: (nestedintel.stdout == "N" and nestedamd.stdout == "N")
+  when:
+    - nestedintel.stdout == "N"
+    - nestedamd.stdout == "N"
 
 
 

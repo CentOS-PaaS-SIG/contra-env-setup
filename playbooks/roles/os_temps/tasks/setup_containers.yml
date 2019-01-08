@@ -10,7 +10,7 @@
 - name: "Get OpenShift s2i template names from {{ os_template_path }}"
   find:
     paths: "{{ os_template_path }}"
-    patterns: '*.yml,*.yaml,*.yaml.j2'
+    patterns: '*.yml,*.yaml'
     contains: 'kind:\s*[\"\'']?Template[\"\'']?'
     recurse: yes
   register: os_templates
@@ -24,7 +24,7 @@
   template:
     src: "{{ item[0].path }}"
     dest: "{{ item[0].path }}.{{ item[1] }}.processed"
-  with_nested: 
+  with_nested:
     - "{{ os_templates.files }}"
     - "{{ instance_names }}"
 
@@ -35,7 +35,7 @@
     - "{{ instance_names }}"
   loop_control:
     loop_var: template_file
- 
+
 - name: "Publish templates which will be built"
   debug:
     msg: "{{ item }}"
@@ -93,4 +93,4 @@
 - name: "If there were failed builds, fail the run and direct user to log directory"
   fail:
     msg: "There were failed builds, check failed build logs in /tmp/contra-env-setup/logs/run-{{ run_time }}"
-  when: (total_build_success|bool == false)
+  when: total_build_success|bool == false
