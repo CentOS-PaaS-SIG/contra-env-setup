@@ -27,7 +27,7 @@
 
 # imagestreams
 - name: "{{ container_config_name }} :: Get imagestream name from the yaml file"
-  shell: "{{ oc_bin }} process -f {{ template_name }} | jq --raw-output '.items[0].metadata.name'"
+  shell: "{{ oc_bin }} process -f {{ template_name }} | jq --raw-output '.items | map(select(.kind == \"ImageStream\")) | .[].metadata.name'"
   register: "image_stream_name_file"
 
 - name: "{{ container_config_name }} :: Get imagestream from querying the cluster"
@@ -44,7 +44,7 @@
 
 # buildconfigs
 - name: "{{ container_config_name }} :: Get buildconfig name from the yaml file"
-  shell: "{{ oc_bin }} process -f {{ template_name }} | jq --raw-output '.items[1].metadata.name'"
+  shell: "{{ oc_bin }} process -f {{ template_name }} | jq --raw-output '.items | map(select(.kind == \"BuildConfig\")) | .[].metadata.name'"
   register: "build_config_name_file"
 
 - name: "{{ container_config_name }} :: Get buildconfig from querying the cluster"
