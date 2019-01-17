@@ -123,6 +123,18 @@ or only certain components.  ex. minishift, jenkins infra, pipeline containers, 
 * pipeline_dir: Relative directory in the project repo where Jenkins pipelines are stored: default=config/pipelines/buildconfigs
 * sample_pipeline_dir: Relative directory in the sample project repo where Jenkins pipelines are stored: default=config/pipelines/buildconfigs
 
+### Metrics variable configuration
+* jenkins_enable_metrics: Used to configure the Jenkins Influxdb plugin
+* influxdb_admin_user: The admin username for Influxdb
+* influxdb_admin_password: The password to give the admin user
+* influxdb_api_route: The route that Jenkins will use to contact Influxdb
+* grafana_admin_user: The admin username for Grafana
+* grafana_admin_password: The password to give the Grafana admin
+
+### Jenkins Job DSL variable configuration
+* jenkins_dsl_job_repo: The repo to pull jobs from. Configured as GitHubORG/repoName
+* jenkins_dsl_repo_branch: The branch of the job dsl repo
+
 ## Templates
 
 Note that it is possible to use {{ ansible_vars }} in your Openshift Templates.
