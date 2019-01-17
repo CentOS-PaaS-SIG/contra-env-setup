@@ -172,3 +172,16 @@ helper_project_dir: "{{ contra_env_setup_dir }}/{{ helper_project_repo.split('/'
 
 # Helper OpenSift template directory
 helper_os_template_dir: "./"
+
+influxdb_admin_user: "admin"
+influxdb_admin_password: "admin"
+influxdb_api_route: "influxdb.{{ openshift_project }}.svc.cluster.local:8086"
+
+grafana_admin_user: "admin"
+grafana_admin_password: "admin"
+
+jenkins_enable_metrics: false
+jenkins_dsl_job_repo: "CentOS-PaaS-SIG/contra-env-sample-project"
+jenkins_dsl_repo_branch: "master"
+
+
