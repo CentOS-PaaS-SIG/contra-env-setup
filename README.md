@@ -18,6 +18,8 @@
   - [Project repo options that has s2i templates and Jenkins Pipelines](#project-repo-options-that-has-s2i-templates-and-jenkins-pipelines)
     - [OpenShift s2i template setup options](#openshift-s2i-template-setup-options)
     - [Jenkins 2.0 pipeline setup options](#jenkins-20-pipeline-setup-options)
+    - [Metrics setup options](#Metrics setup options)
+    - [Jenkins Job DSL setup options](#Jenkins Job DSL setup options)
   - [Templates](#templates)
   - [Usage examples](#usage-examples)
     - [Example 1: Setup on a local machine :: Setup Minishift + Helper infra OS templates + OS templates from some project](#example-1-setup-on-a-local-machine--setup-minishift--helper-infra-os-templates--os-templates-from-some-project)
@@ -122,6 +124,18 @@ or only certain components.  ex. minishift, jenkins infra, pipeline containers, 
 * setup_pipelines: Setup Jenkins 2.0 pipelines : default=false
 * pipeline_dir: Relative directory in the project repo where Jenkins pipelines are stored: default=config/pipelines/buildconfigs
 * sample_pipeline_dir: Relative directory in the sample project repo where Jenkins pipelines are stored: default=config/pipelines/buildconfigs
+
+### Metrics setup options
+* jenkins_enable_metrics: Used to configure the Jenkins Influxdb plugin
+* influxdb_admin_user: The admin username for Influxdb
+* influxdb_admin_password: The password to give the admin user
+* influxdb_api_route: The route that Jenkins will use to contact Influxdb
+* grafana_admin_user: The admin username for Grafana
+* grafana_admin_password: The password to give the Grafana admin
+
+### Jenkins Job DSL setup options
+* jenkins_dsl_job_repo: The repo to pull jobs from. Configured as GitHubORG/repoName
+* jenkins_dsl_repo_branch: The branch of the job dsl repo
 
 ## Templates
 
@@ -261,6 +275,36 @@ executed on contra-env-setup.
     -e start_minishift=true -e profile=mysetup -K -k
 ```
 _Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
+       The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
+       Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
+
+### Example 7: Setup on a local machine :: Setup Jenkins with metrics enabled
+ 1. Install on a local machine as current user
+ 2. Start minishift cluster with profile minishift
+ 3. Run Jenkins with metrics enabled
+ 4. Load containers from a user defined as project_repo from joejstuart/contra-demo
+ 5. Load helper containers from CentOS-PaaS-SIG/contra-env-infra
+ 6. Setup Jenkins with a a job DSL seed job and sample jobs from CentOS-PaaS-SIG/contra-env-sample-project
+ 7. Disable the linchpin-executor container
+ 
+ ```
+ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
+    -e user=$USER \
+    -e profile=minishift \
+    -e run_prereqs=false \
+    -e setup_minishift=true \
+    -e start_minishift=true \
+    -e setup_containers=true \
+    -e helper_project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-infra \
+    -e helper_project_branch=master -K -k \
+    --extra-vars='{"os_template_blacklist": ["linchpin-executor", "ansible-executor"]}' \
+    -e project_repo=https://github.com/joejstuart/contra-demo \
+    -e project_branch=master \
+    -e jenkins_enable_metrics=true \
+    -e jenkins_dsl_job_repo=joejstuart/contra-env-sample-project
+```
+
+Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
        Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
 
