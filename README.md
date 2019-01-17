@@ -18,8 +18,8 @@
   - [Project repo options that has s2i templates and Jenkins Pipelines](#project-repo-options-that-has-s2i-templates-and-jenkins-pipelines)
     - [OpenShift s2i template setup options](#openshift-s2i-template-setup-options)
     - [Jenkins 2.0 pipeline setup options](#jenkins-20-pipeline-setup-options)
-    - [Metrics setup options](#Metrics setup options)
-    - [Jenkins Job DSL setup options](#Jenkins Job DSL setup options)
+    - [Metrics setup options](#Metrics-setup-options)
+    - [Jenkins Job DSL setup options](#Jenkins-Job-DSL-setup-options)
   - [Templates](#templates)
   - [Usage examples](#usage-examples)
     - [Example 1: Setup on a local machine :: Setup Minishift + Helper infra OS templates + OS templates from some project](#example-1-setup-on-a-local-machine--setup-minishift--helper-infra-os-templates--os-templates-from-some-project)
@@ -28,8 +28,9 @@
     - [Example 4: Setup on a local machine :: Start Minishift w/profile mysetup + OS templates + Jenkins 2.0 pipelines](#example-4-setup-on-a-local-machine--start-minishift-wprofile-mysetup--os-templates--jenkins-20-pipelines)
     - [Example 5: Setup on a local machine :: Using the playbook hooks on contra-env-setup](#example-5-setup-on-a-local-machine--using-the-playbook-hooks-on-contra-env-setup)
     - [Example 6: Setup on a local machine :: Start Minishift w/profile mysetup + OS templates + Jenkins 2.0 pipelines](#example-6-setup-on-a-local-machine--start-minishift-wprofile-mysetup--os-templates--jenkins-20-pipelines)
-    - [Example 7a: OpenShift cluster instance endpoint + Helper infra OS templates + OS templates from some project](#example-7a-openshift-cluster-instance-endpoint--helper-infra-os-templates--os-templates-from-some-project)
-    - [Example 7b: From a File ex. ari-my-project.yml](#example-7b-from-a-file-ex-ari-my-projectyml)
+    - [Example 7: Setup on a local machine :: Setup Jenkins with metrics enabled](#Example-7:-Setup-on-a-local-machine--Setup-Jenkins-with-metrics-enabled)
+    - [Example 8a: OpenShift cluster instance endpoint + Helper infra OS templates + OS templates from some project](#example-7a-openshift-cluster-instance-endpoint--helper-infra-os-templates--os-templates-from-some-project)
+    - [Example 8b: From a File ex. ari-my-project.yml](#example-7b-from-a-file-ex-ari-my-projectyml)
       - [File ari-my-project.yml](#file-ari-my-projectyml)
       - [Command Execution with file ari-my-project.yml](#command-execution-with-file-ari-my-projectyml)
   - [Mac Users](#mac-users)
@@ -308,7 +309,7 @@ Note: The -K is used to prompt you for your password for sudo (if you require on
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
        Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
 
-### Example 7a: OpenShift cluster instance endpoint + Helper infra OS templates + OS templates from some project
+### Example 8a: OpenShift cluster instance endpoint + Helper infra OS templates + OS templates from some project
 
  1. Install on an OpenShift cluster endpoint.
  2. Setup helper infrastructure containers such as:
@@ -336,7 +337,7 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
        Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
 
-### Example 7b: From a File ex. ari-my-project.yml
+### Example 8b: From a File ex. ari-my-project.yml
 
 #### File ari-my-project.yml
 ```
