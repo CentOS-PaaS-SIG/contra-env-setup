@@ -281,8 +281,6 @@ ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
     -e setup_minishift=true \
     -e start_minishift=true \
     -e setup_containers=true \
-    -e setup_pipelines=false \
-    -e setup_sample_project=false \
     -e helper_project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-infra \
     -e helper_project_branch=master -K -k \
     --extra-vars='{"os_template_blacklist": ["linchpin-executor", "ansible-executor"]}' \
