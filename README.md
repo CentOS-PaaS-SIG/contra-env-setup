@@ -242,7 +242,7 @@ ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
     -e openshift_project=my-project-example \
     -e tag=develop \
     -e setup_pipelines=true \
-    -e setup_sample_project -K -k
+    -e setup_sample_project=true -K -k
 ```
 _Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
@@ -267,7 +267,7 @@ ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
     -e openshift_project=my-project-example \
     -e tag=develop \
     -e setup_pipelines=true \
-    -e setup_sample_project \
+    -e setup_sample_project=true \
     -e start_minishift=true \
     -e profile=mysetup -K -k
 ```
@@ -287,7 +287,7 @@ ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
     -e openshift_project=my-project-example-example \
     -e tag=develop \
     -e setup_pipelines=true \
-    -e setup_sample_project \
+    -e setup_sample_project=true \
     --extra-vars='{"hooks": ["/contra-env-setup/playbook_a.yml","/contra-env-setup/playbook_b.yml"]}' -K -k
 ```
 
@@ -483,7 +483,7 @@ Example:
 ```
     ansible-playbook -vv -i "localhost," playbooks/setup.yml \
     -e user=$USER -e setup_pipelines=true \
-    -e setup_sample_project -K -k --connection=local
+    -e setup_sample_project=true -K -k --connection=local
 ```
 
 ## Debugging Issues
