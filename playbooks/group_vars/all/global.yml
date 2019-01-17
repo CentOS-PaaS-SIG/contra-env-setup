@@ -180,7 +180,7 @@ influxdb_api_route: "influxdb.{{ openshift_project }}.svc.cluster.local:8086"
 grafana_admin_user: "admin"
 grafana_admin_password: "admin"
 
-jenkins_enable_metrics: false
+jenkins_enable_metrics: true
 jenkins_dsl_job_repo: "CentOS-PaaS-SIG/contra-env-sample-project"
 jenkins_dsl_repo_branch: "master"
 
