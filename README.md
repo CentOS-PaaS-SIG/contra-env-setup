@@ -264,6 +264,38 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
        Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
 
+### Example 7: Setup on a local machine :: Setup Jenkins with metrics enabled
+ 1. Install on a local machine as current user
+ 2. Start minishift cluster with profile minishift
+ 3. Run Jenkins with metrics enabled
+ 4. Load containers from a user defined as project_repo from joejstuart/contra-demo
+ 5. Load helper containers from CentOS-PaaS-SIG/contra-env-infra
+ 6. Setup Jenkins with a a job DSL seed job and sample jobs from CentOS-PaaS-SIG/contra-env-sample-project
+ 7. Disable the linchpin-executor container
+ 
+ ```
+ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
+    -e user=$USER \
+    -e profile=minishift \
+    -e run_prereqs=false \
+    -e setup_minishift=true \
+    -e start_minishift=true \
+    -e setup_containers=true \
+    -e setup_pipelines=false \
+    -e setup_sample_project=false \
+    -e helper_project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-infra \
+    -e helper_project_branch=master -K -k \
+    --extra-vars='{"os_template_blacklist": ["linchpin-executor", "ansible-executor"]}' \
+    -e project_repo=https://github.com/joejstuart/contra-demo \
+    -e project_branch=master \
+    -e jenkins_enable_metrics=true \
+    -e jenkins_dsl_job_repo=joejstuart/contra-env-sample-project
+```
+
+Note: The -K is used to prompt you for your password for sudo (if you require one) <br>
+       The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
+       Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
+
 ### Example 7a: OpenShift cluster instance endpoint + Helper infra OS templates + OS templates from some project
 
  1. Install on an OpenShift cluster endpoint.
