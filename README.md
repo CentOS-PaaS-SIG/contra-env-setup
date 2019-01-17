@@ -18,6 +18,8 @@
   - [Project repo options that has s2i templates and Jenkins Pipelines](#project-repo-options-that-has-s2i-templates-and-jenkins-pipelines)
     - [OpenShift s2i template setup options](#openshift-s2i-template-setup-options)
     - [Jenkins 2.0 pipeline setup options](#jenkins-20-pipeline-setup-options)
+    - [Metrics setup options](#Metrics setup options)
+    - [Jenkins Job DSL setup options](#Jenkins Job DSL setup options)
   - [Templates](#templates)
   - [Usage examples](#usage-examples)
     - [Example 1: Setup on a local machine :: Setup Minishift + Helper infra OS templates + OS templates from some project](#example-1-setup-on-a-local-machine--setup-minishift--helper-infra-os-templates--os-templates-from-some-project)
@@ -123,7 +125,7 @@ or only certain components.  ex. minishift, jenkins infra, pipeline containers, 
 * pipeline_dir: Relative directory in the project repo where Jenkins pipelines are stored: default=config/pipelines/buildconfigs
 * sample_pipeline_dir: Relative directory in the sample project repo where Jenkins pipelines are stored: default=config/pipelines/buildconfigs
 
-### Metrics variable configuration
+### Metrics setup options
 * jenkins_enable_metrics: Used to configure the Jenkins Influxdb plugin
 * influxdb_admin_user: The admin username for Influxdb
 * influxdb_admin_password: The password to give the admin user
@@ -131,7 +133,7 @@ or only certain components.  ex. minishift, jenkins infra, pipeline containers, 
 * grafana_admin_user: The admin username for Grafana
 * grafana_admin_password: The password to give the Grafana admin
 
-### Jenkins Job DSL variable configuration
+### Jenkins Job DSL setup options
 * jenkins_dsl_job_repo: The repo to pull jobs from. Configured as GitHubORG/repoName
 * jenkins_dsl_repo_branch: The branch of the job dsl repo
 
