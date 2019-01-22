@@ -40,7 +40,7 @@ memory: 8092mb
 cpus: 4
 
 # minishift iso location
-minishift_iso: https://s3.amazonaws.com/continuous-infra/minishift/iso/minishift.iso
+minishift_iso: https://github.com/minishift/minishift-centos-iso/releases/download/v1.14.0/minishift-centos7.iso
 
 # Additional insecure docker registries used inside minishift
 # Use comma separated values for more registries
