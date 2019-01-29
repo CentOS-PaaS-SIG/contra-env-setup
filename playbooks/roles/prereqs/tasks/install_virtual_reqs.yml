@@ -33,6 +33,7 @@
     name: "{{ item }}"
     state: present
   with_items:
+    - origin-clients
     - libvirt
     - qemu-kvm
     - jq
