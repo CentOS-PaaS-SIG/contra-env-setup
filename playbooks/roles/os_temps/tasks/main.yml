@@ -41,11 +41,17 @@
 - name: "Create project {{ openshift_project }}"
   import_tasks: get_set_project.yml
 
-# Import_tasks jq for querying container config files
+# Check if jq is already installed so we can skip installation
+- name: "Check if jq is already installed"
+  command: jq --version
+  register: jq_installed
+  ignore_errors: yes
+
+# Install jq for querying container config files
 - name: "Install jq for querying container config files"
   package:
     name: jq
-  when: host_os == "linux"
+  when: host_os == "linux" and jq_installed.rc > 0
   become: true
 
 - set_fact:
