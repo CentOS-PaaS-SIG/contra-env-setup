@@ -23,7 +23,7 @@
   when: not (oc_need_install is defined and oc_need_install|bool == false)
 
 - name: "Query for OpenShift client compressed binary version {{ oc_version }}"
-  shell: curl -s https://github.com/openshift/origin/releases/{{ oc_version }} | grep {{ client_path }} | head -1 | sed 's/.*<a href="\(.*\)" .*/https:\/\/github.com\1/' | cut -d'"' -f1
+  shell: curl -s https://github.com/openshift/origin/releases/{{ oc_version }} | grep {{ client_path }} | grep "href=" | head -1 | sed 's/.*<a href="\(.*\)" .*/https:\/\/github.com\1/' | cut -d'"' -f1
   register: get_oc_bin
   vars:
     client_path: "{% if host_os == 'darwin' %}openshift-origin-client-tools-.*-mac.*.zip{% else %}openshift-origin-client-tools-.*-linux.*.tar.gz{% endif %}"
