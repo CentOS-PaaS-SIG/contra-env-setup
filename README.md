@@ -473,6 +473,39 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
        Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
 
 
+### Example 10: Setup on an existing generic virtual machine :: Setup Jenkins with metrics enabled
+
+ 1. Prepare an existing generic centos7/fedora27+ VM with VM_IP as a USER with paswordless sudo privileges
+ 2. Install on an existing VM as a USER, enable nested virtualization
+ 3. Start minishift cluster with profile minishift
+ 4. Run Jenkins with metrics enabled
+ 5. Load containers from a user defined as project_repo from joejstuart/contra-demo
+ 6. Load helper containers from CentOS-PaaS-SIG/contra-env-infra
+ 7. Setup Jenkins with a a job DSL seed job and sample jobs from CentOS-PaaS-SIG/contra-env-sample-project
+ 8. Disable the linchpin-executor container
+
+```
+ansible-playbook -vv -i "VM_IP," -u USER contra-env-setup/playbooks/prepare_vm_for_minishift.yml \
+    -e setup_nested_virt=true --private-key=PATH_TO_PRIVATE_KEY
+
+ansible-playbook -vv -i "localhost," contra-env-setup/playbooks/setup.yml \
+    -e user=$USER \
+    -e profile=minishift \
+    -e minishift_external_vm_user=USER \
+    -e minishift_external_vm_ssh_key_location=PATH_TO_PRIVATE_KEY \
+    -e minishift_external_vm_ip=VM_IP \
+    -e run_prereqs=false \
+    -e setup_minishift=true \
+    -e start_minishift=true \
+    -e setup_containers=true \
+    -e helper_project_repo=https://github.com/CentOS-PaaS-SIG/contra-env-infra \
+    -e helper_project_branch=master \
+    --extra-vars='{"os_template_blacklist": ["linchpin-executor", "ansible-executor"]}' \
+    -e project_repo=https://github.com/joejstuart/contra-demo \
+    -e project_branch=master \
+    -e jenkins_enable_metrics=true \
+    -e jenkins_dsl_job_repo=CentOS-PaaS-SIG/contra-env-sample-project -K -k
+```
 
 ## Mac Users
 
