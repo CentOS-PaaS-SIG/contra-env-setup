@@ -1,0 +1,58 @@
+- hosts: '{{ hosts | default("all") }}'
+  become: '{{ become | default("yes") }}'
+  gather_facts: '{{ gather_facts | default("no") }}'
+
+  vars:
+    setup_nested_virt: false
+
+  tasks:
+    - name: "Install python if not installed"
+      raw: test -e /usr/bin/python || sudo yum install -y python
+
+    - name: "Install docker, net-tools and firewalld"
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - docker
+        - net-tools
+        - firewalld
+
+    - name: "Ensure group docker exists"
+      group:
+        name: docker
+        state: present
+
+    - name: "Adding existing user {{ ansible_user }} to group docker"
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: "Ensure that docker service is running"
+      service:
+        name: docker
+        state: reloaded
+        enabled: yes
+
+    - name: "Set run_prereqs to true for the virtualization setup"
+      set_fact:
+        run_prereqs: true
+      when: setup_nested_virt|bool == true
+
+    - name: "Setup nested virtualization on the VM"
+      import_tasks: "{{ playbook_dir }}/roles/prereqs/tasks/setup_nested_virt.yml"
+      when: setup_nested_virt|bool == true
+
+    - name: "Restart VM if nested virtualization was setup"
+      shell: sleep 2 && shutdown -r now "Restarting to finish nested virtualization setup"
+      async: 1
+      poll: 0
+      ignore_errors: true
+      when: setup_nested_virt|bool == true
+
+    - name: "Wait for the VM to finish reboot"
+      wait_for_connection:
+        timeout: 240
+        delay: 20
+      when: setup_nested_virt|bool == true
