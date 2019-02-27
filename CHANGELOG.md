@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.3.1 (02/27/2019)
+- Add a playbook that prepares external VMs for usage with minishift [#148](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/148)
+- Fix the query for the oc compressed binary to search links only [#147](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/147)
+- Pickup templates with extension .j2 [#146](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/146)
+- Fix KVM driver installation step [#144](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/144)
+- Skip jq install if it's already installed on the machine [#143](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/143)
+- Set run_prereqs to true when running test in the CI [#142](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/142)
+- Switch to using minishift iso [#141](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/141)
+- Fix setup_sample_project=true in examples [#139](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/139)
+- Update README.md with better more accurate examples [#138](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/138)
+- Update with metrics vars, README update [#136](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/136)
+
 ## v1.3.0 (01/14/2019)
 - Fix confusing name of tasks [#134](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/134)
 - Use raw-ouput from jq instead of sed [#100](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/100)
