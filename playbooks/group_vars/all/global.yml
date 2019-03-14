@@ -13,6 +13,9 @@ setup_playbook_hooks: false
 force_minishift_install: false
 force_repo_clone: false
 
+# Use General DNS in case of VPN DNS failures
+dns_server: 8.8.8.8
+
 # Default location to store contra-env-setup
 contra_env_setup_dir: "{{ ansible_env.HOME }}/.contra-env-setup"
 
