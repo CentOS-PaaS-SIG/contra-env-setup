@@ -14,7 +14,7 @@ force_minishift_install: false
 force_repo_clone: false
 
 # Use General DNS in case of VPN DNS failures
-dns_server: 8.8.8.8
+#dns_server: 8.8.8.8
 
 # Default location to store contra-env-setup
 contra_env_setup_dir: "{{ ansible_env.HOME }}/.contra-env-setup"
@@ -193,4 +193,3 @@ jenkins_enable_metrics: false
 # the job dsl repo. This will read all dsl files from src/jobs/*.groovy
 jenkins_dsl_job_repo: "CentOS-PaaS-SIG/contra-env-sample-project"
 jenkins_dsl_repo_branch: "master"
-
