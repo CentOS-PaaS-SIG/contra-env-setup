@@ -13,6 +13,9 @@ setup_playbook_hooks: false
 force_minishift_install: false
 force_repo_clone: false
 
+# Overwrite templates and their objects if they already exist
+force_template_overwrite: false
+
 # Use General DNS in case of VPN DNS failures
 dns_server: 8.8.8.8
 

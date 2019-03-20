@@ -17,6 +17,18 @@
 - debug:
     msg: "{{ container_config_name }} :: Template Name from querying the cluster: {{ template_name_check.stdout }}"
 
+- name: "{{ container_config_name }} :: The template {{ template_name }} already exists, finding the label applied to all its objects"
+  shell: "{{ oc_bin }} describe templates/{{ template_name_check.stdout }} | grep \"Object Labels:\" | sed 's/Object Labels:\\s*//g' | cut -f1"
+  register: "template_label"
+  when: template_name_check.stdout != ""
+
+- name: "{{ container_config_name }} :: The template {{ template_name }} already exists, deleting all its labeled objects so they can be recreated"
+  shell: "{{ oc_bin }} delete all -l {{ template_label.stdout }}"
+  when:
+    - template_name_check.stdout != ""
+    - template_label.stdout != ""
+    - force_template_overwrite|bool == true
+
 - name: "{{ container_config_name }} :: Updating template {{ template_name }}"
   shell: "{{ oc_bin }} replace -f {{ template_name }}"
   when: template_name_check.stdout != ""
