@@ -6,7 +6,7 @@
 
 # Wait container in the pipeline to be finished building
 - name: "{{ container_config_name }} :: Wait for {{  build_config_name_files[template_name] }} to be built and marked with latest tag"
-  shell: "{{ oc_bin }} get builds | grep '{{ build_config_name_files[template_name] }}'"
+  shell: "{{ oc_bin }} get builds | grep '{{ build_config_name_files[template_name] }}' | sort -V | tail -n 1"
   register: oc_build_result
   until: (oc_build_result.stdout.find(" Running ") == -1 or oc_build_result.stdout.find(" Failed ") != -1)
   retries: 300
