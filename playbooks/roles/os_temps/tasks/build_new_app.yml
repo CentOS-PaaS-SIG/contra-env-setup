@@ -28,7 +28,7 @@
 
 # Wait container in the pipeline to start building
 - name: "{{ container_config_name }} :: Wait for {{  build_config_name_files[template_name] }} to be queued"
-  shell: "{{ oc_bin }} get builds | grep '{{  build_config_name_files[template_name] }}' | sort -V | tail -n 1"
+  shell: "{{ oc_bin }} get builds | egrep \"{{ build_config_name_files[template_name] }}-[0-9]*\\s\" | sort -V | tail -n 1"
   register: oc_build_result
   until: oc_build_result.stdout.find(" Running ") != -1 or oc_build_result.stdout.find(" Failed ") != -1
   retries: 6
