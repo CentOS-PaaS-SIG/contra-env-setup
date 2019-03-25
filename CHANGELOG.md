@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.3.2 (03/25/2019)
+- When checking the status of container builds always check the latest one [#154](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/154)
+- Add support for template overwriting [#153](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/153)
+- Add DNS fix to include RHOS VM task as well [#151](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/151)
+- Add general dns to fix fleeting DNS errors [#150](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/150)
+
 ## v1.3.1 (02/27/2019)
 - Add a playbook that prepares external VMs for usage with minishift [#148](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/148)
 - Fix the query for the oc compressed binary to search links only [#147](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/147)
