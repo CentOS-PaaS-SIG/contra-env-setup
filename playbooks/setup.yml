@@ -6,6 +6,10 @@
   gather_facts: '{{ gather_facts | default("yes") }}'
   pre_tasks:
     - import_tasks: 'roles/prereqs/tasks/check_os.yml'
+    - name: "Register current git http.sslVerify value if exists"
+      shell: "git config --list --global | grep http.sslverify | cut -d'=' -f2"
+      register: git_ssl_verify
+      ignore_errors: yes
   roles:
     - { role: cleanup, when: run_cleanup|bool == true }
     - role: create
@@ -14,3 +18,9 @@
     - { role: os_temps, when: setup_containers|bool == true }
     - { role: pipeline, when: setup_pipelines|bool == true }
     - { role: playbook_hooks, when: setup_playbook_hooks|bool == true }
+  post_tasks:
+    - name: "Set git http.sslVerify back to {{ git_ssl_verify.stdout }}"
+      shell: "git config --global http.sslVerify {{ git_ssl_verify.stdout }}"
+      when:
+        - git_ssl_verify.stdout is defined
+        - git_ssl_verify.stdout != ""
