@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.3.3 (06/24/2019)
+- Add conditions to install proper pkgs in Fedora 30 [#159](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/159)
+- Reset git http.sslverify setting after setup is done [#157](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/157)
+- Remove DNS hack [#156](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/156)
+
 ## v1.3.2 (03/25/2019)
 - When checking the status of container builds always check the latest one [#154](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/154)
 - Add support for template overwriting [#153](https://github.com/CentOS-PaaS-SIG/contra-env-setup/pull/153)
