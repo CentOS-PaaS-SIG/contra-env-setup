@@ -10,6 +10,7 @@ setup_helper_containers: true
 setup_pipelines: false
 setup_sample_project: false
 setup_playbook_hooks: false
+run_pre_tasks: false
 force_minishift_install: false
 force_repo_clone: false
 
