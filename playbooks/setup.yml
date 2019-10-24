@@ -12,6 +12,7 @@
       ignore_errors: yes
   roles:
     - { role: cleanup, when: run_cleanup|bool == true }
+    - { role: playbook_pre_tasks, when: "run_pre_tasks|bool == true and run_cleanup|bool == false" }
     - role: create
     - { role: prereqs, when: "run_prereqs|bool == true and setup_minishift|bool == true" }
     - { role: minishift, when: "setup_minishift|bool == true" }

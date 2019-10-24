@@ -1,0 +1,6 @@
+---
+- debug: msg="{{ pre_tasks }}"
+
+- name: "Running project pre-tasks {{ pre_tasks }}"
+  include_tasks: "{{ item }}"
+  with_items: "{{ pre_tasks }}"
