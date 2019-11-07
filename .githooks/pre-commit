@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+# Copyright Red Hat, Inc
+
+################################################################
+# Note:                                                        #
+# This git hook script will perform the following before       #
+# completing the `git commit` command:                         #
+# - Remove and recreate the docs/ folder                       #
+# - Create a docs/vars and docs/src folder                     #
+# - Copy the html documentation files from vars/ to docs/vars   #
+# - Generate groovydoc documentation for files in src/ and     #
+#   place them in docs/src                                      #
+# - Create an index.html file in docs/ linking to both src and #
+#   vars documentation                                         #
+################################################################
+
+echo "Regenerating documentation"
+
+# Remove old docs directory and recreate src and vars subdirs
+rm -rf docs
+mkdir -p docs/vars docs/src
+
+# Create MD docs from the html versions
+for htmlFile in vars/*.txt; do
+   mdFile=${htmlFile/#vars/docs/vars}
+   mdFile=${mdFile/%txt/md}
+   pandoc $htmlFile -f html -t markdown -s -o $mdFile
+done
+
+echo "## Documentation Index" > docs/index.md
+echo "" >> docs/index.md
+echo "- src" >> docs/index.md
+echo "  - [index](src/index.html)" >> docs/index.md
+echo "- vars" >> docs/index.md
+for mdFile in docs/vars/*; do
+   if [ "${mdFile}" != "index.md" ]; then
+      filename=($(basename ${mdFile} .md))
+      echo "  - [${filename}](vars/${filename}.md)" >> docs/index.md
+   fi
+done
+
+# Copy html files with txt extension from vars/ to docs/vars
+# Rename files from txt extension to html extension
+cp vars/*.txt docs/vars
+rename .txt .html docs/vars/*.txt
+
+# Creating index of new docs
+cd docs
+echo """
+<html>
+<head></head>
+<body>
+  <h1>rhProd Documentation Index</h1>
+  <ul>
+    <li><a href="src/index.html">src</a></li>
+    <li>vars</li>
+    <ul>""" > index.html
+for htmlFile in vars/*; do
+  filename=($(basename ${htmlFile} .md))
+  echo "      <li><a href="${htmlFile}">${filename}</a></li>" >> index.html
+done
+echo """    </ul>
+  </ul>
+</body>
+</html>
+""" >> index.html
+
+cd ..
+
+# Create groovydoc
+#echo "Creating groovydocs for src"
+groovydoc -d docs/src -private -nomainforscripts -noversionstamp -notimestamp -sourcepath src $(find src/ -name \*.groovy -printf '%P\n')
+
+echo "Adding regenerated documentation to commit"
+git add docs
