@@ -1,0 +1,8 @@
+{
+    "scope": true,
+    "lowercaseTypes": true,
+    "addScopeSpace": false,
+    "rules": {
+        "endWithDot": false
+    }
+}
