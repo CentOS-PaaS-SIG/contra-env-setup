@@ -4,6 +4,14 @@
 ### Bug Fixes
 
 * **Fix .releaserc.json:** Remove github options from config file ([a01909b](https://github.com/CentOS-PaaS-SIG/contra-env-setup/commit/a01909b0d4f0878f071ec520d4e2238e06481eed))
+* **Fix Change cleanup:** Remove cleanup items and update others ([846f463](https://github.com/CentOS-PaaS-SIG/contra-env-setup/commit/846f463))
+
+### Features
+
+* **Feature:** Add semantic-release to contra-env-setup ([8fdcdd8](https://github.com/CentOS-PaaS-SIG/contra-env-setup/commit/8fdcdd8))
+* **Feature:** Add run_pre_tasks to global vars  ([c446d4e](https://github.com/CentOS-PaaS-SIG/contra-env-setup/commit/c446d4e))
+* **Feature:** Allow users to run pre_tasks if required for projects  ([36c329b](https://github.com/CentOS-PaaS-SIG/contra-env-setup/commit/36c329b))
+* **Feature:** Update to use latest minishift v1.34.1  ([63d2614](https://github.com/CentOS-PaaS-SIG/contra-env-setup/commit/63d2614))
 
 ## [v1.3.3](https://github.com/CentOS-PaaS-SIG/contra-env-setup/compare/v1.3.2..v1.3.3) (2019-06-24)
 
