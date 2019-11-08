@@ -1,3 +1,9 @@
+## [1.3.4](https://github.com/CentOS-PaaS-SIG/contra-env-setup/compare/v1.3.3...v1.3.4) (2019-11-08)
+
+
+### Bug Fixes
+
+* **Fix .releaserc.json:** Remove github options from config file ([a01909b](https://github.com/CentOS-PaaS-SIG/contra-env-setup/commit/a01909b0d4f0878f071ec520d4e2238e06481eed))
 
 ## [v1.3.3](https://github.com/CentOS-PaaS-SIG/contra-env-setup/compare/v1.3.2..v1.3.3) (2019-06-24)
 
