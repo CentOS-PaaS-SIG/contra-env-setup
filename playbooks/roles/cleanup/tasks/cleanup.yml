@@ -44,5 +44,6 @@
     state: absent
   with_items:
     - "{{ contra_env_setup_dir }}/{{ project_dir }}"
-  when: (pd_is_found.stat.exists) and
-    (force_repo_clone|bool == true)
+  when:
+    - pd_is_found.stat.exists
+    - force_repo_clone|bool == true
