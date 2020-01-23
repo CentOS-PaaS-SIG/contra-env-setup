@@ -13,8 +13,9 @@
 # git clone project_repo
 - name: "Fetch latest for {{ project_repo }}@{{ project_branch }}"
   shell: git fetch --all
-  when: (pd_is_found.stat.exists) and
-    (force_repo_clone|bool == true)
+  when:
+    - pd_is_found.stat.exists
+    - force_repo_clone|bool == true
 
 # git clone project_repo
 - name: "checkout the project repo: {{ project_repo }}@{{ project_branch }} to {{ project_dir }}"
