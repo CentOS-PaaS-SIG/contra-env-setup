@@ -1,7 +1,7 @@
 ---
 # clone the project repo
 
-# Determine if project repo exists
+# Determine if project directory exists
 - name: "Is project repository present in {{ project_dir }}"
   stat:
     path: "{{ project_dir }}"
@@ -9,6 +9,12 @@
 
 - name: "Set http.sslVerify false"
   shell: git config --global http.sslVerify false
+
+# git clone project_repo
+- name: "Fetch latest for {{ project_repo }}@{{ project_branch }}"
+  shell: git fetch --all
+  when: (pd_is_found.stat.exists) and
+    (force_repo_clone|bool == true)
 
 # git clone project_repo
 - name: "checkout the project repo: {{ project_repo }}@{{ project_branch }} to {{ project_dir }}"
