@@ -30,3 +30,19 @@
     - "{{ ansible_env.HOME }}/.minishift/profiles/{{ profile }}"
     - "{{ ansible_env.HOME }}/.kube"
   ignore_errors: yes
+
+# Determine if project directory exists
+- name: "Is project repository present in {{ project_dir }}"
+  stat:
+    path: "{{ project_dir }}"
+  register: pd_is_found
+
+# Remove project directory
+- name: "Cleanup {{ project_dir }}"
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ contra_env_setup_dir }}/{{ project_dir }}"
+  when: (pd_is_found.stat.exists) and
+    (force_repo_clone|bool == true)
