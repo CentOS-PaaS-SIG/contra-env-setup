@@ -15,3 +15,20 @@
 
 - name: add-role-to-user
   shell: "{{ oc_bin }} policy add-role-to-user edit -z default -n '{{ openshift_project }}'"
+
+- name: "Check if registry-auth is set"
+  shell: "{{ oc_bin }} get sa builder -o yaml | grep 'registry-auth'"
+  register: registry_check
+  ignore_errors: true
+
+- name: "Setup external image registry Auth"
+  block:
+    - name: "Create registry Secret"
+      shell: "{{ oc_bin }} create secret docker-registry registry-auth --docker-server={{ registry_vault.registry_server }} --docker-username={{ registry_vault.registry_user }} --docker-password={{ registry_vault.registry_pass }} --docker-email={{ registry_vault.registry_email }}"
+
+    - name: "Set registry Secret on builder service account"
+      shell: "{{ oc_bin }} get sa builder -o yaml >> sa-b.yml && echo '- name: registry-auth' >> sa-b.yml && {{ oc_bin }} apply -f sa-b.yml && rm sa-b.yml"
+
+    - name: "Set registry Secret on deployer service account"
+      shell: "{{ oc_bin }} get sa deployer -o yaml >> sa-d.yml && echo '- name: registry-auth' >> sa-d.yml && {{ oc_bin }} apply -f sa-d.yml && rm sa-d.yml"
+  when: registry_check.stdout == "" and registry_vault is defined
