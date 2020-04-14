@@ -1,0 +1,46 @@
+---
+- name: Fail if K8S_AUTH_HOST is not set
+  fail:
+    msg: "k8s_auth_host is not set"
+  when: k8s_auth_host is not defined
+
+- name: set auth api key if env var is set
+  set_fact:
+    k8s_auth_api_key: "{{ ansible_env.K8S_AUTH_API_KEY }}"
+  when: ansible_env.K8S_AUTH_API_KEY is defined
+
+- name: Log in (obtain access token)
+  k8s_auth:
+    host: "{{ k8s_auth_host }}"
+    validate_certs: false
+    username: "{{ k8s_username }}"
+    password: "{{ k8s_password }}"
+  register: k8s_auth_results
+  when: k8s_username is defined and k8s_password is defined
+
+- name: set auth api key if username/password is provided
+  set_fact:
+    k8s_auth_api_key: "{{ k8s_auth_results.k8s_auth.api_key }}"
+  when: k8s_auth_results.k8s_auth.api_key is defined
+
+- name: Create openshift project
+  k8s:
+    host: "{{ k8s_auth_host }}"
+    api_key: "{{ k8s_auth_api_key }}"
+    name: "{{ PROJECT }}"
+    api_version: v1
+    kind: Project
+    state: present
+    validate_certs: false
+
+- name: Creating k8s objects
+  k8s:
+    host: "{{ k8s_auth_host }}"
+    api_key: "{{ k8s_auth_api_key }}"
+    namespace: "{{ PROJECT }}"
+    state: present
+    validate_certs: false
+    definition: "{{ lookup('template', project_dir + '/' + os_template_dir + '/' + item) }}"
+  with_list:
+    "{{ k8s_resource_objects }}"
+

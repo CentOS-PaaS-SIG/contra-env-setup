@@ -348,7 +348,11 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
        Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
 
+<<<<<<< HEAD
 ### Example 9a: OpenShift cluster instance endpoint + Helper infra OS templates + OS templates from some project
+=======
+### Example 8a: OpenShift cluster instance endpoint + Helper infra OS templates + OS templates from some project
+>>>>>>> 736989bab553533a189950f9413924abde6c97de
 
  1. Install on an OpenShift cluster endpoint.
  2. Setup helper infrastructure containers such as:
@@ -378,7 +382,11 @@ _Note: The -K is used to prompt you for your password for sudo (if you require o
        The -k is used to prompt you for your ssh password can hit enter if using -K and they are the same<br>
        Instead of -k you could use --private-key=<absolute_path_to_ssh_private_key>_
 
+<<<<<<< HEAD
 ### Example 9b: From a File ex. my-project-example.yml
+=======
+### Example 8b: From a File ex. ari-my-project.yml
+>>>>>>> 736989bab553533a189950f9413924abde6c97de
 
 #### File my-project-example.yml
 ```

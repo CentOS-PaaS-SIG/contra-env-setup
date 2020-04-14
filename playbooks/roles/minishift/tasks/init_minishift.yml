@@ -40,4 +40,12 @@
       - cpu_mode_not_configured|bool
       - start_minishift|bool == true
 
+  - name: set minishift host
+    shell: "{{ minishift_bin }} ip"
+    register: minishift_host
+
+  - name: set k8s_auth_host
+    set_fact:
+      k8s_auth_host: "https://{{ minishift_host.stdout }}:8443"
+
   when: host_os == "linux"
