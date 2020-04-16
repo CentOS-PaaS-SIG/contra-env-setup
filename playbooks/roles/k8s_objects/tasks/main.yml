@@ -1,7 +1,13 @@
 ---
-- name: Fail if K8S_AUTH_HOST is not set
-  fail:
-    msg: "k8s_auth_host is not set"
+- name: set minishift host
+  block:
+    - name: register minishift host
+      shell: "{{ minishift_bin }} ip"
+      register: minishift_host
+
+    - name: set k8s_auth_host
+      set_fact:
+        k8s_auth_host: "https://{{ minishift_host.stdout }}:8443"
   when: k8s_auth_host is not defined
 
 - name: set auth api key if env var is set
@@ -12,7 +18,7 @@
 - name: Log in (obtain access token)
   k8s_auth:
     host: "{{ k8s_auth_host }}"
-    validate_certs: false
+    validate_certs: False
     username: "{{ k8s_username }}"
     password: "{{ k8s_password }}"
   register: k8s_auth_results
