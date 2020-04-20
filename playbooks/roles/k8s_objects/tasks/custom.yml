@@ -1,7 +1,0 @@
-- name: Creating k8s objects
-  k8s:
-    namespace: "{{ PROJECT }}"
-    state: present
-    definition: "{{ lookup('template', item) }}"
-  with_list:
-    "{{ k8s_resource_objects }}"

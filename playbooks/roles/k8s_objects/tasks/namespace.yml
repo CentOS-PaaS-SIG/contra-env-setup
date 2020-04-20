@@ -1,7 +1,0 @@
-- name: Create openshift project
-  k8s:
-    name: "{{ PROJECT }}"
-    api_version: v1
-    kind: Project
-    state: present
-
