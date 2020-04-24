@@ -1,0 +1,11 @@
+# from GitHub, overriding the name and specifying a specific tag
+- name: contra.minishift
+  src: git@github.com:CentOS-PaaS-SIG/contra-minishift.git
+  scm: git
+  version: master
+
+- name: contra.k8s_objects
+  src: git@github.com:CentOS-PaaS-SIG/contra-k8s_objects.git
+  scm: git
+  version: master
+

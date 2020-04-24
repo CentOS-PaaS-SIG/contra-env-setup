@@ -16,7 +16,7 @@
     - role: create
     - { role: prereqs, when: "run_prereqs|bool == true and setup_minishift|bool == true" }
     - { role: minishift, when: "setup_minishift|bool == true" }
-    - { role: k8s_objects, when: "set_containers|bool == true" }
+    - { role: os_temps, when: setup_containers|bool == true }
     - { role: pipeline, when: setup_pipelines|bool == true }
     - { role: playbook_hooks, when: setup_playbook_hooks|bool == true }
   post_tasks:
