@@ -1,25 +1,4 @@
 ---
-# Stop minishift profile, delete minishift profile,
-# delete minishift binary files, and kube config
-
-- name: "Stop minishift if running"
-  shell: "{{ minishift_bin }} stop --profile {{ profile }}"
-  ignore_errors: yes
-
-- name: "Delete minishift profile {{ profile }}"
-  shell: "{{ minishift_bin }} delete --profile {{ profile }} --force"
-  ignore_errors: yes
-
-- name: "Cleanup files and directories {{ minishift_dest_dir }}"
-  file:
-    path: "{{ minishift_dest_dir }}/{{ item }}"
-    state: absent
-  with_items:
-    - "minishift"
-    - "LICENSE"
-    - "README.adoc"
-  ignore_errors: yes
-
 - name: "Cleanup certain files in {{ contra_env_setup_dir }}, kube config, and minishift profile"
   file:
     path: "{{ item }}"
@@ -27,8 +6,6 @@
   with_items:
     - "{{ contra_env_setup_dir }}/.yml"
     - "{{ contra_env_setup_dir }}/.yaml"
-    - "{{ ansible_env.HOME }}/.minishift/profiles/{{ profile }}"
-    - "{{ ansible_env.HOME }}/.kube"
   ignore_errors: yes
 
 # Determine if project directory exists
