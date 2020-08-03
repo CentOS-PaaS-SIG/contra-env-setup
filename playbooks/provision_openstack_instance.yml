@@ -1,0 +1,27 @@
+---
+- name: "Provision Open Stack Instance"
+  hosts: '{{ hosts | default("all") }}'
+  become: '{{ become | default("no") }}'
+  gather_facts: '{{ gather_facts | default("no") }}'
+  tasks:
+
+    - name: "provision a key pair"
+      os_keypair:
+        state: present
+        name: ansible_key
+      register: keypair_output
+
+    - name: "copy the keypair_output to a file"
+      copy:
+        content: keypair_output["private_key"]
+        dest: "~/.ssh/keypair_output.pem"
+
+    - name: "Create a new OpenShift instance on Virtual Machine"
+      os_server:
+        state: present
+        name: "{{ vm_name }}"
+        image: "{{ image }}"
+        key_name: ansible_key
+        flavor: "{{ flavor }}"
+        network: "{{ network }}"
+        security_groups: "{{ sec_groups }}"
