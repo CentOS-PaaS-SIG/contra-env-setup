@@ -36,6 +36,10 @@
   shell: "{{ minishift_bin }} config set insecure-registry \"{{ minishift_insecure_registry }}\""
   when: minishift_insecure_registry != ""
 
+- name: "Set minishift minishift_registry_mirror"
+  shell: "{{ minishift_bin }} config set registry-mirror \"{{ minishift_registry_mirror }}\""
+  when: minishift_registry_mirror != ""
+
 - name: "Set minishift skip-check-openshift-version"
   shell: "{{ minishift_bin }} config set skip-check-openshift-version true"
   when: minishift_version != "v1.12.0"
