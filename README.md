@@ -99,6 +99,7 @@ or only certain components.  ex. minishift, jenkins infra, pipeline containers, 
 * cpus: Number of cpus to use for minishift VM: default=2
 * minishift_iso: ISO image to use : default=http://artifacts.ci.centos.org/fedora-atomic/minishift/iso/minishift.iso
 * minishift_insecure_registry: Additional insecure registries : default="" (not used)
+* minishift_registry_mirror: Optional mirror for registries : default="" (not used)
 
 ### oc setup options
 * openshift_project: OpenShift project name : default:contra-sample-project

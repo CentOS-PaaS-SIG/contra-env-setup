@@ -50,6 +50,9 @@ minishift_iso: https://github.com/minishift/minishift-centos-iso/releases/downlo
 # Use comma separated values for more registries
 minishift_insecure_registry: ""
 
+# Value of minishift configutation option registry-mirror
+minishift_registry_mirror: ""
+
 # Update this to be the cluster IP of Openshift console
 # Leave empty when using minishift
 openshift_cluster_ip: ""
