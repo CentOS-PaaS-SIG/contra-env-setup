@@ -59,15 +59,15 @@
   become: true
   when: ansible_distribution == 'Fedora' and ansible_distribution_major_version|int <= 29
 
-- name: "Install libvirt, qemu-kvm, and jq on {{ ansible_distribution }} version 30 or above"
-  package:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - libvirt
-    - qemu-kvm
-    - jq
-    - python3-libselinux
-    - git
-  become: true
-  when: ansible_distribution == 'Fedora' and ansible_distribution_major_version|int >= 30
+#- name: "Install libvirt, qemu-kvm, and jq on {{ ansible_distribution }} version 30 or above"
+#  package:
+#    name: "{{ item }}"
+#    state: present
+#  with_items:
+#    - libvirt
+#    - qemu-kvm
+#    - jq
+#    - python3-libselinux
+#    - git
+#  become: true
+#  when: ansible_distribution == 'Fedora' and ansible_distribution_major_version|int >= 30
