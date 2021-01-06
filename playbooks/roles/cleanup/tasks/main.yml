@@ -1,5 +1,15 @@
 ---
 # tasks file for cleanup
 
+- name: "Running cleanup pre-tasks {{ cleanup_pre_hooks }}"
+  include_tasks: "{{ item }}"
+  with_items: "{{ cleanup_pre_hooks }}"
+  when: cleanup_pre_hooks is defined
+
 - name: "Stop minishift if running"
   import_tasks: cleanup.yml
+
+- name: "Running cleanup post-tasks {{ cleanup_post_hooks }}"
+  include_tasks: "{{ item }}"
+  with_items: "{{ cleanup_post_hooks }}"
+  when: cleanup_post_hooks is defined
