@@ -6,7 +6,9 @@
 
 - shell: echo "{{ oc_exists.stdout_lines[0] }}" | awk -F' v' '{print $2}' | awk -F'.' '{print $1 "." $2}'
   register: oc_exists_version
-  when: oc_exists.stdout_lines is defined
+  when:
+    - oc_exists.stdout_lines is defined
+    - oc_exists.stdout_lines|length > 0
 
 - shell: echo "{{ oc_version }}" | awk -F'[v.]' '{print $2 "." $3}'
   register: oc_needed_version
