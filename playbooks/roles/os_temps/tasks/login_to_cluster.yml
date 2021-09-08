@@ -5,5 +5,5 @@
   when: not skip_login and security_token != '__undefined__'
 
 - name: "Login to the Openshift cluster with a username and a password"
-  command: "{{ oc_bin }} login {{ cluster_ip|quote }} --username={{ username|quote }} --password={{ password|quote }} --insecure-skip-tls-verify=true"
+  command: "{{ oc_bin }} login https://api.crc.testing:6443 --username={{ username|quote }} --password={{ password|quote }} --insecure-skip-tls-verify=true"
   when: not skip_login and security_token == '__undefined__'

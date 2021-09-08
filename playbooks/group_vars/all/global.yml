@@ -3,8 +3,9 @@
 run_cleanup: false
 run_prereqs: false
 setup_nested_virt: false
-setup_minishift: true
-start_minishift: true
+setup_minishift: false
+start_minishift: false
+setup_crc: true
 setup_containers: true
 setup_helper_containers: true
 setup_pipelines: false
@@ -113,7 +114,8 @@ oc_version: v3.11.0
 oc_bin_path: "{{ ansible_env.HOME }}/.minishift/cache/oc/{{ oc_version }}/{{ host_os }}"
 
 # Path to oc binary
-oc_bin: "{{ oc_bin_path }}/oc"
+#oc_bin: "{{ oc_bin_path }}/oc"
+oc_bin: "/var/home/ryan/.crc/bin/oc/oc"
 
 ## Project repo setup
 
