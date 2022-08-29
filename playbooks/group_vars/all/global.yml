@@ -3,8 +3,8 @@
 run_cleanup: false
 run_prereqs: false
 setup_nested_virt: false
-setup_minishift: true
-start_minishift: true
+setup_crc: true
+setup_minishift: false # delete in cvp-2930
 setup_containers: true
 setup_helper_containers: true
 setup_pipelines: false
@@ -110,7 +110,7 @@ modify_scc: false
 oc_version: v3.11.0
 
 # Path to oc binary directory
-oc_bin_path: "{{ ansible_env.HOME }}/.minishift/cache/oc/{{ oc_version }}/{{ host_os }}"
+oc_bin_path: "{{ ansible_env.HOME }}/.crc/bin/oc"
 
 # Path to oc binary
 oc_bin: "{{ oc_bin_path }}/oc"
