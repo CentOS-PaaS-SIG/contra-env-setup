@@ -9,17 +9,6 @@
 - name: "Create log directory"
   file: path="/tmp/contra-env-setup/logs/run-{{ run_time }}" state=directory
 
-# Check if the minishift cluster is started if not then start the cluster
-- name: "Startup the minishift cluster"
-  import_tasks: start_mcluster.yml
-  when: (setup_minishift|bool == true) or
-        (start_minishift|bool == true)
-
-# Import_tasks install_oc_bin
-- name: "Get OpenShift client binary(oc) version {{ oc_version }} to {{ contra_env_setup_dir }}"
-  import_tasks: install_oc_bin.yml
-  when: setup_minishift|bool == false
-
 # Get ip of the cluster unless it was provided
 - name: "Get the cluster Server URL for project {{ openshift_project }}"
   shell: "{{ oc_bin }} status | grep 'https' | awk '{print $NF}' | head -1"
@@ -33,6 +22,15 @@
 - set_fact:
     cluster_ip: "{{ cluster_ip_register.stdout }}"
   when: openshift_cluster_ip == ""
+
+- name: "Get setup_crc status"
+  debug:
+    var: setup_crc
+
+# Add RH IT Cert to cluster
+# Remove this task as a part of CVP-2930
+- import_tasks: add_rh_cert.yml
+  when: setup_crc|bool == true
 
 # Login to the cluster for the profile in use
 - import_tasks: login_to_cluster.yml

@@ -1,0 +1,34 @@
+---
+# Add RH IT Cert
+# This is required to pull the OpenShift 3.11 Jenkins image from
+# docker-registry.upshift.redhat.com.  Remove this task after
+# upgrading to Jenkins OCP4 (CVP-2930)
+
+# get kubeadmin password
+- name: "Get kubeadmin password"
+  set_fact:
+    kubeadmin_password: "{{ lookup('file', '~/.crc/machines/crc/kubeadmin-password') }}"
+
+# login as admin to the cluster
+- name: "Login as admin to the Openshift cluster"
+  command: "{{ oc_bin }} login https://api.crc.testing:6443 --username=kubeadmin --password={{ kubeadmin_password }} --insecure-skip-tls-verify=true"
+
+# Get Red Hat IT CA Cert
+- name: "Get Red Hat IT CA Cert"
+  set_fact:
+    rh_it_root_ca_cert: "{{ lookup('file', '/etc/pki/ca-trust/source/anchors/RH-IT-Root-CA.crt') }}"
+
+# Create patch JSON
+- name: "Create patch json"
+  set_fact:
+    patch:
+      data:
+        docker-registry.upshift.redhat.com: "{{ rh_it_root_ca_cert }}"
+
+# Add Red Hat CA certs to OpenShift
+- name: "Add Red Hat CA certs to OpenShift"
+  command: "{{ oc_bin }} patch cm registry-certs -n openshift-config --patch='{{ patch | to_json }}'"
+
+# Logout so that os_temps can log back in as developer
+- name: "Logout of OpenShift"
+  command: "{{ oc_bin }} logout"
