@@ -1,0 +1,16 @@
+---
+# setup crc
+- name: "Set crc memory"
+  command: "crc config set memory {{ crc_memory | default('30156') }}"
+
+- name: "Set crc cpus"
+  command: "crc config set cpus {{ crc_cpus | default('6') }}"
+
+- name: "Set crc disk size"
+  command: "crc config set disk-size {{ crc_disk_size | default('50') }}"
+
+- name: "setup crc"
+  command: "crc setup"
+
+- name: "start crc"
+  command: "crc start"
