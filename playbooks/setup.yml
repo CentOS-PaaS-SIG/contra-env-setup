@@ -13,6 +13,7 @@
   roles:
     - { role: cleanup, when: run_cleanup|bool == true }
     - role: create
+    - { role: crc, when: setup_crc|bool == true }
     - { role: os_temps, when: setup_containers|bool == true }
     - { role: pipeline, when: setup_pipelines|bool == true }
     - { role: playbook_hooks, when: setup_playbook_hooks|bool == true }
