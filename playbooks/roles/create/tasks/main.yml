@@ -12,3 +12,16 @@
 # Clone the project_repo and sample_project_repo
 - name: "Clone the project repo {{ project_repo }}"
   import_tasks: clone_repos.yml
+
+- name: "Get approle creds"
+  include_tasks: "{{ project_dir }}/config/ansible/roles/gather_vault_secrets/tasks/get_approle_creds.yml"
+  vars:
+    hv_token: "{{ vault_token }}"
+  when: pull_hv_secrets|bool
+  no_log: true
+
+- name: "Get secrets from Hashicorp Vault"
+  include_role:
+    name: "{{ project_dir }}/config/ansible/roles/gather_vault_secrets"
+  when: pull_hv_secrets|bool
+  no_log: true
